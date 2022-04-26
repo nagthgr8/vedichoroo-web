@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "astrology-e9e07"
+  },
+  "targets": {
+    "astrology-e9e07": {
+      "hosting": {
+        "vedichoroo": [
+          "astrology-e9e07"
+        ]
+      }
+    }
+  }
+}

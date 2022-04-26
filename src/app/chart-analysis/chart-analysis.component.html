@@ -1,0 +1,19 @@
+<div class="container">
+<div><h1>{{title}}</h1></div>
+<div class="row"><div id="bchart" class="col col-sm-12"><div #divChart></div></div></div>
+     <div class="row lines title"><div class="col col-sm-6">PLANET</div><div class="col col-sm-3">RASI(D1)</div><div class="col col-sm-3">RASI{{chart_id}})</div></div>
+ <div *ngFor="let key of objectKeys(oPR)">
+     <div class="row lines subtitle"><div class="col col-sm-6">{{key}}</div><div class="col col-sm-3">{{oPR[key].sign}}</div><div class="col col-sm-3">{{oPR[key].sign_x}}</div></div>
+ </div>
+<div *ngIf="showLS">
+     <div class="row lines title"><div class="col col-sm-4">Planet</div><div class="col col-sm-2">Sign</div><div class="col col-sm-2">House</div><div class="col col-sm-2">Diety</div><div class="col col-sm-2">Nature</div></div>
+ <div *ngFor="let key of objectKeys(oPlanet)">
+     <div class="row lines subtitle"><div class="col col-sm-4">{{key}}</div><div class="col col-sm-2">{{oPlanet[key].sign}}</div><div class="col col-sm-2">{{oPlanet[key].hno}}</div><div class="col col-sm-2">{{oPlanet[key].deity}}</div><div class="col col-sm-2">{{oPlanet[key].nat}}</div></div>
+    <div class="row lines subtitle"><div class="col col-sm-12"><div color="level2">{{oPlanet[key].desc}}</div></div></div>
+ </div>
+ <p>
+   As per Sacred texts, the deity in shastiamsa chart can give more insight on each house, for instance to know about your past karma look at the planet(s) that are in 5th house from ascendant in Shastiamsa chart if there are no planents consier 5th house lord & then refer to the diety & its nature, if it is good then you had done good karma in past if not bad karma. BEFORE ANY CONCLUSION MAKE SURE THIS CHART IS SHASTAMSA RECTIFIED AS LAGNA CHANGES EVERY 2 MINUTES ALL CALCULATIONS GO WRONG IF NOT RECTIFIED, DUE TO SUCH LIMITATION NOT MANY ASTROLOGERS USE THIS CHART FOR PREDICTIONS
+</p>
+<div [innerHTML]='akashWani'></div>
+</div>
+  </div>

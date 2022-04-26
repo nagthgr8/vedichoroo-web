@@ -1,0 +1,15 @@
+<div class="container-fluid">
+  <p class='msg' [innerHTML]='info'></p>
+  <div class="row">
+    <div id="bchart" class="col col-sm-6 m-1"><div #birthChart></div></div>
+    <div class="col col-sm-5">
+      <div id="nchart" class="col col-sm-6 m-1"><div #tranChart></div></div>
+    </div>
+  </div>
+    <div *ngFor="let key of objectKeys(oPred)">
+      <div [class]="oPred[key].style">
+        <div class="row maintitle"><div class="col col-12">{{key}}</div></div>
+        <div class="row title"><div class="col col-12"><div [innerHTML]='oPred[key].inds'></div></div></div>
+      </div>
+    </div>
+</div>

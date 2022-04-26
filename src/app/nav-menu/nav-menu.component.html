@@ -1,0 +1,132 @@
+<header>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+          <div class="container">
+            <button class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target=".navbar-collapse"
+                    aria-label="Toggle navigation"
+                    [attr.aria-expanded]="isExpanded"
+                    (click)="toggle()">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar navbar-brand" (click)="vhoevt($event, 'home')" [routerLink]="['/']">
+              <svg xmlns="http://www.w3.org/2000/svg" width="194" height="40" version="1.1">
+                <defs>
+                  <style type="text/css">
+                    @import url('https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic');
+
+                    .small {
+                      font: bold 0.8rem roboto;
+                      fill: green
+                    }
+
+                    .heavy {
+                      font: bold 30px roboto;
+                      fill: #d35400
+                    }
+                  </style>
+                </defs>
+                <text x="0" y="22" class="heavy">VEDIC HOROO</text>
+                <text x="65" y="36" class="small">DeCODE Your Destiny..<animate attributeType="CSS" attributeName="opacity"
+         from="1" to="0" dur="5s" repeatCount="indefinite" /></text>
+              </svg>
+
+            </a>
+            <a class="navbar navbar-brand" [routerLink]="['/personal-details']" [queryParams]="{title:'Report'}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="700" height="80" version="1.1">
+                <defs>
+                  <style type="text/css">
+                    @import url('https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic');
+
+                    .small {
+                      font: bold 0.8rem roboto;
+                      fill: green;
+                    }
+
+                    .spl4 {
+                      font: bold 28px roboto;
+                      fill: #282828;
+                    }
+                    .spl3 {
+                      font: bold 32px roboto;
+                      fill: #282828;
+                    }
+                    .spl {
+                      font: bold 24px roboto;
+                      fill: #EDE9E9;
+                    }
+                    .spl2 {
+                      font: bold 18px roboto;
+                      fill: #E8141A;
+                      text-decoration: line-through;
+                    }
+			</style>
+                </defs>
+				<image xlink:href="assets/images/special-offer.png" height="80" width="80" x="0" y="0" />
+                <text x="90" y="24" class="spl4">Get your Detailed Horoscope for Rs. 99/- Only</text>
+                <text x="450" y="56" class="spl2">Rs. 399/-</text>
+                
+	<rect x="540" y="32" rx="10" ry="10" width="130" height="30" fill="#E8141A" />			
+                <text x="546" y="56" class="spl">Order Now</text>
+              </svg>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light mb-1">
+          <div class="container">
+            <div class="nav-item badge badge-pill badge-secondary m-1">
+              <a class="nav-link text-white" [routerLink]="['/personal-details']" [queryParams]="{title:'Birth Chart'}">BIRTH CHART</a>
+            </div>
+            <div class="nav-item badge badge-pill badge-success m-1">
+              <a class="nav-link text-white" [routerLink]="['/personal-details']" [queryParams]="{title:'KP Astrology'}">KP ASTROLOGY</a>
+            </div>
+            <div class="nav-item badge badge-pill badge-dark m-1">
+              <a class="nav-link text-white" [routerLink]="['/personal-details']" [queryParams]="{title:'Transit Predictions'}">TRANSIT PREDICTIONS</a>
+            </div>
+            <div class="nav-item badge badge-pill badge-warning m-1">
+              <a class="nav-link text-white" [routerLink]="['/personal-details']" [queryParams]="{title:'Career Horoscope'}">CAREER HOROSCOPE</a>
+            </div>
+            <div class="nav-item badge badge-pill badge-primary m-1">
+              <a class="nav-link text-white" [routerLink]="['/personal-details']" [queryParams]="{title:'Money Horoscope'}">MONEY HOROSCOPE</a>
+            </div>
+            <div class="nav-item badge badge-pill badge-danger m-1">
+              <a class="nav-link text-white" [routerLink]="['/personal-details']" [queryParams]="{title:'Divisional Charts'}">DIVISIONAL CHARTS</a>
+            </div>
+            <div class="nav-item badge badge-pill badge-info m-1">
+              <a class="nav-link text-white" [routerLink]="['/love-compatibility']">LOVE COMPATIBILITY</a>
+            </div>
+            <div *ngIf="showSU" class="nav-item badge badge-pill badge-primary m-1">
+              <a class="nav-link text-white" [routerLink]="['/home']">REPORTS</a>
+            </div>
+            <div *ngIf="showSU" class="nav-item badge badge-pill badge-info m-1">
+              <a class="nav-link text-white" [routerLink]="['/home']">BV RAMAN'S MUHURTHA</a>
+            </div>
+            <div *ngIf="showSU" class="nav-item badge badge-pill badge-info m-1">
+              <a class="nav-link text-white" [routerLink]="['/home']">PRASHNA JYOTISH</a>
+            </div>
+          </div>
+        </nav>
+      </div>
+      
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="panch text-sm-center"><span class="lbl">SUNRISE: </span>{{sunrise}},<span class="lbl">SUNSET: </span>{{sunset}},<span class="lbl"> TITHI: </span>{{tithi}},<span class="lbl">NAKSHATRA: </span>{{nak}},<span class="lbl">RAHUKAAL: </span>{{rahukal}},<span class="lbl">YAMAGAND: </span>{{yama}},<span class="lbl">YOGA: </span>{{yog}},<span class="lbl">KARAN: </span>{{karn}}</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="panch text-sm-center"><span class="lbl">LAGNA: </span>{{lagna}}<span class="lm1">  {{lagml}}</span>-<span class="lal">{{lagal}}</span>-<span class="lsl">{{lagsl}}</span></div>
+      </div>
+    </div>
+
+  </div>
+</header>

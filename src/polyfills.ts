@@ -47,7 +47,7 @@
  */
 import 'zone.js';  // Included with Angular CLI.
 
-
+import 'core-js/features/reflect';
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
