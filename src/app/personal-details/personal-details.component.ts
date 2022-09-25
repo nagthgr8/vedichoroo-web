@@ -50,7 +50,7 @@ export class PersonalDetailsComponent implements OnInit {
    place: string = '';
    nam: string='';
    gen: string = '';
-   eml: string = '';
+   eml: string = null;
    mob: string = '';
    lan: string = 'en';
    chtyp: string = 'nind';
@@ -267,6 +267,13 @@ export class PersonalDetailsComponent implements OnInit {
   save(evt) {
 	evt.stopPropagation();
      this.info = 'please wait...';
+	 if(this.source == 'Report') { 
+	    if(this.eml) {
+		} else {
+			this.info = 'Please enter your email addrese to which the report needs to be sent';
+			return;
+		}
+	 }
 	if(this.place.length == 0) {
 	    this.info = 'Please enter place of birth';
 		return;

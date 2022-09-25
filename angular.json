@@ -23,14 +23,19 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/vedichoroo/browser",
+            "outputPath": "dist/vedichoroo",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/favicon.ico",
+			  {
+                "glob": "app-ads.txt",
+                "input": "src/",
+                "output": "/"
+              },              
+			  "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
@@ -125,47 +130,6 @@
               "node_modules/bootstrap/dist/js/bootstrap.min.js",
               "node_modules/wowjs/dist/wow.js"
             ]
-          }
-        },
-        "server": {
-          "builder": "@angular-devkit/build-angular:server",
-          "options": {
-            "outputPath": "dist/vedichoroo/server",
-            "main": "src/main.server.ts",
-            "tsConfig": "tsconfig.server.json",
-            "inlineStyleLanguage": "scss"
-          },
-          "configurations": {
-            "production": {
-              "outputHashing": "media",
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ]
-            },
-            "development": {
-              "optimization": false,
-              "sourceMap": true,
-              "extractLicenses": false
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "deploy": {
-          "builder": "@angular/fire:deploy",
-          "options": {
-            "ssr": "cloud-functions",
-            "prerender": false,
-            "firebaseProject": "astrology-e9e07",
-            "firebaseHostingSite": "astrology-e9e07",
-            "functionName": "ssr_vedichoroo",
-            "functionsNodeVersion": "16",
-            "region": "us-central1",
-            "browserTarget": "vedichoroo:build:production",
-            "serverTarget": "vedichoroo:server:production",
-            "outputPath": "dist/vedichoroo/functions"
           }
         }
       }

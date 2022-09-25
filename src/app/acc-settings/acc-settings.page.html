@@ -1,0 +1,33 @@
+<form-group>
+<div class="amsg" no-padding *ngIf="amsg">
+<div class="amsg-title">Bank Details</div>
+<div class="amsg-subtitle">{{amsg}}</div>
+<button type="button" class="btn btn-primary btn-sm" tappable (click)="msgok()">OK, Got It!</button>
+</div>
+
+ <div class="pd container-fluid p-1">
+ <div class="row">
+  <div class="col col-md-6"><input type="text" class="form-control nam" [(ngModel)]="ifs" [ngModelOptions]="{standalone: true}" placeholder="ENTER IFSC CODE"></input></div>
+  <div class="col col-md-6"><button type="button" class="btn btn-primary btn-sm float-right" tappable (click)="fsearch()">Search</button></div>
+ </div>
+ <div class="row">
+ <label class="col-sm-2 form-check-label" for="bnm">Bank Name: </label>
+ <div name="bnm" class="col-md-10 nam">{{bnam}}</div>
+ </div>
+ <div class="row">
+  <label class="col-sm-2 form-check-label" for="anb">Account Number: </label>
+  <input name="anb" class="nam col-md-10 form-control" type="password" [(ngModel)]="anum" [ngModelOptions]="{standalone: true}"></input>
+ </div>
+ <div class="row">
+  <label class="col-sm-2 form-check-label" for="ranb">Re-enter Accont Number: </label>
+  <input type="tel" name="ranb" class="nam col-md-10 form-control" [(ngModel)]="ranum" [ngModelOptions]="{standalone: true}"></input>
+ </div>
+ <div class="row">
+  <label class="col-sm-2 form-check-label" for="nam">Your Full Name(as per bank records): </label>
+  <input type="text" name="nam" class="nam" [(ngModel)]="nam" [ngModelOptions]="{standalone: true}"></input>
+ </div>
+</div>
+<p class="text-center text=primary">{{info}}</p>
+<button type="button" class="btn btn-primary btn-block" tappable (click)="save($event)">Submit</button>
+ <div style="height: 400px;"></div>
+</form-group>

@@ -180,30 +180,23 @@
     <section id="main-area" style="transform: none;">
       <div class="container" style="transform: none;">
         <div class="row" style="transform: none;">
-          <section id="main" class="main col-md-8">
-            <div>
-			<h2>About VEDIC HOROO</h2>
-              Plan a better, brighter future for yourself by having access to all the information you could need, that
-              too at the tap of a screen.  Our app draws on the rich and established literature at the heart of Vedic tradition to deliver you charts, premonitions and suggestions on how to make the most of your Vedic horoscope.
-              Features of our app include:<br><br>
-              <i class="fa fa-solid fa-caret-right"></i><span class="pl-2 text-info font-weight-bold">Daily Panchang information, including Tithi, Nakshatra, Yamagandam and Rahu Kaal timings, Lagna, and Abhijit Muhuratha. This allows you to stay up to date with the current phase of the moon, which lord is dominant on any particular day and time and also helps identify beneficial and auspicious periods of the day, helping you plan out your time to maximize its potential.</span><br><br>
-              <i class="fa fa-solid fa-caret-right"></i><span class="pl-2 text-info font-weight-bold">Detailed Birth chart (Janam Kundali) analysis including the subscriber’s Rash chart and the succeeding bhava chart. The analysis includes potential implications of the charts as well, covered in detail.</span><br><br>
-              <i class="fa fa-solid fa-caret-right"></i><span class="pl-2 text-info font-weight-bold">Shadbala strength analysis to judge the strength of the planets on any given day
-              Astakavarga calculations to determine the strength of the houses.</span><br><br>
-              <i class="fa fa-solid fa-caret-right"></i><span class="pl-2 text-info font-weight-bold">KP Astrology based predictions for life invented by legendary astrologer Dr. Krishna Murthy. These predictions are based on several planet and house significators and are meant to give users an idea of the kind of decisions their planetary alignment favors. This includes, but is not limited to, days you should and should not file litigation, days you should and should not make major purchases, favorable days to move into a new house, and more.</span><br><br>
-              <i class="fa fa-solid fa-caret-right"></i><span class="pl-2 text-info font-weight-bold">Detailed Kundli analysis for assessment of potential marriage candidates through several crucial charts and analyses. These help determine how well the planetary and akashic energies influences active on both parties to a marriage align and help provide a measure of compatibility in light of their gunas.
-              Structured analysis of your money and career horoscopes through the relevant charts.</span><br><br>
-              <i class="fa fa-solid fa-caret-right"></i><span class="pl-2 text-info font-weight-bold">A personalized calendar featuring all your favorable and unfavorable days, along with advice on how to conduct your day to achieve the best possible result. The calendar is updated with information regularly to ensure the relevance and fruitfulness of the information contained within. The calculations based on famous book Muhuratha by legendary astrologer Dr. B V Raman</span><br><br>
-              <i class="fa fa-solid fa-caret-right"></i><span class="pl-2 text-info font-weight-bold">A yoga chart to ascertain the presence and prevalence of the many yogas’ within a users’ chart. These can help identify positive and negative significators that may play a role in predicting a user’s impending fortune or misfortune over a coming period. This chart is supplemented by a<br>
-              30-day planetary transit (gochar) chart, to help users track the movements of the planets across the month.<br>
-              Shodashvarga kundali – A detailed analysis of all 16 divisional/Varga charts and the implications they have, including those for wealth and property, marital success, career development, etc.</span><br><br>
-              <i class="fa fa-solid fa-caret-right"></i><span class="pl-2 text-info font-weight-bold">Prashna Jyotish – Helps users who have specific questions about their lives or upcoming choices cast a Kundli and divine the answer.</span><br><br>
-              <i class="fa fa-solid fa-caret-right"></i><span class="pl-2 text-info font-weight-bold">Talk to an astrologer through our app! – If you’re having trouble understanding the breadth of the heavenly bodies and the implications of certain significators, we’ll set you up with a professional well-versed in the ancient Vedic arts.</span><br><br>
-              <i class="fa fa-solid fa-caret-right"></i><span class="pl-2 text-info font-weight-bold">Our App is available in four different languages: Tamil, Telugu, Hindi, and English.</span><br><br>
-			<i class="fa fa-solid fa-caret-right"></i><span class="pl-2 text-info font-weight-bold">Our app features a simple and easy to use bare-bones interface that ensures you don’t have to sift through menus to find the information you’re seeking. We’ve paid close attention to UI/UX design tenets to ensure that our app provides all the necessary and relevant information you could need when trying to determine your future; and that it does so in the most efficient way possible.</span><br><br>              
-			<h4 class="text-center text-success font-weight-bold">Take hold of your future with Vedic Horoo!</h4><br><br>
-            </div>
-          </section>
+		<h2>Talk To Our Online Astrologer(s)</h2>
+          <div class="col-lg-4 col-md-12 mb-4 mb-lg-0" *ngFor="let ast of asts">
+			<img
+			  [src]="ast.avatar"
+			  class="w-100 shadow-1-strong rounded mb-4"
+			  alt="Boat on Calm Water"
+			/>
+			<h5 class="mb-2"><strong>{{ast.name}}</strong></h5>
+			<p class="text-muted">{{ast.tagline}} <br>
+			 <i [class]="ast.str1" aria-hidden="true"></i>
+			 <i [class]="ast.str2" aria-hidden="true"></i>
+			 <i [class]="ast.str3" aria-hidden="true"></i>
+			 <i [class]="ast.str4" aria-hidden="true"></i>
+			 <i [class]="ast.str5" aria-hidden="true"></i><span><strong>({{ast.tot_ratings}})</strong></span><span class="text-right"><strong>{{ast.lng}}</strong></span><br/>
+			 <span class="text-info">&#8377; {{ast.cfee}}</span><span *ngIf="ast.status" class="text-right badge bg-primary">Call Now!</span><span *ngIf="!ast.status" class="text-danger">{{ast.smsg}}</span>
+			 </p>
+		  </div>
           <aside id="sidebar" class="sidebar col-md-4" style="position: relative; overflow: visible; box-sizing: border-box; min-height: 1px;">
             <!-- Widget : Social Counter -->
             <!-- Widget : Recent Posts -->

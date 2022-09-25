@@ -21,10 +21,8 @@ import {
 } from 'angularx-social-login';
 import { ShareButtonsModule } from 'ngx-sharebuttons/buttons';
 import { ShareIconsModule } from 'ngx-sharebuttons/icons';
-import { provideFirebaseApp, initializeApp } 
-from '@angular/fire/app';
-import { getFirestore, provideFirestore } 
-from '@angular/fire/firestore';import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
+//import { PubNubAngular } from 'pubnub-angular2';
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { HomeComponent } from './home/home.component';
 import { HoroscopeComponent } from './horoscope/horoscope.component';
 import { PersonalDetailsComponent } from './personal-details/personal-details.component';
@@ -37,6 +35,7 @@ import { DivchartsComponent } from './divcharts/divcharts.component';
 import { ChartAnalysisComponent } from './chart-analysis/chart-analysis.component';
 import { TermsandconditionsComponent } from './termsandconditions/termsandconditions.component';
 import { RefundpolicyComponent } from './refundpolicy/refundpolicy.component';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -77,8 +76,8 @@ import { RefundpolicyComponent } from './refundpolicy/refundpolicy.component';
 	  })
 	],
 	providers: [
-   provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore()),		TranslateService,
+//	PubNubAngular,
+	TranslateService,
     {
 			provide: 'SocialAuthServiceConfig',
 			useValue: {
