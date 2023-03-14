@@ -1,0 +1,96 @@
+<header>
+        <nav class="vhonav navbar navbar-expand navbar-toggleable navbar-light bg-white border-bottom box-shadow">
+            <button class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target=".navbar-collapse"
+                    aria-label="Toggle navigation"
+                    [attr.aria-expanded]="isExpanded"
+                    (click)="toggle()">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar navbar-brand" (click)="vhoevt($event, 'home')" [routerLink]="['/']">
+			<div class="navbar-nav ml-auto action-buttons">
+			</div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="194" height="40" version="1.1">
+                <defs>
+                  <style type="text/css">
+                    @import url('https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic');
+
+                    .small {
+                      font: bold 0.8rem roboto;
+                      fill: green
+                    }
+
+                    .heavy {
+                      font: bold 30px roboto;
+                      fill: #d35400
+                    }
+                  </style>
+                </defs>
+                <text x="0" y="22" class="heavy">VEDIC HOROO</text>
+                <text x="65" y="36" class="small">DeCODE Your Destiny..<animate attributeType="CSS" attributeName="opacity"
+         from="1" to="0" dur="5s" repeatCount="indefinite" /></text>
+              </svg>
+
+            </a>
+			<h6 class="font-weight-bold ps-15">LAGNA: {{lagna}} <span class="text-muted text-uppercase">{{lagml}}-{{lagal}}-{{lagsl}}</span></h6>
+<div *ngIf="!user" class="nav-item">
+    <button type="button" class="btn btn-link" (click)="vhoevt($event, 'login')">Login</button>
+  </div>
+<div *ngIf="user" class="dropdown">
+  <a class="dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
+	<app-user-avatar [name]="user.name" [imageUrl]="user.imageUrl"></app-user-avatar>
+  </a>
+  <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+    <li><a class="dropdown-item" href="#" (click)="signOut()">Sign Out</a></li>
+  </ul>
+</div>
+        </nav>
+    <div id="menu1" class="justify-content-center">
+        <nav class="navbar navbar-default mb-1">
+            <div class="nav-item border border-secondary font-weight-bold">
+              <a class="nav-link" [routerLink]="['/personal-details']" [queryParams]="{title:'Birth Chart'}">Birth Chart</a>
+            </div>
+            <div class="nav-item border border-secondary font-weight-bold">
+              <a class="nav-link" [routerLink]="['/personal-details']" [queryParams]="{title:'KP Astrology'}">KP Astrology</a>
+            </div>
+            <div class="nav-item border border-secondary font-weight-bold">
+              <a class="nav-link" [routerLink]="['/personal-details']" [queryParams]="{title:'Transit Predictions'}">Monthly Predictions</a>
+            </div>
+            <div class="nav-item border border-secondary font-weight-bold">
+              <a class="nav-link" [routerLink]="['/personal-details']" [queryParams]="{title:'Career Horoscope'}">Career Horoscope</a>
+            </div>
+            <div class="nav-item border border-secondary font-weight-bold">
+              <a class="nav-link" [routerLink]="['/personal-details']" [queryParams]="{title:'Money Horoscope'}">Wealth Horoscope</a>
+            </div>
+            <div class="nav-item border border-secondary font-weight-bold">
+              <a class="nav-link" [routerLink]="['/personal-details']" [queryParams]="{title:'Divisional Charts'}">Varga Charts</a>
+            </div>
+            <div class="nav-item border border-secondary font-weight-bold">
+              <a class="nav-link" [routerLink]="['/love-compatibility']">Marriage Compatibility</a>
+            </div>
+            <div class="nav-item border border-secondary font-weight-bold">
+              <a class="nav-link" [routerLink]="['/personal-details']" [queryParams]="{title:'Report'}">Reports</a>
+            </div>
+            <div *ngIf="showSU" class="nav-item border border-secondary font-weight-bold">
+              <a class="nav-link" [routerLink]="['/home']">Know Your Favourite Days</a>
+            </div>
+            <div *ngIf="showSU" class="nav-item border border-secondary font-weight-bold">
+              <a class="nav-link" [routerLink]="['/home']">Prashna Jyotish</a>
+            </div>
+        </nav>
+      </div>
+    <div id="panch">		
+	    <h6 class="bg-warning">Today's Panchang:
+		<small class="font-weight-bold ps-2">Sunrise: <span class="text-muted">{{srise}}</span></small>
+		<small class="font-weight-bold ps-2">Sunset: <span class="text-muted">{{sset}}</span></small>
+		<small class="font-weight-bold ps-2">Tithi: <span class="text-muted">{{tithi}}</span></small>
+		<small class="font-weight-bold ps-2">Nakshatra: <span class="text-muted text-uppercase">{{nak}}</span></small>
+		<small class="font-weight-bold ps-2">Rahukal: <span class="text-muted">{{rahukal}}</span></small>
+		<small class="font-weight-bold ps-2">Yamagand: <span class="text-muted">{{yama}}</span></small>
+		<small class="font-weight-bold ps-2">Yoga: <span class="text-muted">{{yog}}</span></small>
+		<small class="font-weight-bold ps-2">Karana: <span class="text-muted">{{karn}}</span></small>
+		</h6>
+	</div>
+ </header>

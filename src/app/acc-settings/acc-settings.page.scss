@@ -1,0 +1,72 @@
+body {
+  font-family: roboto;
+}
+.title {
+  font-size: 1.45rem;
+  font-weight: bold;
+  color: #d35400;
+}
+
+    .pd {
+        background: none;
+        .row {
+            background: rgba(var(--primary-rgb), 0.05);
+            --background: none;
+            border-radius: 10px;
+            padding: 3px 20px !important;
+            margin-bottom: 5px;
+            border: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+			
+			label {
+				font-weight: bold;
+			}
+
+            .label {
+                font-size: 1.35rem;
+                font-weight: 400;
+                color: #78927e;
+                flex: unset;
+            }
+        }
+    }
+.name {
+ font-weight: bold;
+}
+.sub {
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+	
+ p.info {
+   text-align: center;
+   font-weight: bold;
+  }
+  .more {
+	color: blue;
+  }
+ ion-card.amsg {
+              background: rgba(var(--ion-color-primary-rgb), 0.05);
+            --background: none;
+            border-radius: 10px;
+            --padding: 3px 20px !important;
+            padding: 3px !important;
+            margin-bottom: 5px;
+            border: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+   }
+
+ .amsg-title {
+  text-align: center;
+  color: #d35400;
+  font-size: 1.45rem;
+  font-weight: bolder;
+  }
+ .amsg-subtitle {
+  text-align: left;
+  color: #d35400;
+  font-size: 1rem;
+  font-weight: bolder;
+  }

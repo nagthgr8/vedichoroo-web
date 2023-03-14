@@ -1,0 +1,17 @@
+<div>
+  <h2>Add Money</h2>
+  <p><strong>{{sub}}</strong></p>
+  <div class=".container">
+   <div class=".row">
+    <div [class]="tsel.m500" tappable (click)="admon(500)">{{ '500' }}</div>
+     <div [class]="tsel.m1000" tappable (click)="admon(1000)">{{ '1000'}}</div>
+      <div [class]="tsel.m1500" tappable (click)="admon(1500)">{{ '1500' }}</div>
+   </div>
+	<div class=".row">
+		<div class=".col"><input id="amt" [(ngModel)]="amt" type="tel" placeholder="Enter Your Amout" [ngModelOptions]="{standalone: true}" ></input></div>
+	</div>
+  </div>
+<p class="text-center text-primary">{{info}}</p>
+<button type="button" class="btn btn-primary" tappable (click)="addmoney($event)">Add Money</button>
+</div>
+

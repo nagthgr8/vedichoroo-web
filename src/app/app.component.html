@@ -1,0 +1,127 @@
+<body>
+  <app-nav-menu (vhevt)="vhoevts($event)">
+  </app-nav-menu>
+  <div class="container">
+    <router-outlet (vhevt)="vhoevts($event)"></router-outlet>
+  </div>
+  <div class="contact" id="support">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="contact-left">
+            <h3>CONTACT US</h3>
+            <p class="style">For any queries please email us, we will attend you shortly..</p>
+            <div class="get-intouch-left-address">
+              <p>Block 10, Hill Ridge Springs</p>
+              <p>Gachibowli, Hyderabad, India</p>
+              <p class="style1">Email: <a href="mailto:info@vedichoroo.com"> info@vedichoroo.com</a></p>
+              <p class="style2">Phone: +91-9010264567</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="contact-right">
+            <div class="form">
+              <form>
+                <input type="text" id="cust-name" class="textbox" value=" Name" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Name';}">
+                <input type="text" id="cust-email" class="textbox" value="Email" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Email';}">
+                <div class="clearfix"></div>
+                <div>
+                  <textarea value="Message:" id="message" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = ' Message';}">Message</textarea>
+                </div>
+                <div class="span4">
+                  <input type="button" class="btn btn-success" id="contact-us" disabled="disabled" value="CONTACT US">
+                  <div class="clearfix"></div>
+                </div>
+                <div class="span8">
+                  <p id="pInfo" style="font-weight:bold;color:white"></p>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="copy-right">
+            <p>©Copyright 2020-21 All Rights Reserved  <a [routerLink]="['/home']">vedichoroo.com</a> <a [routerLink]="['/termsandconditions']"> Terms &amp; Conditions</a> <a [routerLink]="['/privacy-policy']"> Privacy Policy</a> <a [routerLink]="['/refundpolicy']"> Refund Policy</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template #loginMdl let-model>
+    <div class="modal-header">
+      <strong>{{mtitle}}</strong>
+    </div>
+    <div class="login modal-body">
+      <div class="box">
+        <div class="content">
+          <div class="social">
+		    <div id="google-signin-button"></div>
+            <button class="btn btn-lg btn-block btn-success" (click)="loginGPLUS($event)">
+              Login With Google
+            </button>
+          </div>
+          <div class="division">
+            <div class="line l"></div>
+            <span>or</span>
+            <div class="line r"></div>
+			<div class="social mt-4">
+            <button type="button" id="facebook_login" class="btn btn-lg btn-block btn-secondary" (click)="loginFB()">
+               Login With Facebook
+            </button>
+			</div>
+          </div>
+          <div class="error"></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="content registerBox" *ngIf="showReg">
+          <div class="form">
+            <form method="" html="{:multipart=>true}" data-remote="true" action="" accept-charset="UTF-8">
+              <input id="rnam" class="form-control" type="text" placeholder="Name" name="name">
+              <input id="reml" class="form-control" type="text" placeholder="Email" name="email">
+              <input id="rmob" class="form-control" type="tel" placeholder="Mobile Number" name="mobile" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}">
+              <div class="info"> <p [innerHTML]='msg2'></p></div>
+              <input class="btn btn-default btn-register" type="button" value="SUBSCRIBE NOW FOR JUST Rs. 399/-" name="commit" (click)="regusr($event)">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+	 <small class="text-muted">Secured by VEDCICHOROO</small>
+    </div>
+  </ng-template>
+  <ng-template #actvMdl let-model>
+    <div class="modal-header">
+      <strong>ENTER ACTIVATION CODE</strong>
+    </div>
+    <div class="login modal-body">
+      <div class="box">
+        <div class="content">
+          <div *ngIf="showLogin" class="form loginBox">
+            <form method="" action="" accept-charset="UTF-8">
+              <input id="actc" class="form-control" type="text" placeholder="Enter Activation Code" name="email">
+              <div class="info"> <p [innerHTML]='msg3'></p></div>
+              <input class="btn btn-default btn-login" type="button" value="SUBMIT" (click)="actvusr($event)">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="forgot register-footer">
+        <span>Activation Code is sent to your registered mail id. Please contact our <a href="mailto:info@vedichoroo.com">Support</a> further any help!</span>
+      </div>
+    </div>
+  </ng-template>
+</body>

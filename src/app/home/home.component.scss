@@ -1,0 +1,116 @@
+.thumb-box {
+    background-color: #fff;
+    box-shadow: 0 0 10px #ccc;
+    border-radius: 10px;
+    margin-bottom: 22px;
+    text-decoration: none;
+    position: relative;
+    width: 100%;
+}
+.thumb-pad {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 15px 8px;
+}
+.thumb-info {
+    width: 75%;
+    display: flex;
+}
+.thumb-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 25%;
+    align-items: flex-end;
+}
+.img-astro {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    background-image: url(../../assets/images/pexels-j-lee.jpg);
+    background-repeat: round;
+    object-fit: cover;
+    overflow: hidden;
+}
+.img-border {
+    border: 2px solid #fff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.astro-star {
+    margin-top: 2px;
+	color: #F9A602;
+	font-size: 0.675rem;
+}
+.astro-head {
+  font-size: 1.25rem;
+  margin: 15px;
+}
+.astro-info {
+    margin-left: 14px;
+    font-size: 12px;
+    text-align: left;
+    overflow: hidden;
+}
+.astro-conn {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 25%;
+    align-items: flex-end;
+}
+.astro-name {
+   margin-left: 1px;
+   color: #000;
+   font-size: 15px;
+   font-weignt: 500;
+   text-decoration: none;
+   text-overflow: ellipses;
+   white-space: nowrap;
+   overflow: hidden;
+   display: block;
+   cursor: pointer;
+}
+.astro-tag {
+   margin-left: 1px;
+   color: #807f7f;
+   display: block;
+  }
+ .astro-lang {
+   margin-left: 1px;
+   color: #807f7f;
+   display: block;
+ }
+ .astro-fee {
+   margin-left: 1px;
+   font-weignt: 600;
+   display: block;
+ }
+.rating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+}
+
+.rating > input{ display:none;}
+
+.rating > label {
+  position: relative;
+    width: 1em;
+    font-size: 6vw;
+    color: #FFD600;
+    cursor: pointer;
+}
+.rating > label::before{ 
+  content: "\2605";
+  position: absolute;
+  opacity: 0;
+}
+.rating > label:hover:before,
+.rating > label:hover ~ label:before {
+  opacity: 1 !important;
+}
+
+.rating > input:checked ~ label:before{
+  opacity:1;
+}

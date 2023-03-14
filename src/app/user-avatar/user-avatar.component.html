@@ -1,0 +1,4 @@
+<div class="avatar-circle">
+  <div class="initials" *ngIf="!imageUrl">{{ initials }}</div>
+  <div class="avatar" *ngIf="imageUrl" [ngStyle]="{'background-image': 'url(' + imageUrl + ')'}"></div>
+</div>

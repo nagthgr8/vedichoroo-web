@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="194" height="37" version="1.1">
+<defs>
+  <style type="text/css">
+    @import url('https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic');
+    .small { font: bold italic 0.8rem roboto; fill:red}
+    .heavy { font: bold 30px roboto; fill: #d35400 }
+ </style>
+</defs>
+  <text x="0" y="22" class="heavy">VEDIC HOROO</text>
+  <text x="84" y="32" class="small">think of future..</text>
+</svg>

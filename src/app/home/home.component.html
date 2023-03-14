@@ -1,0 +1,94 @@
+    <div *ngIf="showLD" class="loader"></div>
+    <div>
+    <section id="main-area" style="transform: none;">
+      <div class="container" style="transform: none;">
+        <div class="row" style="transform: none;">
+		<h2 class="astro-head">Talk To Our Online Astrologer(s)</h2>
+          <div class="col-lg-4 col-md-12 mb-4 mb-lg-0" *ngFor="let ast of oAst">
+		   <div class="thumb-box thumb-pad">
+		   <div class="thumb-info">
+		   <div class="astro-thumb">
+		   <div class="img-astro img-border">
+			<img
+			  [src]="ast.avatar"
+			  width="75"
+			  height="75"
+			  alt="vedichoroo astrologer"
+			/>
+		   </div>
+		   <div class="astro-star">
+		   	 <i [class]="ast.str1" aria-hidden="true"></i>
+			 <i [class]="ast.str2" aria-hidden="true"></i>
+			 <i [class]="ast.str3" aria-hidden="true"></i>
+			 <i [class]="ast.str4" aria-hidden="true"></i>
+			 <i [class]="ast.str5" aria-hidden="true"></i><span><strong>({{ast.tot_ratings}})</strong></span>
+		   </div>
+		   </div>
+		   	<div class="astro-info">
+				<div class="astro-name">{{ast.name}}</div>
+				<span class="astro-tag">{{ast.tagline}} </span>
+				<span class="astro-lang">{{ast.lng}}</span>
+				<span class="astro-fee">&#8377; {{ast.cfee}}</span>
+		   </div>
+		   
+		   </div>
+		    <div class="astro-conn">
+		   <div *ngIf="ast.status"><button type="button" class="btn btn-outline-success">Call Now</button></div>
+		   <span *ngIf="!ast.status" class="text-danger">{{ast.smsg}}</span>
+		   </div>
+		   </div>
+
+		  </div>
+          <aside id="sidebar" class="sidebar col-md-4" style="position: relative; overflow: visible; box-sizing: border-box; min-height: 1px;">
+            <!-- Widget : Social Counter -->
+            <!-- Widget : Recent Posts -->
+            <div class="theiaStickySidebar" style="padding-top: 1px; padding-bottom: 1px; position: static; top: 30px; left: 906px;">
+              <div class="widget LinkList">
+                <div class="widget-title">
+                  <h2>Download The Mobile App</h2>
+				  <a href="https://play.google.com/store/apps/details?id=com.mypubz.eportal&hl=en_IN"><img src="assets/images/get_it_on_play_logo_large.png" alt="VEDIC HOROO Mobile App"/></a>
+                </div>
+                <div class="widget-content social-counter">
+                  <a href="https://www.facebook.com/vedichoroo" class="facebook">
+                    <i class="fa fa-facebook"></i>
+                    <!--<span class="count">1.42k</span>
+                  <span class="label">Fans</span>-->
+                  </a>
+                  <a href="https://twitter.com/126_news" class="twitter">
+                    <i class="fa fa-twitter"></i>
+                    <!--<span class="count">4,13k</span>
+                  <span class="label">Followers</span>-->
+                  </a>
+                </div>
+              </div><div id="2-4:STORIES--2" class="widget HTML">
+                <div id="2-4:STORIES--2">
+                  <div class="widget HTML">
+                    <div class="widget-title">
+                      <h2>Talk to Astrologer from our App</h2>
+                    </div>
+                    <div class="widget-content">
+                      <ul class="recent-posts">
+                        <li class="post" *ngFor="let ast of asts">
+                          <div class="row">
+                            <div class="col col-sm-3">
+                              <a tappable (click)="astro(ast)">
+                                <img class="circle" [src]="ast.avatar" style="opacity: 1;">
+                              </a>
+                            </div>
+                            <div class="col col-sm-9">
+                              <span tappable (click)="astro(ast)">{{ast.tagline}}</span>
+                            </div>
+                          </div><!-- Post Image -->
+                        </li><!-- Post -->
+                      </ul>
+                      <div id="sliderNav" class="slider-nav"></div>
+                    </div>
+                  </div><!-- Widget : Slider Posts -->
+                </div>
+              </div>
+            </div>
+          </aside><!-- Sidebar -->
+        </div>
+      </div>
+    </section>
+      </div>
