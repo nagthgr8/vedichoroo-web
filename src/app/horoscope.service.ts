@@ -90,6 +90,7 @@ export class HoroscopeService {
 	private apiUrl88 = 'https://api.vedichoroo.com/api/ProfileBanner';
 	private apiUrl89 = 'https://api.vedichoroo.com/api/ProfileBio';
   private apiUrl90 = 'https://api.vedichoroo.com/api/GeneratePDFDocEx';
+
   
   private monthList = [
 	{name: "January",   numdays: 31, abbr: "Jan"},
@@ -107,6 +108,7 @@ export class HoroscopeService {
 ];
 
   constructor(private http: HttpClient) { }
+
   
   getJson(url: string): Observable<{}> {
 	return this.http.get(url).pipe(

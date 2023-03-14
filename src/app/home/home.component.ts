@@ -24,6 +24,7 @@ export class HomeComponent implements OnInit {
   aqu: string = '';
   pis: string = '';
   asts: any;
+
   oAst: Astrologer[] = [];
   constructor(private wowService: NgwWowService, private horoService: HoroscopeService, private shareService: ShareService) {
   		this.wowService.init();
@@ -107,6 +108,7 @@ export class HomeComponent implements OnInit {
   		this.asts = [];
 		this.horoService.getAllAstrologers()
 			.subscribe(res => {
+
 			     this.publishReport(res);
 				//let oa: any = res;
 				//for (var i = 0; i < oa.length; i++) {
@@ -120,6 +122,7 @@ export class HomeComponent implements OnInit {
 
 	}
 	publishReport(oa) {
+
 	let a: number = 0;
 		for(var i = 0; i < oa.length; i++) {
 			console.log(i, oa[i]);

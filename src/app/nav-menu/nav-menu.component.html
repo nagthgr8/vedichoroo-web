@@ -1,4 +1,5 @@
 <header>
+
         <nav class="vhonav navbar navbar-expand navbar-toggleable navbar-light bg-white border-bottom box-shadow">
             <button class="navbar-toggler"
                     type="button"
@@ -34,6 +35,7 @@
               </svg>
 
             </a>
+
 			<h6 class="font-weight-bold ps-15">LAGNA: {{lagna}} <span class="text-muted text-uppercase">{{lagml}}-{{lagal}}-{{lagsl}}</span></h6>
 <div *ngIf="!user" class="nav-item">
     <button type="button" class="btn btn-link" (click)="vhoevt($event, 'login')">Login</button>

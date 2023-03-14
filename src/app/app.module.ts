@@ -1,5 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
+<<<<<<< HEAD
 import { NgModule, isDevMode } from '@angular/core';
+=======
+import { NgModule } from '@angular/core';
+>>>>>>> 03d5b8ae052c72bbedc83ed99f878b310b5156af
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -8,11 +12,28 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+<<<<<<< HEAD
 import { AppRoutingModule } from './app-routing.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgwWowModule } from 'ngx-wow';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
+=======
+import { GooglePlaceModule } from "ngx-google-places-autocomplete";
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgwWowModule } from 'ngx-wow';
+import { SocialLoginModule, SocialAuthServiceConfig } from 'angularx-social-login';
+import {
+	FacebookLoginProvider,
+	GoogleLoginProvider
+} from 'angularx-social-login';
+import { ShareButtonsModule } from 'ngx-sharebuttons/buttons';
+import { ShareIconsModule } from 'ngx-sharebuttons/icons';
+//import { PubNubAngular } from 'pubnub-angular2';
+>>>>>>> 03d5b8ae052c72bbedc83ed99f878b310b5156af
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { HomeComponent } from './home/home.component';
 import { HoroscopeComponent } from './horoscope/horoscope.component';
@@ -32,6 +53,7 @@ import { GoogleMapsService } from './google-maps.service';
 import { UserAvatarComponent } from './user-avatar/user-avatar.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { ModalComponent } from './modal/modal.component';
+
 @NgModule({
   declarations: [
 		AppComponent,

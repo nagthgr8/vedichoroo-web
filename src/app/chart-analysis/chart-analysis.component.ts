@@ -228,6 +228,7 @@ export class ChartAnalysisComponent implements OnInit {
 			  let oP: string[] = [];
 			  oP = (this.chart_id == 'D2') ? this.calcHoraChart() : this.calcDivChart(id);
 			  this.loadHoro(oP, this.divChart.nativeElement, title, id);
+
             let lang = this.shareService.getLANG();
 			  if (lang == 'en')
 				  this.akashWani = this.dcharts_v[this.chart_id];
@@ -253,6 +254,7 @@ export class ChartAnalysisComponent implements OnInit {
   		let ayanid: number = 4;
 		var res = this.shareService.getAYNM();
 		if(res) ayanid = Number(res);
+
         let lang = this.shareService.getLANG();
   		 this.horoService.analyzeD4(this.binf.lat, this.binf.lng, this.binf.dob, this.binf.timezone, lang, ayanid)
 			.subscribe(res2 => {
@@ -264,11 +266,13 @@ export class ChartAnalysisComponent implements OnInit {
 			}, (err) => {
 							//this.info = JSON.stringify(err);
 			});
+
 	
 
   }
 	translate(lord: string)
 	{
+
 	 let lang = this.shareService.getLANG();
 	  if(lang == 'en') return lord;
 	  let trn: string = lord;
@@ -276,6 +280,7 @@ export class ChartAnalysisComponent implements OnInit {
 		{
 			case 'sun':
 			case 'su':
+
 				if(lang == 'te') {
 					trn = 'సూర్యుడు';
 				} else if(lang == 'hi') { 
@@ -284,6 +289,7 @@ export class ChartAnalysisComponent implements OnInit {
 				break;
 			case 'moon':
 			case 'mo':
+
 				if(lang == 'te') {
 					trn = 'చంద్రుడు';
 				} else if(lang == 'hi') { 
@@ -292,6 +298,7 @@ export class ChartAnalysisComponent implements OnInit {
 				break;
 			case 'jupiter':
 			case 'ju':
+
 				if(lang == 'te') {
 					trn = 'బృహస్పతి';
 				} else if(lang == 'hi') { 
@@ -300,6 +307,7 @@ export class ChartAnalysisComponent implements OnInit {
 				break;
 			case 'mercury':
 			case 'me':
+
 				if(lang == 'te') {
 					trn = 'బుధుడు';
 				} else if(lang == 'hi') { 
@@ -308,6 +316,7 @@ export class ChartAnalysisComponent implements OnInit {
 				break;
 			case 'mars':
 			case 'ma':
+
 				if(lang == 'te') {
 					trn = 'కుజుడు';
 				} else if(lang == 'hi') { 
@@ -316,6 +325,7 @@ export class ChartAnalysisComponent implements OnInit {
 				break;
 			case 'venus':
 			case 've':
+
 				if(lang == 'te') {
 					trn = 'శుక్రుడు';
 				} else if(lang == 'hi') { 
@@ -324,6 +334,7 @@ export class ChartAnalysisComponent implements OnInit {
 				break;
 			case 'saturn':
 			case 'sa':
+
 				if(lang == 'te') {
 					trn = 'శనిగ్రహము';
 				} else if(lang == 'hi') { 
@@ -332,6 +343,7 @@ export class ChartAnalysisComponent implements OnInit {
 				break;
 			case 'rahu':
 			case 'ra':
+
 				if(lang == 'te') {
 					trn = 'రాహు';
 				} else if(lang == 'hi') { 
@@ -340,6 +352,7 @@ export class ChartAnalysisComponent implements OnInit {
 				break;
 			case 'ketu':
 			case 'ke':
+
 				if(lang == 'te') {
 					trn = 'కేతు';
 				} else if(lang == 'hi') { 
@@ -347,6 +360,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'aries':
+
 				if(lang == 'te') {
 					trn = 'మేషరాశి';
 				} else if(lang == 'hi') { 
@@ -354,6 +368,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'taurus':
+
 				if(lang == 'te') {
 					trn = 'వృషభరాశి';
 				} else if(lang == 'hi') { 
@@ -361,6 +376,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'gemini':
+
 				if(lang == 'te') {
 					trn = 'మిధునరాశి';
 				} else if(lang == 'hi') { 
@@ -368,6 +384,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'cancer':
+
 				if(lang == 'te') {
 					trn = 'కర్కాటకరాశి';
 				} else if(lang == 'hi') { 
@@ -375,6 +392,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'leo':
+
 				if(lang == 'te') {
 					trn = 'సిమ్హరాశి';
 				} else if(lang == 'hi') { 
@@ -382,6 +400,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'virgo':
+
 				if(lang == 'te') {
 					trn = 'కన్యరాశి';
 				} else if(lang == 'hi') { 
@@ -389,6 +408,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'libra':
+
 				if(lang == 'te') {
 					trn = 'తులారాసి';
 				} else if(lang == 'hi') { 
@@ -396,6 +416,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'scorpio':
+
 				if(lang == 'te') {
 					trn = 'వృశ్చికరాసి';
 				} else if(lang == 'hi') { 
@@ -403,6 +424,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'saggitarius':
+
 				if(lang == 'te') {
 					trn = 'ధనుస్సురాసి';
 				} else if(lang == 'hi') { 
@@ -410,6 +432,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'capricorn':
+
 				if(lang == 'te') {
 					trn = 'మకరరాసి';
 				} else if(lang == 'hi') { 
@@ -417,6 +440,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'aquarius':
+
 				if(lang == 'te') {
 					trn = 'కుంభరాసి';
 				} else if(lang == 'hi') { 
@@ -424,6 +448,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'pisces':
+
 				if(lang == 'te') {
 					trn = 'మీనరాసి';
 				} else if(lang == 'hi') { 
@@ -431,6 +456,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'ashwini':
+
 				if(lang == 'te') {
 					trn = 'అశ్వినీ';
 				} else if(lang == 'hi') { 
@@ -438,6 +464,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'bharani':
+
 				if(lang == 'te') {
 					trn = 'భరణి';
 				} else if(lang == 'hi') { 
@@ -445,6 +472,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'krittika':
+
 				if(lang == 'te') {
 					trn = 'కృత్తికా';
 				} else if(lang == 'hi') { 
@@ -452,6 +480,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'rohini':
+
 				if(lang == 'te') {
 					trn = 'రోహిణి';
 				} else if(lang == 'hi') { 
@@ -459,6 +488,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'mrigashira':
+
 				if(lang == 'te') {
 					trn = 'మ్రిగశిర';
 				} else if(lang == 'hi') { 
@@ -466,13 +496,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'ardra':
-				if(lang == 'te') {
-					trn = 'ఆర్ద్ర';
-				} else if(lang == 'hi') { 
-					trn = 'आर्द्र';
-				}
-				break;
-			case 'ardra':
+
 				if(lang == 'te') {
 					trn = 'ఆర్ద్ర';
 				} else if(lang == 'hi') { 
@@ -480,6 +504,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'punarvasu':
+
 				if(lang == 'te') {
 					trn = 'పునర్వసు';
 				} else if(lang == 'hi') { 
@@ -487,6 +512,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'pushya':
+
 				if(lang == 'te') {
 					trn = 'పుష్య';
 				} else if(lang == 'hi') { 
@@ -494,6 +520,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'ashlesha':
+
 				if(lang == 'te') {
 					trn = 'ఆశ్లేష';
 				} else if(lang == 'hi') { 
@@ -501,6 +528,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'magha':
+
 				if(lang == 'te') {
 					trn = 'మఘ';
 				} else if(lang == 'hi') { 
@@ -508,6 +536,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'purvaphalguni':
+
 				if(lang == 'te') {
 					trn = 'పూర్వఫల్గుణి';
 				} else if(lang == 'hi') { 
@@ -515,6 +544,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'uttaraaphalguni':
+
 				if(lang == 'te') {
 					trn = 'ఉత్తరాఫల్గుణి';
 				} else if(lang == 'hi') { 
@@ -522,6 +552,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'hastha':
+
 				if(lang == 'te') {
 					trn = 'హస్త';
 				} else if(lang == 'hi') { 
@@ -529,6 +560,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'chitra':
+
 				if(lang == 'te') {
 					trn = 'చిత్ర';
 				} else if(lang == 'hi') { 
@@ -536,6 +568,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'swati':
+
 				if(lang == 'te') {
 					trn = 'స్వాతి';
 				} else if(lang == 'hi') { 
@@ -543,6 +576,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'vishakha':
+
 				if(lang == 'te') {
 					trn = 'విశాఖ';
 				} else if(lang == 'hi') { 
@@ -550,6 +584,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'anuradha':
+
 				if(lang == 'te') {
 					trn = 'అనురాధ';
 				} else if(lang == 'hi') { 
@@ -557,6 +592,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'jyestha':
+
 				if(lang == 'te') {
 					trn = 'జ్యేష్ఠా';
 				} else if(lang == 'hi') { 
@@ -564,6 +600,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'mula':
+
 				if(lang == 'te') {
 					trn = 'మూల';
 				} else if(lang == 'hi') { 
@@ -571,6 +608,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'purvaashada':
+
 				if(lang == 'te') {
 					trn = 'పూర్వాషాఢ';
 				} else if(lang == 'hi') { 
@@ -578,6 +616,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'uttaraashada':
+
 				if(lang == 'te') {
 					trn = 'ఉత్తరాషాఢ';
 				} else if(lang == 'hi') { 
@@ -585,6 +624,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'shravana':
+
 				if(lang == 'te') {
 					trn = 'శ్రావణ';
 				} else if(lang == 'hi') { 
@@ -592,6 +632,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'danishta':
+
 				if(lang == 'te') {
 					trn = 'ధనిష్ఠ';
 				} else if(lang == 'hi') { 
@@ -599,6 +640,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'shatabhisha':
+
 				if(lang == 'te') {
 					trn = 'శతభిషా';
 				} else if(lang == 'hi') { 
@@ -606,6 +648,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'purvabhadra':
+
 				if(lang == 'te') {
 					trn = 'పూర్వాభాద్ర';
 				} else if(lang == 'hi') { 
@@ -613,6 +656,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'uttarabhadra':
+
 				if(lang == 'te') {
 					trn = 'ఉత్తరాభాద్ర';
 				} else if(lang == 'hi') { 
@@ -620,6 +664,7 @@ export class ChartAnalysisComponent implements OnInit {
 				}
 				break;
 			case 'revati':
+
 				if(lang == 'te') {
 					trn = 'రేవతి';
 				} else if(lang == 'hi') { 
@@ -638,6 +683,7 @@ export class ChartAnalysisComponent implements OnInit {
   		let ayanid: number = 4;
 		var res = this.shareService.getAYNM();
 		if(res) ayanid = Number(res);
+
         let lang = this.shareService.getLANG();
   		 this.horoService.analyzeD9(this.binf.lat, this.binf.lng, this.binf.dob, this.binf.timezone, lang, ayanid)
 			.subscribe(res2 => {
@@ -709,6 +755,7 @@ export class ChartAnalysisComponent implements OnInit {
 			}, (err) => {
 							//this.info = JSON.stringify(err);
 			});
+
   }
   analyzHora(plPos)
   {

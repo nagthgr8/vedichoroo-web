@@ -4,6 +4,7 @@ import 'rxjs/operators';
 import {saveAs} from 'file-saver';
 import { HoroscopeService } from '../horoscope.service';
 import { ShareService } from '../share.service'
+
 import { GoogleMapsService } from '../google-maps.service';
 import { Plan } from '../plan';
 import { BirthInfo } from '../birth-info';
@@ -20,6 +21,7 @@ declare var RazorpayCheckout: any;
 export class PersonalDetailsComponent implements OnInit {
  objectKeys = Object.keys;
  oBirth :BirthInfo[] = [];
+
  //service = new google.maps.places.AutocompleteService();
  service: any;
  public product: any = {
@@ -62,6 +64,7 @@ export class PersonalDetailsComponent implements OnInit {
 	sbtn: string = '';
    dstofset: number = 0;
    smp: string = '';
+
   constructor(private winRef: WindowRefService, private router: Router, private route: ActivatedRoute, private zone: NgZone, private googleMapsService: GoogleMapsService, public shareService: ShareService, public horoService: HoroscopeService) {
   this.info2 = 'Please wait...';
     this.autocompleteItems = [];
@@ -99,6 +102,7 @@ export class PersonalDetailsComponent implements OnInit {
 		});
 	} 
    ngOnInit() {
+
        this.googleMapsService.loadMapScript(environment.apiKey)
       .then(() => {
         this.service = this.googleMapsService.getAutocompleteService();

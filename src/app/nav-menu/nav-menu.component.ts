@@ -1,7 +1,11 @@
+
 import { Component, OnInit, ViewChild, ElementRef, TemplateRef } from '@angular/core';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 //import { UserAvatarComponent } from '../user-avatar/user-avatar.component';
 //import { ModalComponent } from '../modal/modal.component';
+=======
+import { Component, OnInit } from '@angular/core';
+>>>>>>> 03d5b8ae052c72bbedc83ed99f878b310b5156af
 //import { Router, ActivatedRoute } from '@angular/router';
 //import { HttpClient } from '@angular/common/http';
 import { HoroscopeService } from '../horoscope.service';
@@ -14,9 +18,12 @@ import * as moment from 'moment';
   styleUrls: ['./nav-menu.component.scss']
 })
 export class NavMenuComponent implements OnInit {
+
   @ViewChild('dropdownMenu') dropdownMenu: ElementRef;
      srise: string;
 	 sset: string;
+=======
+>>>>>>> 03d5b8ae052c72bbedc83ed99f878b310b5156af
 	 nam = '';
 	pic = '';
 	vusr: boolean = false;
@@ -47,8 +54,12 @@ export class NavMenuComponent implements OnInit {
 	sublords_v: any;
   opacity = 0;
 	intervalID = 0;
+
 	user: any;
 	constructor(private horoService: HoroscopeService, private shareService: ShareService, private modalService: NgbModal) {
+=======
+	constructor(private horoService: HoroscopeService, private shareService: ShareService) {
+>>>>>>> 03d5b8ae052c72bbedc83ed99f878b310b5156af
 		this.showAS = false;
 		this.showLB = true;
 		this.showSU = false;
@@ -135,12 +146,15 @@ export class NavMenuComponent implements OnInit {
 	ngOnInit() {
 		this.shareService.vhevt
 			.subscribe(res => {
+
 			    console.log('vhevt', res);
 				if(res) { this.user = res; }
 			});
 		this.shareService.gevt
 			.subscribe(res => {
 			    console.log('gevt', res);
+=======
+>>>>>>> 03d5b8ae052c72bbedc83ed99f878b310b5156af
 				if (res.split('|')[0] == 'authorized') {
 					this.showLB = false;
 					this.showUP = true;
@@ -162,6 +176,7 @@ export class NavMenuComponent implements OnInit {
         }
 			});
 	}
+
 
 	toggleDropdown() {
 		this.dropdownMenu.nativeElement.classList.toggle('show');
@@ -277,6 +292,7 @@ export class NavMenuComponent implements OnInit {
 		console.log('sunset', this.sunset);
 		var startTime = moment(this.sunrise + ':00 am', "HH:mm:ss a");
 		var endTime = moment(this.sunset + ':00 pm', "HH:mm:ss a");
+
 		this.srise = startTime.format('h:mm a');
 		this.sset = endTime.format('h:mm a');
 		var duration = moment.duration(endTime.diff(startTime));
@@ -313,6 +329,7 @@ export class NavMenuComponent implements OnInit {
 		var erhu = moment(srhu).add(ethmin, 'm');
 		var sym = moment(startTime).add((ywv - 1) * ethmin, 'm');
 		var eym = moment(sym).add(ethmin, 'm');
+
 		this.rahukal = srhu.format('h:mm a') + ' To ' + erhu.format('h:mm a');
 		this.yama = sym.format('h:mm a') + ' To ' + eym.format('h:mm a');
 		this.abhjit = abhs.format('h:mm a') + ' To ' + abhe.format('h:mm a');
@@ -321,6 +338,7 @@ export class NavMenuComponent implements OnInit {
 	}
 	vhoevt(evt, name) {
 		evt.stopPropagation();
+
 		this.shareService.setGEVT(name);
 	}
 	

@@ -1,21 +1,37 @@
+<<<<<<< HEAD
 import { Component, Directive, ViewChild, ContentChild, TemplateRef, ElementRef, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../environments/environment';
+=======
+import { Component, ViewChild, TemplateRef, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SocialAuthService, SocialUser } from "angularx-social-login";
+import { FacebookLoginProvider, GoogleLoginProvider} from "angularx-social-login";
+//import { PubNubAngular } from 'pubnub-angular2';
+>>>>>>> 03d5b8ae052c72bbedc83ed99f878b310b5156af
 import { HoroscopeService } from './horoscope.service';
 import { ShareService } from './share.service';
 import { Plan } from './plan';
 import { CallService } from './call.service';
+<<<<<<< HEAD
 declare const FB: any;
 declare const gapi: any;
 declare var Razorpay: any;
 const timer = ms => new Promise(res => setTimeout(res, ms));
+=======
+//import { Astrologer } from './astrologer';
+declare const FB: any;
+declare const gapi: any;
+declare var Razorpay: any;
+
+>>>>>>> 03d5b8ae052c72bbedc83ed99f878b310b5156af
 @Component({
   selector: 'my-app',
 	templateUrl: './app.component.html'
 
 })
-
 export class AppComponent implements OnInit {
 	auth2: any;
 	@ViewChild('loginMdl', {static: true }) loginMdl: TemplateRef<any>;
@@ -283,6 +299,7 @@ export class AppComponent implements OnInit {
 	  this.router.navigate(['/add-money'], {state: 'Astrologers' as any});
 	});	
   }
+
   vstory(s) {
     this.router.navigate(['/Article/' + s.title.replaceAll(' ', '-')], { state: s });
     window.scrollTo(0, 0);

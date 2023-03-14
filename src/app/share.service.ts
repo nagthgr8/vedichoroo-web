@@ -12,6 +12,7 @@ export class ShareService {
 	langc = this.dsLang.asObservable();
     private dsRep = new BehaviorSubject({ uuid: '', qta: 0 });
 	frep = this.dsRep.asObservable();
+
 	private dsVevts = new BehaviorSubject(null);
 	vhevt = this.dsVevts.asObservable();
 	private dsGevts = new BehaviorSubject('');
@@ -33,6 +34,7 @@ export class ShareService {
 	moonSign: string;
 	birthStar: string;
 	oVim :VimDasha[] = [];
+
 	lang: string = 'en';
 	rahu: boolean;
 	rahus: boolean;
@@ -41,6 +43,7 @@ export class ShareService {
 	rahut3: boolean;
 	sunrise: boolean;
 	sunset: boolean;
+
 	yogad: boolean = false;
 	prasnas: number;
 	prasdt: string;
@@ -55,6 +58,7 @@ export class ShareService {
 	reps: string;
 	binf: any;
 	usr: string = '';
+
 	peerid: string = '';
 	bAST: boolean = false;
 	uid: string = '';
@@ -233,6 +237,7 @@ export class ShareService {
 	setVEVT(evt) {
 		this.dsVevts.next(evt);
 	}
+
 	setGEVT(evt) {
 		this.dsGevts.next(evt);
 	}
@@ -320,6 +325,7 @@ export class ShareService {
 		return this.oVim;
 	}
 	getLANG() {
+
 		return this.lang;
 	}
 	getRAHU() {
@@ -355,6 +361,7 @@ export class ShareService {
 	getPRASNAS() {
 	   return this.prasnas;
 	}
+
 	getCCODE() {
 		return this.ccode;
 	}
@@ -370,6 +377,7 @@ export class ShareService {
 	getREWARD() {
 		return this.rew;
 	}
+
 	getCHTYP() {
 		return this.chtyp;
 	}
@@ -824,6 +832,7 @@ export class ShareService {
 				}
 				break;
 			default:
+
 				break;
 		}
 		return trn;
