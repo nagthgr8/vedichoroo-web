@@ -51,19 +51,10 @@
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/wowjs/css/libs/animate.css",
-              "node_modules/font-awesome/css/font-awesome.css",
-              "node_modules/jquery-comments/css/jquery-comments.css",
               "src/assets/css/styles.scss"
             ],
             "scripts": [
-				"node_modules/zone.js/dist/zone.js",
-				"node_modules/systemjs/dist/system.min.js",
-				"node_modules/jquery/dist/jquery.min.js",
-              "node_modules/jquery-comments/js/jquery-comments.js",
-              "node_modules/@popperjs/core/dist/umd/popper.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js",
-              "node_modules/wowjs/dist/wow.js"
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
             ],
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json"
@@ -102,6 +93,11 @@
           "defaultConfiguration": "production"
         },
         "serve": {
+		  "options": {
+			  "ssl": true,
+			  "sslKey": "private.key",
+			  "sslCert": "server.pem"
+			},
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
@@ -138,17 +134,11 @@
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/wowjs/css/libs/animate.css",
               "node_modules/font-awesome/css/font-awesome.css",
-              "node_modules/jquery-comments/css/jquery-comments.css",
               "src/assets/css/styles.scss"
             ],
             "scripts": [
-              "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/jquery-comments/js/jquery-comments.js",
-              "node_modules/popper.js/dist/umd/popper.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js",
-              "node_modules/wowjs/dist/wow.js"
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
             ]
           }
         }

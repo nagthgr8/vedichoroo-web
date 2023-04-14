@@ -9,6 +9,7 @@ export interface Astrologer {
   smsg: string;
   status: boolean;
   cfee: string;
+  ccy: string;
   str1: string;
   str2: string;
   str3: string;
@@ -18,5 +19,6 @@ export interface Astrologer {
   rating: number;
   tot_ratings: number;
   lng: string;
+  eml: string;
 }
 

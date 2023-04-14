@@ -5,7 +5,8 @@
 	"enableIvy": false,
 	"outDir": "./out-tsc/spec",
     "types": [
-      "jasmine"
+      "jasmine",
+      "@angular/localize"
     ]
   },
   "files": [

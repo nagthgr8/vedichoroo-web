@@ -7,7 +7,7 @@ declare const google: any;
 })
 export class GoogleMapsService {
   private mapScriptLoaded = false;
-  private autocompleteService: any;
+ // private autocompleteService: any;
 
   loadMapScript(apiKey: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
@@ -19,7 +19,7 @@ export class GoogleMapsService {
         script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
         script.onload = () => {
           this.mapScriptLoaded = true;
-          this.autocompleteService = new google.maps.places.AutocompleteService();
+         // this.autocompleteService = new google.maps.places.AutocompleteService();
           resolve();
         };
         script.onerror = () => {
@@ -34,11 +34,11 @@ export class GoogleMapsService {
     return this.mapScriptLoaded;
   }
 
-  getAutocompleteService(): any {
-    if (this.isMapScriptLoaded()) {
-      return this.autocompleteService;
-    } else {
-      throw new Error('Google Maps API script has not been loaded yet');
-    }
-  }
+  // getAutocompleteService(): any {
+    // if (this.isMapScriptLoaded()) {
+      // return this.autocompleteService;
+    // } else {
+      // throw new Error('Google Maps API script has not been loaded yet');
+    // }
+  // }
 }

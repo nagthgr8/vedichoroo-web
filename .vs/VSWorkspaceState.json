@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\app",
+    "\\src\\app\\dob",
+    "\\src\\app\\love-compatibility",
+    "\\src\\app\\personal-details",
+    "\\src\\assets",
+    "\\src\\assets\\css"
+  ],
+  "SelectedNode": "\\src\\app\\love-compatibility\\love-compatibility.component.scss",
+  "PreviewInSolutionExplorer": false
+}

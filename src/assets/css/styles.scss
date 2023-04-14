@@ -1,21 +1,30 @@
 /* You can add global styles to this file, and also import other style files */
 $body-bg: #000;
 $body-color: #111;
+$orange: #ff9900; /* original color */
+$orange-darker: darken($orange, 10%); /* darker shade */
+$orange-brighter: lighten($orange, 10%); /* brighter shade */
+$white: #fff;
+$gray-light: #F5F5F5;
+:root {
+--app-theme-bg: #ffbf00;
+}
 /* Provide sufficient contrast against white background */
 body {
-  font-family: roboto;
+  font-family: roboto, "Open Sans", Lato, Montserra;
 }
 
-a {
-  color: #0366d6;
+h1 {
+  font-size: 36px !important;
 }
 
+h2 {
+  font-size: 24px !important;
+}
 code {
   color: #e01a76;
 }
-.text-box h2, p {
-  color: #fff;
-}
+
 .heading-box h2 {
   width: 100%;
   color: red;
@@ -37,208 +46,29 @@ code {
   color: #000;
   transform: translateY(-10%);
 }
-.btn-primary, .btn-login, .btn-register {
-  color: #fff;
-  background-color: #d35400;
-  border-color: #d35400;
-}
+
 .nav-item {
   cursor: pointer;
 }
-
-
-  .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary,
-  .btn-login:hover, .btn-login:focus, .btn-login:active, .btn-login.active,
-  .btn-register:hover, .btn-register:focus, .btn-register:active, .btn-register.active {
-    color: #fff;
-    background-color: #ff6a00;
-    border-color: #ff6a00;
-  }
-.badge-primary {
-  color: #fff;
-  background-color: #ff6a00;
-  border-color: #ff6a00;
+.bd, .bd * {
+  margin: 0 !important;
+  padding: 0 !important;
 }
-container.vhoro {
-  border-color: #ff6a00;
-  border: thick;
-  padding-bottom:20px;
-}
-.places {
-cursor: pointer;
-border-bottom:medium;
-}
-.lnk {
-  cursor: pointer;
-}
-.info {
-  font-weight: bold;
-  justify-content:center;
-}
-.info2 {
-  font-size: 0.9rem;
-  font-weight: bold;
-}
-.vnav {
-  color: #fff;
-}
-.panch {
-  font-size: 0.9rem;
-  font-weight: bold;
-}
-.lbl {
-  color: #d35400;
-}
-  .lml {
-    color: #245704;
-  }
-  .lal {
-    color: #0026ff;
-  }
-  .lsl {
-    color: #ff0000;
-  }
-div.bd .maintitle {
-  text-align: center;
-  font-weight: bold;
-  border: 1px solid #d35400;
-}
-div.bd {
-  font-weight: bold;
-  border: 1px solid #d35400;
-}
-  div.bd .col {
-    padding: 5px;
-    border: 1px solid #ffd9a3;
-  }
-div.bd .lbl {
-  color: #d35400;
-  background-color: #ffd9a3;
-  padding: 5px;
-  border: 1px solid #ffd9a3;
-  font-weight: bold;
+.bd-row {
+	border: 1px solid var(--bs-border-color-translucent);
 }
 
-div.maintitle {
-  font-weight: bold;
-  background-color: #ffd9a3;
-  border: 1px solid #d35400;
-}
-div.maintitle .col {
-  text-align: center;
-  color: #d35400;
-  padding: 5px;
-  border: 1px solid #ffd9a3;
-}
-
-div.lines .col {
-  border: 1px solid #ffd9a3;
-  padding: 5px;
-  text-align: center;
-  display: border-box;
-}
-
-div.title {
-  font-weight: bold;
-  background-color: #ffd9a3;
-  border: 1px solid #d35400;
-
-}
-div.vim {
-  border: 1px solid #ffd9a3;
-  padding: 5px;
-  display: border-box;
-}
-div.subtitle {
-  font-weight: bold;
-  font-size: 1.45rem;
-}
-
-div.note div {
-  font-weight: bold;
-  background-color: #ffd9a3;
-  padding: 5px;
-  color: #222334;
-  text-align: left;
-  font-size: 15px;
-}
-
-.adv {
-  padding: 5px;
-  position: absolute;
-  top: 2%;
-  width: 100%;
-  font-weight: bold;
-  font-size: 15px;
-  text-align: left;
-  margin-left: 25px;
-}
-
-.more {
-  color: blue;
-  padding: 5px;
+.bd-row .lbl {
+  background-color: $gray-light;
   font-weight: bold;
 }
-
-.note {
-  background-color: #ffffb2;
-  font-weight: bold;
-  padding: 5px;
+.bd-row .title {
+  font-size: 14px !important;
+  foint-weight: bold !important;
   text-align: center;
 }
 
-.zoom {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-}
 
-.mdas {
-  color: #424ef4;
-}
-
-.mdasc {
-  color: #424ef4;
-  font-weight: bold;
-}
-
-.adas {
-  color: #b70e4d;
-}
-
-.adasc {
-  font-weight: bold;
-  color: #b70e4d;
-}
-
-.pdas {
-  color: #B833FF;
-}
-
-.pdasc {
-  font-weight: bold;
-  color: #B833FF;
-}
-
-.msg {
-  text-align: center;
-  font-weight: bold;
-  font-size: 1.35rem;
-}
-.ftitle {
-  font-weight: bold;
-  font-size: 1.35rem;
-  color: #d35400;
-}
-.fsub {
-  font-weight: bold;
-  font-size: 1.1rem;
-}
-.fuse {
-  color: #b70e4d;
-  font-size: 0.8rem;
-  font-weight: bold;
-}
 .login .modal-dialog {
   width: 350px;
 }
@@ -776,11 +606,7 @@ a, a:link, a:visited {
   font-size: 11px;
   text-transform: uppercase;
 }
-*, *:before, *:after {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
+
 .post .post-meta li i {
   margin-right: 5px;
 }
@@ -1067,6 +893,33 @@ post-footer {
 .text-box .desc {
 color: #ffffff;
 }
+
+.modal-header {
+  background-color: $orange;
+  border-color: $orange-darker;
+  color: $white;
+  justify-content: flex-start !important;
+
+  &:hover {
+    background-color: $orange-brighter;
+    border-color: $orange-brighter;
+    color: $white;
+  }
+}
+
+.btn-success {
+  background-color: $orange;
+  border-color: $orange-darker;
+  color: $white;
+}
+
+.btn-success:hover {
+  background-color: $orange-brighter;
+  border-color: $orange;
+  color: $white;
+}
+
+
 @-webkit-keyframes spin {
   0% {
     -webkit-transform: rotate(0deg);

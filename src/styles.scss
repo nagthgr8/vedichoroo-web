@@ -1,3 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 $body-bg: #000;
 $body-color: #111;
+:host ::ng-deep .btn-success {
+  background-color: #ff6600;
+  border-color: #ff6600;
+  color: #fff;
+}
+
+:host ::ng-deep .btn-success:hover {
+  background-color: #ff8000;
+  border-color: #ff8000;
+  color: #fff;
+}

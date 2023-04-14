@@ -53,20 +53,27 @@ html {
   color: #ff6a00
 }
 
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  right: 0; /* Position the dropdown menu to the right */
-  display: none;
-  min-width: 200px;
-  padding: 10px;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  z-index: 999;
+.dropdown-menu-right {
+    right: 0;
+    left: auto;
 }
-.navbar-item .dropdown-toggle {
-  display: flex;
-  align-items: center;
+.vhonav button {
+  box-shadow: none !important;
+}
+.navbar-dropdown-item::after {
+  display: none;
+}
+.dropdown-toggle:before, .dropdown-toggle:after {
+  display: none;
+}
+.panch {
+  background-color: var(--app-theme-bg);
+}
+.clickable {
+  color: blue;
+  text-decoration: underline;
   cursor: pointer;
-  position: relative;
+}
+.panch {
+  background-color: #ffbf00;
 }

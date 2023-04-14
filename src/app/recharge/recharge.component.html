@@ -1,0 +1,46 @@
+  <ng-template #recMdl>
+  <div class="modal-header">
+  <span class="modal-title">Add Money</span>
+  </div>
+  <div class="modal-body">
+    <div class="content">
+<div class="form-group pt-4 pb-4 d-flex align-items-center">
+  <div class="col col-md-4">
+    <button class="btb btn-success rounded-pill p-3" (click)="addmoney($event, m500)">
+      <span class="font-weight-bold font-size-lg">{{ m500 }} {{ccy}}</span>
+    </button>
+  </div>
+  <div class="col col-md-4">
+    <button class="btb btn-success rounded-pill p-3" (click)="addmoney($event, m1000)">
+      <span class="font-weight-bold font-size-lg">{{ m1000 }} {{ccy}}</span>
+    </button>
+  </div>
+  <div class="col col-md-4">
+    <button class="btb btn-success rounded-pill p-3" (click)="addmoney($event, m1500)">
+      <span class="font-weight-bold font-size-lg">{{ m1500 }} {{ccy}}</span>
+    </button>
+  </div>
+</div>
+
+<div class="form-group pb-4 d-flex align-items-center">
+  <label class="col-sm-6 col-form-label label-small fw-bold fs-5" for="amt">Enter Your Amount</label>
+  <div class="col col-md-4">
+    <div class="input-group">
+      <div class="input-group-text btn-success border-0 fs-5 fw-bold text-white">{{ccy}}</div>
+      <input #amtInput type="text" class="form-control form-control-lg border-0 ps-3 fs-5" id="amt" pattern="[0-9]*" inputmode="numeric" aria-label="Amount" style="background-color: var(--bs-gray-200);">
+    </div>
+  </div>
+</div>
+
+ 	  <div class="row">
+	       <div class="text-center"><strong>{{info}}</strong></div>
+			<button class="btn btn-lg btn-block btn-success" (click)="addmoney($event, amtInput.value)">
+              RECHARGE
+            </button>
+	  </div>
+  </div>
+  </div>
+  <div class="modal-footer">
+  <small class="text-muted">Secured by VEDCICHOROO</small>
+  </div>
+  </ng-template>

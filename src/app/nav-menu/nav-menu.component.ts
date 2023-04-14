@@ -1,17 +1,10 @@
-
 import { Component, OnInit, ViewChild, ElementRef, TemplateRef } from '@angular/core';
+import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
-//import { UserAvatarComponent } from '../user-avatar/user-avatar.component';
-//import { ModalComponent } from '../modal/modal.component';
-=======
-import { Component, OnInit } from '@angular/core';
->>>>>>> 03d5b8ae052c72bbedc83ed99f878b310b5156af
-//import { Router, ActivatedRoute } from '@angular/router';
-//import { HttpClient } from '@angular/common/http';
 import { HoroscopeService } from '../horoscope.service';
 import { ShareService } from '../share.service';
+import { Location } from '../location';
 import * as moment from 'moment';
-//import { EventEmitter } from 'events';
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
@@ -20,10 +13,9 @@ import * as moment from 'moment';
 export class NavMenuComponent implements OnInit {
 
   @ViewChild('dropdownMenu') dropdownMenu: ElementRef;
+  place: string = '';
      srise: string;
 	 sset: string;
-=======
->>>>>>> 03d5b8ae052c72bbedc83ed99f878b310b5156af
 	 nam = '';
 	pic = '';
 	vusr: boolean = false;
@@ -32,6 +24,7 @@ export class NavMenuComponent implements OnInit {
 	 showLB: boolean = false;
   showUP: boolean = false;
   showMNU: boolean = true;
+  showPanch: boolean = true;
 	isExpanded = false;
 	today: any = '';
 	sunrise: string = '';
@@ -54,138 +47,167 @@ export class NavMenuComponent implements OnInit {
 	sublords_v: any;
   opacity = 0;
 	intervalID = 0;
-
-	user: any;
+	bal: number = 0;
+    csym: string = '₹'; 
+  user: any;
+  cdt: any;
+ 
 	constructor(private horoService: HoroscopeService, private shareService: ShareService, private modalService: NgbModal) {
-=======
-	constructor(private horoService: HoroscopeService, private shareService: ShareService) {
->>>>>>> 03d5b8ae052c72bbedc83ed99f878b310b5156af
 		this.showAS = false;
 		this.showLB = true;
 		this.showSU = false;
 		this.showUP = false;
-		this.today = Date.now();
+    this.today = Date.now();
+    this.cdt = new Date();
+    //this.cdt = { year: cd.getFullYear(), month: cd.getMonth()+1, day: cd.getDate() }
 		if (this.shareService.getLANG() == null) this.shareService.setLANG('en');
 		this.horoService.getJson('assets/data/sublords.json')
 			.subscribe(rs => {
 				this.sublords_v = rs;
-		this.horoService.getIP()
-			.subscribe(res => {
-				this.shareService.setCLAT(res['latitude']);
-				this.shareService.setCLNG(res['longitude']);
-				this.shareService.setCCODE(res['country_code']);
-				this.shareService.setCTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
-				let cd = new Date();
-				this.horoService.getProMoonPhase(res['latitude'], res['longitude'], cd.getFullYear() + '-' + (cd.getMonth() + 1).toString() + '-' + cd.getDate() + 'T' + cd.getHours() + ':' + cd.getMinutes() + ':' + cd.getSeconds() + 'Z', Intl.DateTimeFormat().resolvedOptions().timeZone, 4)
-					.subscribe(res3 => {
-						this.sunrise = res3['sunrise'];
-						this.sunset = res3['sunset'];
-						this.nak = this.shareService.translate_func(res3['birthStar']);
-						this.tithi = this.shareService.translate_func(res3['tithi']);
-						this.yog = this.shareService.translate_func(res3['yoga']);
-						this.karn = this.shareService.translate_func(res3['karana']);
-						this.calcPanch(cd, res['latitude'], res['longitude'], (cd.getTimezoneOffset() / 60));
-						var signs = ['ar|0', 'ta|30', 'ge|60', 'cn|90', 'le|120', 'vi|150', 'li|180', 'sc|210', 'sa|240', 'cp|270', 'aq|300', 'pi|330'];
-						for (var sn = 0; sn < signs.length; sn++) {
-							if (res3['planetPos'].hasOwnProperty(signs[sn].split('|')[0])) {
-								var sgn = signs[sn].split('|')[0];
-								for (var p = 0; p < res3['planetPos'][sgn].split('|').length; p++) {
-									if (res3['planetPos'][sgn].split('|')[p].split(' ')[1] == 'AC') {
-										let pp: string = res3['planetPos'][sgn].split('|')[p].split(' ')[0];
-										this.lagna = (Number(signs[sn].split('|')[1]) + Number(pp.split('.')[0])).toString() + 'º' + pp.split('.')[1] + "'" + pp.split('.')[2] + '"';
-										break;
-									}
-								}
+			this.shareService.getItem('vho:loc').then((loc: Location) => {
+        console.log('loc', loc);
+        this.place = loc.place;
+				this.getMoonPhase(loc.latitude, loc.longitude);
+			})
+			.catch(e => {
+				this.horoService.getIP()
+				.subscribe(res => {
+				     console.log('getIP', res);
+				     let loc: Location = {
+					         latitude: res['latitude'],
+							 longitude: res['longitude'],
+               country_code: res['country_code_iso3'],
+               place: res['city'] + ',' + res['region'] + ',' + res['country_name']
+          };
+          this.place = loc.place;
+         // this.shareService.setItem('place', this.place);
+					 this.shareService.setItem('vho:loc', JSON.stringify(loc));
+				     this.getMoonPhase(res['latitude'], res['longitude']);
+					 this.horoService.getJson('assets/data/currencies.json')
+					 .subscribe(curs => {
+					    console.log('Response Data: ', curs);
+					    this.shareService.getItem('vho:loc').then((loc: Location) => {
+						   console.log('loc', loc);
+						   //const loc = JSON.parse(locs);
+						   console.log('curs', curs)
+							if(curs.hasOwnProperty(loc.country_code)) {
+							   
+							   this.shareService.setItem('vho:ccy', curs[loc.country_code]); 
 							}
-    				}
-						this.lag_d = Number(this.lagna.substring(0, this.lagna.indexOf('º')));
-						console.log(this.lag_d);
-						this.lag_m = Number(this.lagna.substring(this.lagna.indexOf('º') + 1, this.lagna.indexOf("'")));
-						console.log(this.lag_m);
-						this.lag_s = Math.floor(Number(this.lagna.substring(this.lagna.indexOf("'") + 1, this.lagna.indexOf('"'))));
-						console.log(this.lag_s);
-						let sssl: string = this.calcStar(this.dmsToDec(this.lag_d, this.lag_m, this.lag_s));
-						console.log(sssl);
-						this.lagml = sssl.split('|')[0];
-						this.lagal = sssl.split('|')[1];
-						this.lagsl = sssl.split('|')[2];
-						var intv = setInterval(() => {
-							this.ticks++;
-							if (this.lag_s > 59) {
-								this.lag_s = this.lag_s - 59;
-								this.lag_m++;
-								if (this.lag_m > 59) {
-									this.lag_m = 0;
-									this.lag_d++;
-								}
-							}
-							let lag_r: string = '';
-							if (this.lag_d < 29) lag_r = 'Aries';
-							else if (this.lag_d < 59) lag_r = 'Taurus';
-							else if (this.lag_d < 89) lag_r = 'Gemini';
-							else if (this.lag_d < 119) lag_r = 'Cancer';
-							else if (this.lag_d < 149) lag_r = 'Leo';
-							else if (this.lag_d < 179) lag_r = 'Virgo';
-							else if (this.lag_d < 209) lag_r = 'Libra';
-							else if (this.lag_d < 239) lag_r = 'Scorpio';
-							else if (this.lag_d < 269) lag_r = 'Sagittarius';
-							else if (this.lag_d < 299) lag_r = 'Capricorn';
-							else if (this.lag_d < 329) lag_r = 'Aquarius';
-							else lag_r = 'Pisces';
-							this.lagna = lag_r + ' ' + this.lag_d.toString() + 'º' + this.lag_m.toString() + "'" + this.lag_s.toString() + '"';
-							let sl: string = this.calcStar(this.dmsToDec(this.lag_d, this.lag_m, this.lag_s));
-							this.lagml = sl.split('|')[0];
-							this.lagal = sl.split('|')[1];
-							this.lagsl = sl.split('|')[2];
-							this.lag_s += 15;
-						}, 1000);
-					});
+						});
+					 });
+					 
+					//this.shareService.setCLAT(lo);
+					//this.shareService.setCLNG(res['longitude']);
+					 // this.shareService.setCCODE(res['country_code']);
+					//this.shareService.setCTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+				});
 			});
 		});
 	}
-	ngOnInit() {
-		this.shareService.vhevt
-			.subscribe(res => {
-
-			    console.log('vhevt', res);
-				if(res) { this.user = res; }
+	getMoonPhase(lat, lng) {
+	    console.log('getMoonPhase', lat);
+		console.log('getMoonPhase', lng);
+		let cd = new Date();
+		this.horoService.getProMoonPhase(lat, lng, cd.getFullYear() + '-' + (cd.getMonth() + 1).toString() + '-' + cd.getDate() + 'T' + cd.getHours() + ':' + cd.getMinutes() + ':' + cd.getSeconds() + 'Z', Intl.DateTimeFormat().resolvedOptions().timeZone, 4)
+		.subscribe(res3 => {
+			this.sunrise = res3['sunrise'];
+			this.sunset = res3['sunset'];
+			this.nak = this.shareService.translate_func(res3['birthStar']);
+			this.tithi = this.shareService.translate_func(res3['tithi']);
+			this.yog = this.shareService.translate_func(res3['yoga']);
+			this.karn = this.shareService.translate_func(res3['karana']);
+			this.calcPanch(cd, lat, lng, (cd.getTimezoneOffset() / 60));
+			var signs = ['ar|0', 'ta|30', 'ge|60', 'cn|90', 'le|120', 'vi|150', 'li|180', 'sc|210', 'sa|240', 'cp|270', 'aq|300', 'pi|330'];
+			for (var sn = 0; sn < signs.length; sn++) {
+				if (res3['planetPos'].hasOwnProperty(signs[sn].split('|')[0])) {
+					var sgn = signs[sn].split('|')[0];
+					for (var p = 0; p < res3['planetPos'][sgn].split('|').length; p++) {
+						if (res3['planetPos'][sgn].split('|')[p].split(' ')[1] == 'AC') {
+							let pp: string = res3['planetPos'][sgn].split('|')[p].split(' ')[0];
+							this.lagna = (Number(signs[sn].split('|')[1]) + Number(pp.split('.')[0])).toString() + 'º' + pp.split('.')[1] + "'" + pp.split('.')[2] + '"';
+							break;
+						}
+					}
+				}
+		}
+			this.lag_d = Number(this.lagna.substring(0, this.lagna.indexOf('º')));
+			console.log(this.lag_d);
+			this.lag_m = Number(this.lagna.substring(this.lagna.indexOf('º') + 1, this.lagna.indexOf("'")));
+			console.log(this.lag_m);
+			this.lag_s = Math.floor(Number(this.lagna.substring(this.lagna.indexOf("'") + 1, this.lagna.indexOf('"'))));
+			console.log(this.lag_s);
+			let sssl: string = this.calcStar(this.dmsToDec(this.lag_d, this.lag_m, this.lag_s));
+			console.log(sssl);
+			this.lagml = sssl.split('|')[0];
+			this.lagal = sssl.split('|')[1];
+			this.lagsl = sssl.split('|')[2];
+			var intv = setInterval(() => {
+				this.ticks++;
+				if (this.lag_s > 59) {
+					this.lag_s = this.lag_s - 59;
+					this.lag_m++;
+					if (this.lag_m > 59) {
+						this.lag_m = 0;
+						this.lag_d++;
+					}
+				}
+				let lag_r: string = '';
+				if (this.lag_d < 29) lag_r = 'Aries';
+				else if (this.lag_d < 59) lag_r = 'Taurus';
+				else if (this.lag_d < 89) lag_r = 'Gemini';
+				else if (this.lag_d < 119) lag_r = 'Cancer';
+				else if (this.lag_d < 149) lag_r = 'Leo';
+				else if (this.lag_d < 179) lag_r = 'Virgo';
+				else if (this.lag_d < 209) lag_r = 'Libra';
+				else if (this.lag_d < 239) lag_r = 'Scorpio';
+				else if (this.lag_d < 269) lag_r = 'Sagittarius';
+				else if (this.lag_d < 299) lag_r = 'Capricorn';
+				else if (this.lag_d < 329) lag_r = 'Aquarius';
+				else lag_r = 'Pisces';
+				this.lagna = lag_r + ' ' + this.lag_d.toString() + 'º' + this.lag_m.toString() + "'" + this.lag_s.toString() + '"';
+				let sl: string = this.calcStar(this.dmsToDec(this.lag_d, this.lag_m, this.lag_s));
+				this.lagml = sl.split('|')[0];
+				this.lagal = sl.split('|')[1];
+				this.lagsl = sl.split('|')[2];
+				this.lag_s += 15;
+			}, 1000);
+		});
+	}
+  ngOnInit() {
+     
+;
+		this.shareService.signin	
+			.subscribe(usr => {
+			    console.log('signin', usr);
+				if(usr) { this.user = usr; }
 			});
 		this.shareService.gevt
 			.subscribe(res => {
 			    console.log('gevt', res);
-=======
->>>>>>> 03d5b8ae052c72bbedc83ed99f878b310b5156af
-				if (res.split('|')[0] == 'authorized') {
-					this.showLB = false;
-					this.showUP = true;
-					//const usr = JSON.parse(localStorage.getItem('user'));
-					//if (usr) {
-					this.nam = res.split('|')[1];
-					this.pic = res.split('|')[2];
-					if (res.split('|')[3] == 'vhoroo') this.vusr = true;
-					//}
-				} else if (res == 'unauthorized') {
-					this.showLB = true;
-					this.showUP = false;
+				if(res == 'get-bal') {
+				   this.horoService.getBalance(this.user.email).subscribe((bal) => {
+				     console.log('bal', bal);
+				     this.user.balance = bal['balance'];
+				   });
+				} else if (res == 'logout') {
+					this.user = null;
 				}else if (res == 'activate') {
 					this.showAS = true;
 				} else if (res == 'subscriber') {
 					this.showSU = true;
-        } else if (res == 'hidemp') {
-          this.showMNU = false;
-        }
+				} else if (res == 'hidemp') {
+				  this.showMNU = false;
+				}
 			});
-	}
 
+	}
+  
 
 	toggleDropdown() {
 		this.dropdownMenu.nativeElement.classList.toggle('show');
    }
 
-	signOut() {
-	  //this.shareService.setVEVT(null);
-	  //this.user = null;
-	}
   collapse() {
     this.isExpanded = false;
   }
@@ -338,9 +360,14 @@ export class NavMenuComponent implements OnInit {
 	}
 	vhoevt(evt, name) {
 		evt.stopPropagation();
-
+    console.log('evt', name);
+    if (name == 'home') this.showPanch = true;
 		this.shareService.setGEVT(name);
 	}
-	
+  hidePanch() {
+    console.log('hidePanch');
+    this.showPanch = false;
+  }
 	
 }
+

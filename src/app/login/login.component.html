@@ -1,0 +1,107 @@
+<ng-template #loginMdl let-modal>
+  <div class="modal-header">
+    <strong>Login To VEDICHOROO</strong>
+  </div>
+  <div *ngIf="!showReg" class="login modal-body">
+    <div class="box">
+      <div class="content">
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin($event)">
+		    <input type="text" autofocus="autofocus" style="display:none" />
+			<div class="row mb-3 mt-4">
+            <div class="col-sm-2">
+              <label for="email" class="form-label"><strong>Email:</strong></label>
+            </div>
+            <div class="col-sm-10">
+              <input type="email" class="form-control" id="email" formControlName="email">
+				<div *ngIf="loginForm.get('email').invalid && (loginForm.get('email').dirty || loginForm.get('email').touched)">
+				  <div *ngIf="loginForm.get('email').touched && loginForm.get('email').errors['required']">Email is required</div>
+				  <div *ngIf="loginForm.get('email').touched && loginForm.get('email').errors['email']">Invalid email format</div>
+				</div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-sm-2">
+              <label for="password" class="form-label"><strong>Password:</strong></label>
+            </div>
+            <div class="col-sm-10">
+			<input type="password" class="form-control" id="password" formControlName="password">
+			<div *ngIf="loginForm.get('password').invalid && (loginForm.get('password').dirty || loginForm.get('password').touched)">
+			  <div *ngIf="loginForm.get('password').touched && loginForm.get('password').errors['required']">Password is required</div>
+			</div>
+		   </div>
+          </div>
+          <button type="submit" class="btn btn-lg btn-block btn-success w-100 mt-2 mb-4">Login</button>
+        </form>
+        <div class="division">
+          <div class="line l"></div>
+          <span>or</span>
+          <div class="line r"></div>
+          <div class="social pt-4">
+            <div id="google-signin-button"></div>
+            <button class="btn btn-lg btn-block btn-light border border-2 border-secondary w-100" (click)="onLoginGPLUS($event)">
+              <i class="fa fa-google me-2"></i> Login With Google
+            </button>
+          </div>
+          <div class="social mt-4">
+            <button type="button" id="facebook_login" class="btn btn-lg btn-block btn-light border border-2 border-secondary w-100" (click)="onLoginFB($event)">
+              <i class="fa fa-facebook-f me-2"></i> Login With Facebook
+            </button>
+          </div>
+        </div>
+        <div class="error"></div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="showReg" class="register modal-body">
+  <form [formGroup]="registerForm" (ngSubmit)="onRegister($event)">
+<div class="form-group row">
+  <label for="name" class="col-sm-2 col-form-label">Name</label>
+  <div class="col-sm-10">
+    <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name">
+    <div *ngIf="registerForm.get('name').invalid && (registerForm.get('name').dirty || registerForm.get('name').touched)" class="invalid-feedback">
+      <div *ngIf="registerForm.get('name').touched && registerForm.get('name').errors['required']">Name is required</div>
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <label for="email" class="col-sm-2 col-form-label">Email</label>
+  <div class="col-sm-10">
+    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email">
+    <div *ngIf="registerForm.get('email').invalid && (registerForm.get('email').dirty || registerForm.get('email').touched)" class="invalid-feedback">
+      <div *ngIf="registerForm.get('email').errors['required']">Email is required</div>
+      <div *ngIf="registerForm.get('email').touched && registerForm.get('email').errors['email']">Invalid email format</div>
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <label for="password" class="col-sm-2 col-form-label">Password</label>
+  <div class="col-sm-10">
+    <input type="password" class="form-control" id="password" formControlName="password">
+    <div *ngIf="registerForm.get('password').invalid && (registerForm.get('password').dirty || registerForm.get('password').touched)">
+      <div *ngIf="registerForm.get('password').touched &&  registerForm.get('password').errors['required']">Password is required</div>
+      <div *ngIf="registerForm.get('password').errors['pattern']">Password must have at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character</div>
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <label for="repassword" class="col-sm-2 col-form-label">Confirm Password</label>
+  <div class="col-sm-10">
+    <input type="password" class="form-control" id="rePassword" formControlName="rePassword">
+    <div *ngIf="registerForm.get('rePassword').invalid && (registerForm.get('rePassword').dirty || registerForm.get('rePassword').touched)">
+      <div *ngIf="registerForm.get('rePassword').touched && registerForm.get('rePassword').errors['required']">Please re-enter your password</div>
+      <div *ngIf="registerForm.get('rePassword').errors['passwordMismatch']">Passwords do not match</div>
+    </div>
+  </div>
+</div>
+<div class="form-group row">  <div class="col-sm-12">
+    <button type="submit" class="btn btn-lg btn-block btn-success w-100">Submit</button>
+  </div>
+</div>
+</form>
+</div>
+  <div class="modal-footer">
+    <small class="text-muted">{{regMsg }}<button class="btn-light border-0 text-muted" (click)="toggle($event)" autofocus="autofocus">{{regBtn}}</button>
+</small>
+  </div>
+
+</ng-template>

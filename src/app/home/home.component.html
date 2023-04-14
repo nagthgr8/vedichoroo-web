@@ -3,7 +3,7 @@
     <section id="main-area" style="transform: none;">
       <div class="container" style="transform: none;">
         <div class="row" style="transform: none;">
-		<h2 class="astro-head">Talk To Our Online Astrologer(s)</h2>
+		<h4 class="pt-2 pb-2">Talk To Our Online Astrologer(s)</h4>
           <div class="col-lg-4 col-md-12 mb-4 mb-lg-0" *ngFor="let ast of oAst">
 		   <div class="thumb-box thumb-pad">
 		   <div class="thumb-info">
@@ -28,67 +28,30 @@
 				<div class="astro-name">{{ast.name}}</div>
 				<span class="astro-tag">{{ast.tagline}} </span>
 				<span class="astro-lang">{{ast.lng}}</span>
-				<span class="astro-fee">&#8377; {{ast.cfee}}</span>
+				<span class="astro-fee">{{ast.ccy}} {{ast.cfee}}</span>
 		   </div>
 		   
 		   </div>
 		    <div class="astro-conn">
-		   <div *ngIf="ast.status"><button type="button" class="btn btn-outline-success">Call Now</button></div>
+		   <div *ngIf="ast.status"><button type="button" class="btn btn-outline-success" (click)="callreq($event, ast)">Call Now</button></div>
 		   <span *ngIf="!ast.status" class="text-danger">{{ast.smsg}}</span>
 		   </div>
 		   </div>
 
 		  </div>
-          <aside id="sidebar" class="sidebar col-md-4" style="position: relative; overflow: visible; box-sizing: border-box; min-height: 1px;">
-            <!-- Widget : Social Counter -->
-            <!-- Widget : Recent Posts -->
-            <div class="theiaStickySidebar" style="padding-top: 1px; padding-bottom: 1px; position: static; top: 30px; left: 906px;">
-              <div class="widget LinkList">
-                <div class="widget-title">
-                  <h2>Download The Mobile App</h2>
-				  <a href="https://play.google.com/store/apps/details?id=com.mypubz.eportal&hl=en_IN"><img src="assets/images/get_it_on_play_logo_large.png" alt="VEDIC HOROO Mobile App"/></a>
-                </div>
-                <div class="widget-content social-counter">
-                  <a href="https://www.facebook.com/vedichoroo" class="facebook">
-                    <i class="fa fa-facebook"></i>
-                    <!--<span class="count">1.42k</span>
-                  <span class="label">Fans</span>-->
-                  </a>
-                  <a href="https://twitter.com/126_news" class="twitter">
-                    <i class="fa fa-twitter"></i>
-                    <!--<span class="count">4,13k</span>
-                  <span class="label">Followers</span>-->
-                  </a>
-                </div>
-              </div><div id="2-4:STORIES--2" class="widget HTML">
-                <div id="2-4:STORIES--2">
-                  <div class="widget HTML">
-                    <div class="widget-title">
-                      <h2>Talk to Astrologer from our App</h2>
-                    </div>
-                    <div class="widget-content">
-                      <ul class="recent-posts">
-                        <li class="post" *ngFor="let ast of asts">
-                          <div class="row">
-                            <div class="col col-sm-3">
-                              <a tappable (click)="astro(ast)">
-                                <img class="circle" [src]="ast.avatar" style="opacity: 1;">
-                              </a>
-                            </div>
-                            <div class="col col-sm-9">
-                              <span tappable (click)="astro(ast)">{{ast.tagline}}</span>
-                            </div>
-                          </div><!-- Post Image -->
-                        </li><!-- Post -->
-                      </ul>
-                      <div id="sliderNav" class="slider-nav"></div>
-                    </div>
-                  </div><!-- Widget : Slider Posts -->
-                </div>
-              </div>
-            </div>
-          </aside><!-- Sidebar -->
         </div>
       </div>
     </section>
+			<section>
+				<div class="container">
+					<h4>Astrology <span class="text-muted">predictions for life</span></h4>
+					<p>
+						Vedic Astrology is said to have originated from Rigveda and Yajuveda in the 5th century CE. Many religions believe that heavenly bodies, including the planets, have an influence throughout the life of a human being. Science rejects astrology as there is no constructive evidence for astrology predictions. The predictions of human life drawn through planetary transits & astrology birth charts are seen as Pseudoscience, however, in many Indian universities, Astrology is included as one of the main subjects in the curriculum. Many of the Vedic principles are very complex to understand, intuition power is needed for astrologers while practicing astrology & while making any predictions about the native's birth chart. Analyzing one’s Rashi chart with a complete 360-degree zodiac belt in a mind map is very crucial, the ascendant sign & the signs in which all other planets are transiting at the time of birth are very important for astrologers in making the astrology birth charts & accurate predictions. The angle at which the ascendant or the raising sign with accurate degrees, minutes & seconds is very important for making unique astrology predictions for any individual. The judgment of the birth of any living being is one of the points under debate for many years in the history of Astrology. It is said that the time of birth is to be drawn when the child comes into consciousness & not when the umbilical cord is cut from the mother's womb.
+						Hence the birth chart for which the astrology predictions are to be made needs to be birth time rectified. In Astrology birth time rectification methods are available. One unique pattern we can see in the birth chart is that the Ascendant sign lord will have a direct link with the placement of the Moon at the time of birth which means that Moon’s star lord and the Ascendant sign lord are always the same when birth takes place, and in order to get the accuracy to seconds Varga charts in Vedic Astrology and Cuspal interlinks in KP Astrology are used to perform birth time rectification.
+						Astrologers must note that if making any astrology predictions on the native's birth chart without Birth Time Rectification one should understand that either their predictions would go entirely wrong or with some accuracy or even if their astrology predictions come right, it should be noted that the native’s birth chart is predicted without confirming the exact position of degrees minutes & seconds of ascendant or raising sign when the birth took place. Such a practice is harmful to Astrology which still remains Pseudoscience.
+
+						KP Astrology which uses both Vedic Astrology & Western Astrology principles is said to have proven in making many astrology predictions with date & time quite accurately. It is again very important that the birth timing be rectified or in compliance with the specifications of Birth Time Rectification. KP Astrology is widely in use by many astrologers these days. In KP Astrology every life event is linked with KP Significators which are houses from 1 to 12 drawn in the zodiac at the time of birth
+					</p>
+				</div>
+			</section>
       </div>

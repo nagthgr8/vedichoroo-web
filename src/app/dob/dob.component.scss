@@ -1,0 +1,32 @@
+.modal-body {
+  margin: 10px;
+}
+
+::ng-deep .modal-title {
+  margin-left: 10px;
+  font-weight: bold;
+}
+::ng-deep .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  padding-right:8px;
+}
+
+.form-check-label {
+  line-height: 1.5;
+  margin-left: 5px;
+}
+
+.btn-success {
+  margin-top: 10px;
+}
+.label-small {
+  font-size: 0.9rem;
+  font-weight: bold;
+}

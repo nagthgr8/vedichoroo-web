@@ -1,39 +1,21 @@
 import { BrowserModule } from '@angular/platform-browser';
-<<<<<<< HEAD
 import { NgModule, isDevMode } from '@angular/core';
-=======
-import { NgModule } from '@angular/core';
->>>>>>> 03d5b8ae052c72bbedc83ed99f878b310b5156af
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-<<<<<<< HEAD
 import { AppRoutingModule } from './app-routing.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { library as fontLibrary } from '@fortawesome/fontawesome-svg-core';
+import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons';
 import { NgwWowModule } from 'ngx-wow';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
-=======
-import { GooglePlaceModule } from "ngx-google-places-autocomplete";
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { NgwWowModule } from 'ngx-wow';
-import { SocialLoginModule, SocialAuthServiceConfig } from 'angularx-social-login';
-import {
-	FacebookLoginProvider,
-	GoogleLoginProvider
-} from 'angularx-social-login';
-import { ShareButtonsModule } from 'ngx-sharebuttons/buttons';
-import { ShareIconsModule } from 'ngx-sharebuttons/icons';
-//import { PubNubAngular } from 'pubnub-angular2';
->>>>>>> 03d5b8ae052c72bbedc83ed99f878b310b5156af
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { HomeComponent } from './home/home.component';
 import { HoroscopeComponent } from './horoscope/horoscope.component';
@@ -50,9 +32,19 @@ import { RefundpolicyComponent } from './refundpolicy/refundpolicy.component';
 import { environment } from '../environments/environment';
 import { CallService } from './call.service';
 import { GoogleMapsService } from './google-maps.service';
+import { GoogleMapsAutocompleteService } from './google-maps-autocomplete.service';
 import { UserAvatarComponent } from './user-avatar/user-avatar.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { ModalComponent } from './modal/modal.component';
+import { DobComponent } from './dob/dob.component';
+import { RechargeComponent } from './recharge/recharge.component';
+import { AstroCallComponent } from './astro-call/astro-call.component';
+import { CallDialogComponent } from './call-dialog/call-dialog.component';
+import { LoginComponent } from './login/login.component';
+import { DateTimePickerComponent } from './date-time-picker/date-time-picker.component';
+fontLibrary.add(
+  faCalendar,
+  faClock
+);
 
 @NgModule({
   declarations: [
@@ -72,7 +64,12 @@ import { ModalComponent } from './modal/modal.component';
   TermsandconditionsComponent,
   RefundpolicyComponent,
   UserAvatarComponent,
-  ModalComponent
+  DobComponent,
+  RechargeComponent,
+  AstroCallComponent,
+  CallDialogComponent,
+  LoginComponent,
+  DateTimePickerComponent
   ],
   imports: [
 	  AppRoutingModule,
@@ -80,8 +77,9 @@ import { ModalComponent } from './modal/modal.component';
 	  BrowserAnimationsModule,
 	  NgwWowModule,
 	  NgbModule,
-    HttpClientModule,
 	  FormsModule,
+	  ReactiveFormsModule,
+    HttpClientModule,
 	  TranslateModule.forRoot({
 		  loader: {
 			  provide: TranslateLoader,
@@ -98,7 +96,8 @@ import { ModalComponent } from './modal/modal.component';
 	],
 	providers: [
 		CallService,
-		GoogleMapsService
+		GoogleMapsService,
+		GoogleMapsAutocompleteService
 	],
   bootstrap: [AppComponent]
 })

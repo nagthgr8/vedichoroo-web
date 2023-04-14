@@ -13,7 +13,7 @@ import { MoneyComponent } from './money/money.component';
 import { LoveCompatibilityComponent } from './love-compatibility/love-compatibility.component';
 import { DivchartsComponent } from './divcharts/divcharts.component';
 import { ChartAnalysisComponent } from './chart-analysis/chart-analysis.component';
-
+import { AstroCallComponent } from './astro-call/astro-call.component';
 const routes: Routes = [
 	{ path: 'home',  component: HomeComponent },
 	{ path: 'privacy-policy',  component: PrivacyPolicyComponent },
@@ -29,7 +29,7 @@ const routes: Routes = [
 	{ path: 'love-compatibility',  component: LoveCompatibilityComponent },
 	{ path: 'divcharts',  component: DivchartsComponent },
 	{ path: 'chart-analysis',  component: ChartAnalysisComponent },
-	{path: '', redirectTo: '/home', pathMatch: 'full'},
+	{ path: 'astro-call',  component: AstroCallComponent }
 ];
 
 @NgModule({

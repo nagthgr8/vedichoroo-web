@@ -1,112 +1,185 @@
 <div class="p-2 container-fluid">
   <div class="row justify-content-center">
     <div class="p-4 col-sm-6 mb-4 border">
-	    <div *ngIf="source==='Report'">
-	     <h2>Detailed Horoscope Report</h2>
-	  	 <p class="text-secondary font-weight-bold">A detailed 25 page personalized report will be sent to your email address within 24hrs.</p>
-		 <ul class="nav">
-			<li class="nav-item">
-			<div class="nav-link"  (click)="smrep($event, 'EN')"><button type="button" class="btn btn-block btn-primary"> Download Sample Report (English)</button>
-				<div *ngIf="smp === 'EN'" class="spinner-border" role="status">
-				  <span class="text-info sr-only">Please wait...</span>
-				</div>		
-			</div>		
-			</li>
-			<li class="nav-item pt-0">
-				<div class="nav-link" (click)="smrep($event, 'HI')"><button type="button" class="btn btn-block btn-success">Download Sample Report (Hindi)</button>
-				<div *ngIf="smp === 'HI'" class="spinner-border" role="status">
-				  <span class="text-info sr-only">Please wait...</span>
-				</div>		
-				</div>
-			</li>
-			<li class="nav-item pt-0">
-				<div class="nav-link" (click)="smrep($event, 'TE')"><button type="button" class="btn btn-block btn-danger">Download Sample Report (Telugu)</button>
-				<div *ngIf="smp === 'TE'" class="spinner-border" role="status">
-				  <span class="text-info sr-only">Please wait...</span>
-				</div>		
-				</div>
-			</li>
-			<li class="nav-item pt-0">
-				<div class="nav-link" (click)="smrep($event, 'TA')"><button type="button" class="btn btn-block btn-warning">Download Sample Report (Tamil)</button>
-				<div *ngIf="smp === 'TA'" class="spinner-border" role="status">
-				  <span class="text-info sr-only">Please wait...</span>
-				</div>		
-				</div>
-			</li>
-		 </ul>
-		 </div>
-	     <h3>Enter Birth Details</h3>
-      <div class="form-row m-4">
-        <label class="col-sm-2 form-check-label" for="nam">Name</label>
-        <input class="col-sm-10 form-control" type="text" name="nam" [(ngModel)]="nam" [ngModelOptions]="{standalone: true}" />
+      <div *ngIf="source==='Report'">
+        <h2>Detailed Horoscope Report</h2>
+        <p class="text-secondary font-weight-bold">A detailed 25 page personalized report will be sent to your email address within 24hrs.</p>
+        <ul class="nav">
+          <li class="nav-item">
+            <div class="nav-link" (click)="smrep($event, 'EN')">
+              <button type="button" class="btn btn-block btn-primary"> Download Sample Report (English)</button>
+              <div *ngIf="smp === 'EN'" class="spinner-border" role="status">
+                <span class="text-info sr-only">Please wait...</span>
+              </div>
+            </div>
+          </li>
+          <li class="nav-item pt-0">
+            <div class="nav-link" (click)="smrep($event, 'HI')">
+              <button type="button" class="btn btn-block btn-success">Download Sample Report (Hindi)</button>
+              <div *ngIf="smp === 'HI'" class="spinner-border" role="status">
+                <span class="text-info sr-only">Please wait...</span>
+              </div>
+            </div>
+          </li>
+          <li class="nav-item pt-0">
+            <div class="nav-link" (click)="smrep($event, 'TE')">
+              <button type="button" class="btn btn-block btn-danger">Download Sample Report (Telugu)</button>
+              <div *ngIf="smp === 'TE'" class="spinner-border" role="status">
+                <span class="text-info sr-only">Please wait...</span>
+              </div>
+            </div>
+          </li>
+          <li class="nav-item pt-0">
+            <div class="nav-link" (click)="smrep($event, 'TA')">
+              <button type="button" class="btn btn-block btn-warning">Download Sample Report (Tamil)</button>
+              <div *ngIf="smp === 'TA'" class="spinner-border" role="status">
+                <span class="text-info sr-only">Please wait...</span>
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
-      <div class="form-row col-sm-6 mb-4 form-inline">
-        <input class="form-control" type="radio" [(ngModel)]="gen" name="gender" value="male">
-        <label class="form-check-label col-sm-4" for="male">Male</label>
-        <input class="form-control" type="radio" [(ngModel)]="gen" name="gender" value="female">
-        <label class="form-check-label col-sm-4" for="female">Female</label>
+      <h4 class="text-center">Enter Birth Details</h4>
+      <div class="form-group row  ">
+        <label class="col-sm-2 form-label" for="nam">Name</label>
+        <div class="col-sm-10"><div class="input-group"><input class="form-control" type="text" name="nam" [(ngModel)]="nam" [ngModelOptions]="{standalone: true}" /></div></div>
       </div>
-      <div class="form-row m-4">
-        <label class="col-sm-2 form-check-label" for="nam">Date of Birth</label>
-        <input class="col-sm-2 form-control" type="number" name="day" [(ngModel)]="day" [ngModelOptions]="{standalone: true}" placeholder="DD" min="1" max="31" />
-        <input class="col-sm-2 form-control" type="number" name="mon" [(ngModel)]="mon" [ngModelOptions]="{standalone: true}" placeholder="MM" min="1" max="12" />
-        <input class="col-sm-2 form-control" type="number" name="year" [(ngModel)]="year" [ngModelOptions]="{standalone: true}" placeholder="YYYY" min="1900" max="2999" />
+      <div class="form-group pt-4 pb-4 d-flex align-items-center">
+        <label class="col-sm-2 col-form-label label-small">Gender</label>
+        <div class="col col-sm-10">
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" [(ngModel)]="gen" name="flexRadioDefault" id="flexRadioDefault1" value="male">
+            <label class="form-check-label label-small" for="flexRadioDefault1">
+              Male
+            </label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" [(ngModel)]="gen" name="flexRadioDefault" id="flexRadioDefault2" value="female">
+            <label class="form-check-label label-small" for="flexRadioDefault2">
+              Female
+            </label>
+          </div>
+        </div>
       </div>
-      <div class="form-row m-4">
-        <label class="col-sm-2 form-check-label" for="nam">Time of Birth</label>
-        <input class="col-sm-2 form-control" type="number" name="hou" [(ngModel)]="hou" [ngModelOptions]="{standalone: true}" placeholder="HH" />
-        <input class="col-sm-2 form-control" type="number" name="min" [(ngModel)]="min" [ngModelOptions]="{standalone: true}" placeholder="MM" />
-        <input class="col-sm-2 form-control" type="number" name="sec" [(ngModel)]="sec" [ngModelOptions]="{standalone: true}" placeholder="SS" />
-      </div>
-      <div class="form-row m-4">
-        <label class="col-sm-2 form-check-label" for="place">Place of Birth</label>
-        <input class="col-sm-10 form-control" type="text" name="place" [(ngModel)]="autocomplete.query" (input)="AddressChange($event)" placeholder="Min 3 chars" />
-        <span class="places col-sm-12 border-light" *ngFor="let item of autocompleteItems" tappable (click)="chooseItem(item)">
-          {{ item }}
-        </span>
-      </div>
-	    <div *ngIf="source==='Report'">
-	  <h3>Enter Contact Details</h3>
-      <div class="form-row m-4">
-        <label class="col-sm-2 form-check-label" for="nam">Email</label>
-        <input class="col-sm-10 form-control" type="text" name="eml" [(ngModel)]="eml" [ngModelOptions]="{standalone: true}" />
-      </div>
-      <div class="form-row m-4">
-        <label class="col-sm-2 form-check-label" for="nam">Mobile Number</label>
-        <input class="col-sm-10 form-control" type="text" name="mob" [(ngModel)]="mob" [ngModelOptions]="{standalone: true}" />
-      </div>
-	  <h3>Choose Language</h3>
-      <div class="form-row col-sm-12 mb-4 form-inline">
-        <input class="form-control" type="radio" [(ngModel)]="lan" name="lang" value="en"/>
-        <label class="form-check-label col-sm-2" for="en">English</label>
-        <input class="form-control" type="radio" [(ngModel)]="lan" name="lang" value="hi"/>
-        <label class="form-check-label col-sm-2" for="hi">Hindi</label>
-        <input class="form-control" type="radio" [(ngModel)]="lan" name="lang" value="te"/>
-        <label class="form-check-label col-sm-2" for="te">Telugu</label>
-        <input class="form-control" type="radio" [(ngModel)]="lan" name="lang" value="ta"/>
-        <label class="form-check-label col-sm-2" for="ta">Tamil</label>
-      </div>
-	  <h3>Chart Type</h3>
-      <div class="form-row col-sm-12 mb-4 form-inline">
-        <input class="form-control" type="radio" [(ngModel)]="chtyp" name="chart" value="nind">
-        <label class="form-check-label col-sm-4" for="nind">North Indian</label>
-        <input class="form-control" type="radio" [(ngModel)]="chtyp" name="chart" value="sind">
-        <label class="form-check-label col-sm-4" for="sind">South Indian</label>
-      </div>
-	  <h3>Ayanamsa</h3>
-      <div class="form-row col-sm-12 mb-4 form-inline">
-        <input class="form-control" type="radio" [(ngModel)]="aynm" name="ayanamsa" value="lah"/>
-        <label class="form-check-label col-sm-3" for="lah">NC Lahiri</label>
-        <input class="form-control" type="radio" [(ngModel)]="aynm" name="ayanamsa" value="bvr"/>
-        <label class="form-check-label col-sm-3" for="bvr">BV Raman</label>
-        <input class="form-control" type="radio" [(ngModel)]="aynm" name="ayanamsa" value="kp"/>
-        <label class="form-check-label col-sm-3" for="kp">Krishna Murthy</label>
-      </div>
-     </div>	  
-      <div class="row info"> <p class="text-secondary" [innerHTML]='info'></p></div>
-      <div class="form-row m-2">
-        <button type="button" class="btn btn-block btn-primary" (click)="save($event)">{{sbtn}}</button>
-      </div>
-    </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-label" for="nam">Date of Birth</label>
+        <div class="col-sm-2"><div class="input-group"><input class="form-control" type="number" name="day" [(ngModel)]="day" [ngModelOptions]="{standalone: true}" placeholder="DD" min="1" max="31" /></div></div>
+        <div class="col-sm-2">
+          <div class="input-group">
+            <input class="form-control" type="number" name="mon" [(ngModel)]="mon" [ngModelOptions]="{standalone: true}" placeholder="MM" min="1" max="12" />
+            </div></div>
+            <div class="col-sm-2">
+              <div class="input-group">
+                <input class="col col-sm-2 form-control" type="number" name="year" [(ngModel)]="year" [ngModelOptions]="{standalone: true}" placeholder="YYYY" min="1900" max="2999" />
+              </div></div>
+        </div>
+              <div class="form-group row">
+                <label class="col-sm-2 form-label" for="nam">Time of Birth</label>
+                <div class="col-sm-2">
+                  <div class="input-group">
+                    <input class="col-sm-2 form-control" type="number" name="hou" [(ngModel)]="hou" [ngModelOptions]="{standalone: true}" placeholder="HH" />
+                    </div></div><div class="col-sm-2">
+                      <div class="input-group">
+                        <input class="col-sm-2 form-control" type="number" name="min" [(ngModel)]="min" [ngModelOptions]="{standalone: true}" placeholder="MM" />
+                        </div></div><div class="col-sm-2">
+                          <div class="input-group">
+                            <input class="col-sm-2 form-control" type="number" name="sec" [(ngModel)]="sec" [ngModelOptions]="{standalone: true}" placeholder="SS" />
+                          </div></div>
+                          <div class="form-group row">
+                            <label class="col-sm-2 form-check-label" for="place">Place of Birth</label>
+                            <div class="col-sm-10">
+                              <div class="input-group">
+                                <input class="form-control" type="text" name="place" [(ngModel)]="autocomplete.query" (input)="AddressChange($event)" placeholder="Min 3 chars" />
+                                </div></div><span class="places col col-sm-12 border-light" *ngFor="let item of autocompleteItems" tappable (click)="chooseItem(item)">
+                                  {{ item }}
+                                </span>
+                              </div>
+                              <div *ngIf="source==='Report'">
+                                <h3>Enter Contact Details</h3>
+                                <div class="form-group row">
+                                  <label class="col-sm-2 form-check-label" for="nam">Email</label>
+                                  <div class="col-sm-10">
+                                    <div class="input-group">
+                                      <input class="form-control" type="text" name="eml" [(ngModel)]="eml" [ngModelOptions]="{standalone: true}" />
+                                    </div></div></div>
+                                    <div class="form-group row">
+                                      <label class="col col-sm-2 form-check-label" for="nam">Mobile Number</label>
+                                      <div class="col-sm-10">
+                                        <div class="input-group">
+                                          <input class="form-control" type="text" name="mob" [(ngModel)]="mob" [ngModelOptions]="{standalone: true}" />
+                                        </div></div></div>
+                                        <h5>Choose Language</h5>
+                                        <div class="form-group row form-inline">
+                                          <div class="col-sm-12">
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" [(ngModel)]="lan" name="flexRadioDefault" id="flexRadioDefault1" value="en">
+                                              <label class="form-check-label label-small" for="flexRadioDefault1">
+                                                English
+                                              </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" [(ngModel)]="lan" name="flexRadioDefault" id="flexRadioDefault1" value="hi">
+                                              <label class="form-check-label label-small" for="flexRadioDefault1">
+                                                Hindi
+                                              </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" [(ngModel)]="lan" name="flexRadioDefault" id="flexRadioDefault1" value="ta">
+                                              <label class="form-check-label label-small" for="flexRadioDefault1">
+                                                Tamil
+                                              </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" [(ngModel)]="lan" name="flexRadioDefault" id="flexRadioDefault1" value="te">
+                                              <label class="form-check-label label-small" for="flexRadioDefault1">
+                                                Telugu
+                                              </label>
+                                            </div>
+                                          </div>
+                                        <h5>Chart Type</h5>
+                                        <div class="form-group row form-inline">
+                                          <div class="col-sm-12">
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" [(ngModel)]="chtyp" name="flexRadioDefault" id="flexRadioDefault1" value="nind">
+                                              <label class="form-check-label label-small" for="flexRadioDefault1">
+                                                North Indian
+                                              </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" [(ngModel)]="chtyp" name="flexRadioDefault" id="flexRadioDefault1" value="sind">
+                                              <label class="form-check-label label-small" for="flexRadioDefault1">
+                                                South Indian
+                                              </label>
+                                            </div>
+                                          </div></div>
+                                        <h5>Ayanamsa</h5>
+                                        <div class="form-group row form-inline">
+                                          <div class="col col-sm-12">
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" [(ngModel)]="aynm" name="flexRadioDefault" id="flexRadioDefault1" value="lah">
+                                              <label class="form-check-label label-small" for="flexRadioDefault1">
+                                                Laniri
+                                              </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" [(ngModel)]="aynm" name="flexRadioDefault" id="flexRadioDefault1" value="bvr">
+                                              <label class="form-check-label label-small" for="flexRadioDefault1">
+                                                BV Raman
+                                              </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" [(ngModel)]="aynm" name="flexRadioDefault" id="flexRadioDefault1" value="kp">
+                                              <label class="form-check-label label-small" for="flexRadioDefault1">
+                                                Krishna Murthy
+                                              </label>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                              <div class="row info"> <p class="text-secondary" [innerHTML]='info'></p></div>
+                              <div class="form-row m-2">
+                                <button type="button" class="btn btn-block btn-primary w-100" (click)="save($event)">{{sbtn}}</button>
+                              </div>
+                            </div>
 </div>
 </div>

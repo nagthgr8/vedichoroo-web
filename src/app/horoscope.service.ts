@@ -90,8 +90,11 @@ export class HoroscopeService {
 	private apiUrl88 = 'https://api.vedichoroo.com/api/ProfileBanner';
 	private apiUrl89 = 'https://api.vedichoroo.com/api/ProfileBio';
   private apiUrl90 = 'https://api.vedichoroo.com/api/GeneratePDFDocEx';
-
-  
+  private apiUrl91 = 'https://api.vedichoroo.com/payment/GetExchangeRate';
+  private apiUrl92 = 'https://api.vedichoroo.com/payment/GetBalance';
+  private apiUrl93 = 'https://api.vedichoroo.com/payment/CreateOrder';
+  private apiUrl94 = 'https://api.vedichoroo.com/payment/Orders';
+  private apiUrl95 = 'https://api.vedichoroo.com/api/IsAstrologer';
   private monthList = [
 	{name: "January",   numdays: 31, abbr: "Jan"},
 	{name: "February",  numdays: 28, abbr: "Feb"},
@@ -108,8 +111,112 @@ export class HoroscopeService {
 ];
 
   constructor(private http: HttpClient) { }
-
+  getConnectedAstros() : Observable<{}> {
+	let headers = new HttpHeaders()
+			.set('Accept', 'application/json; charset=utf-8');   
+	return this.http.get('https://ast.vedichoroo.com/astrologers', {headers: headers}).pipe(
+    map(this.extractData),
+    catchError(this.handleError)
+   );
+    
+  }
+ getActivePeers(): Observable<any> {
+  let headers = new HttpHeaders().set('Accept', 'application/json; charset=utf-8');
+  return this.http.get('https://ast.vedichoroo.com/active-peers', {headers: headers}).pipe(
+    map(this.extractData),
+    catchError(this.handleError)
+  );
+}
+  getgapiProfilePic(accessToken) : Observable<{}> {
+  const headers = { Authorization: `Bearer ${accessToken}` }; 
+	
+  return this.http.get('https://people.googleapis.com/v1/people/me?personFields=photos', {headers: headers}).pipe(
+    map(this.extractData),
+    catchError(this.handleError)
+  );
+}
   
+  loginUser(email, password) : Observable<{}> {
+	  var oDat = {
+		  Email: email,
+		  Password: password
+	  };
+	  let headers = new HttpHeaders()
+		  .set('Accept', 'application/json; charset=utf-8')
+		  .set('Content-Type', 'application/json; charset=utf-8');
+	  return this.http.post('https://reg.vedichoroo.com/User/login', JSON.stringify(oDat), { headers: headers }).pipe(
+		  map(this.extractData),
+		  catchError(this.handleError)
+		  );
+  }  
+  createUser(name, email, password) : Observable<{}> {
+	  var oDat = {
+		  UserName: name,
+		  Email: email,
+		  Password: password
+	  };
+	  let headers = new HttpHeaders()
+		  .set('Accept', 'application/json; charset=utf-8')
+		  .set('Content-Type', 'application/json; charset=utf-8');
+	  return this.http.post('https://reg.vedichoroo.com/User/create', JSON.stringify(oDat), { headers: headers }).pipe(
+		  map(this.extractData),
+		  catchError(this.handleError)
+		  );
+  }
+  getCurrencyExchangeRate(ccode, ccy): Observable<{}> {
+	let headers = new HttpHeaders()
+			.set('Accept', 'application/json; charset=utf-8');   
+	let httpParams = new HttpParams()
+                        .set('ccode', ccode)
+						.set('ccy', ccy);
+	return this.http.get(this.apiUrl91, {headers: headers, params: httpParams}).pipe(
+    map(this.extractData),
+    catchError(this.handleError)
+   );
+  }
+  getOrderStatus(orderid): Observable<{}> {
+     let url = this.apiUrl94 + '/' + orderid + '/status';
+	let headers = new HttpHeaders()
+			.set('Accept', 'application/json; charset=utf-8');   
+	return this.http.get(url, {headers: headers}).pipe(
+    map(this.extractData),
+    catchError(this.handleError)
+   );
+  }
+  createOrder(amt, ccy):Observable<{}> {
+	  var oDat = {
+		  Amount: amt,
+		  Currency: ccy
+	  };
+	  let headers = new HttpHeaders()
+		  .set('Accept', 'application/json; charset=utf-8')
+		  .set('Content-Type', 'application/json; charset=utf-8');
+	  return this.http.post(this.apiUrl93, JSON.stringify(oDat), { headers: headers }).pipe(
+		  map(this.extractData),
+		  catchError(this.handleError)
+		  );
+   }
+   isAstro(eml):Observable<{}> {
+	let headers = new HttpHeaders()
+			.set('Accept', 'application/json; charset=utf-8');   
+	let httpParams = new HttpParams()
+                        .set('eml', eml);
+	return this.http.get(this.apiUrl95, {headers: headers, params: httpParams}).pipe(
+    map(this.extractData),
+	map((res: any) => res === true),
+    catchError(this.handleError)
+	);
+   }
+  getBalance(uid):Observable<{}> {
+	let headers = new HttpHeaders()
+			.set('Accept', 'application/json; charset=utf-8');   
+	let httpParams = new HttpParams()
+                        .set('cid', uid);
+	return this.http.get(this.apiUrl92, {headers: headers, params: httpParams}).pipe(
+    map(this.extractData),
+    catchError(this.handleError)
+	);
+  }
   getJson(url: string): Observable<{}> {
 	return this.http.get(url).pipe(
     map(this.extractData),
@@ -454,7 +561,10 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    );
   }  
   getAllAstrologers(): Observable<{}> {
-	return this.http.get(this.apiUrl36).pipe(
+   const headers = new HttpHeaders({
+      'Cache-Control': 'max-age=0, no-cache, no-store, must-revalidate'
+    });
+	return this.http.get(this.apiUrl36, {headers: headers}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
@@ -922,10 +1032,10 @@ getTransPredsEx(lat: any, lng: any, dob: string, tz: string, ofset: number, ayan
     catchError(this.handleError)
    );
   }
- getProMoonPhase(lat: string, lng: string, dob: string, tz: string, ayanid: number): Observable<{}> {
+ getProMoonPhase(lat: number, lng: number, dob: string, tz: string, ayanid: number): Observable<{}> {
 	//var lat = dmslat.split("º")[0] + '.' + dmslat.split("º")[1].split("'")[0];
 	//var lng = dmslng.split("º")[0] + '.' + dmslng.split("º")[1].split("'")[0];
-	var latlng = lat + '|' + lng;
+	var latlng = lat.toString() + '|' + lng.toString();
 	//var oDat = 'dob=' + dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0] + '&tob=' + //dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0' + '&latlng=' + latlng + '&timezone=' + tz + '&name=' + '&eml=';
    //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
    let tsec: string = dob.split('T')[1].split(':')[2].split('Z')[0]; 

@@ -1,58 +1,121 @@
 <div class="container-fluid">
   <div *ngIf="showList" class="row justify-content-center">
-    <div class="col-sm-6 mb-4 border">
-      <div class="form-row m-4">
+    <div class="col-sm-6 mb-4 border-2 border-solid">
+      <h4 class="text-center">Love Compatibility Report</h4>
+      <div class="form-group row mb-2">
         <label class="col-sm-2 form-check-label" for="nam1">His Name</label>
-        <input class="col-sm-10 form-control" type="text" name="nam1" [(ngModel)]="nam1" [ngModelOptions]="{standalone: true}" />
+        <div class="col-sm-10">
+          <div class="input-group">
+            <input class="form-control" type="text" name="nam1" [(ngModel)]="nam1" [ngModelOptions]="{standalone: true}" />
+          </div>
+        </div>
       </div>
-      <div class="form-row m-4">
+      <div class="form-group row">
         <label class="col-sm-2 form-check-label" for="nam">His Date of Birth</label>
-        <input class="col-sm-2 form-control" type="number" name="day1" [(ngModel)]="day1" [ngModelOptions]="{standalone: true}" placeholder="DD" min="1" max="31" />
-        <input class="col-sm-2 form-control" type="number" name="mon1" [(ngModel)]="mon1" [ngModelOptions]="{standalone: true}" placeholder="MM" min="1" max="12" />
-        <input class="col-sm-2 form-control" type="number" name="year1" [(ngModel)]="year1" [ngModelOptions]="{standalone: true}" placeholder="YYYY" min="1900" max="2999" />
+        <div class="col-sm-2">
+          <div class="input-group">
+            <input class="form-control" type="number" name="day1" [(ngModel)]="day1" [ngModelOptions]="{standalone: true}" placeholder="DD" min="1" max="31" />
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="input-group">
+            <input class="form-control" type="number" name="mon1" [(ngModel)]="mon1" [ngModelOptions]="{standalone: true}" placeholder="MM" min="1" max="12" />
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="input-group">
+            <input class="form-control" type="number" name="year1" [(ngModel)]="year1" [ngModelOptions]="{standalone: true}" placeholder="YYYY" min="1900" max="2999" />
+          </div>
+        </div>
       </div>
-      <div class="form-row m-4">
+      <div class="form-group row">
         <label class="col-sm-2 form-check-label" for="nam">His Time of Birth</label>
-        <input class="col-sm-2 form-control" type="number" name="hou1" [(ngModel)]="hou1" [ngModelOptions]="{standalone: true}" placeholder="HH" />
-        <input class="col-sm-2 form-control" type="number" name="min1" [(ngModel)]="min1" [ngModelOptions]="{standalone: true}" placeholder="MM" />
-        <input class="col-sm-2 form-control" type="number" name="sec1" [(ngModel)]="sec1" [ngModelOptions]="{standalone: true}" placeholder="SS" />
+        <div class="col-sm-2">
+          <div class="input-group">
+            <input class="form-control" type="number" name="hou1" [(ngModel)]="hou1" [ngModelOptions]="{standalone: true}" placeholder="HH" />
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="input-group">
+            <input class="form-control" type="number" name="min1" [(ngModel)]="min1" [ngModelOptions]="{standalone: true}" placeholder="MM" />
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="input-group">
+            <input class="form-control" type="number" name="sec1" [(ngModel)]="sec1" [ngModelOptions]="{standalone: true}" placeholder="SS" />
+          </div>
+        </div>
       </div>
-      <div class="form-row m-4">
+      <div class="form-group row">
         <label class="col-sm-2 form-check-label" for="place">His Place of Birth</label>
-        <input class="col-sm-10 form-control" type="text" name="place1" [(ngModel)]="autocomplete.query1" (input)="AddressChange($event, 1)" placeholder="Min 3 chars" />
-        <span class="places col-sm-12 border-light" *ngFor="let item of autocompleteItems1" tappable (click)="chooseItem(item, 1)">
+        <div class="col-sm-10">
+          <div class="input-group">
+            <input class="col-sm-10 form-control" type="text" name="place1" [(ngModel)]="autocomplete.query1" (input)="AddressChange($event, 1)" placeholder="Min 3 chars" />
+          </div>
+        </div><span class="places col-sm-12 border-light" *ngFor="let item of autocompleteItems1" tappable (click)="chooseItem(item, 1)">
           {{ item }}
         </span>
       </div>
-      <div class="form-row m-4">
+      <div class="form-group row mb-2">
         <label class="col-sm-2 form-check-label" for="nam">Her Name</label>
-        <input class="col-sm-10 form-control" type="text" name="nam2" [(ngModel)]="nam2" [ngModelOptions]="{standalone: true}" />
+        <div class="col-sm-10">
+          <div class="input-group">
+            <input class="form-control" type="text" name="nam2" [(ngModel)]="nam2" [ngModelOptions]="{standalone: true}" />
+          </div>
+        </div>
       </div>
-      <div class="form-row m-4">
+      <div class="form-group row">
         <label class="col-sm-2 form-check-label" for="nam">Her Date of Birth</label>
-        <input class="col-sm-2 form-control" type="number" name="day2" [(ngModel)]="day2" [ngModelOptions]="{standalone: true}" placeholder="DD" min="1" max="31" />
-        <input class="col-sm-2 form-control" type="number" name="mon2" [(ngModel)]="mon2" [ngModelOptions]="{standalone: true}" placeholder="MM" min="1" max="12" />
-        <input class="col-sm-2 form-control" type="number" name="year2" [(ngModel)]="year2" [ngModelOptions]="{standalone: true}" placeholder="YYYY" min="1900" max="2999" />
+        <div class="col-sm-2">
+          <div class="input-group">
+            <input class="form-control" type="number" name="day2" [(ngModel)]="day2" [ngModelOptions]="{standalone: true}" placeholder="DD" min="1" max="31" />
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="input-group">
+            <input class="form-control" type="number" name="mon2" [(ngModel)]="mon2" [ngModelOptions]="{standalone: true}" placeholder="MM" min="1" max="12" />
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="input-group">
+            <input class="form-control" type="number" name="year2" [(ngModel)]="year2" [ngModelOptions]="{standalone: true}" placeholder="YYYY" min="1900" max="2999" />
+          </div>
+        </div>
       </div>
-      <div class="form-row m-4">
-        <label class="col-sm-2 form-check-label" for="nam">Her Time of Birth</label>
-        <input class="col-sm-2 form-control" type="number" name="hou2" [(ngModel)]="hou2" [ngModelOptions]="{standalone: true}" placeholder="HH" />
-        <input class="col-sm-2 form-control" type="number" name="min2" [(ngModel)]="min2" [ngModelOptions]="{standalone: true}" placeholder="MM" />
-        <input class="col-sm-2 form-control" type="number" name="sec2" [(ngModel)]="sec2" [ngModelOptions]="{standalone: true}" placeholder="SS" />
+      <div class="form-group row">
+        <label class="col-sm-2 form-label" for="nam">Her Time of Birth</label>
+        <div class="col-sm-2">
+          <div class="input-group">
+            <input class="form-control" type="number" name="hou2" [(ngModel)]="hou2" [ngModelOptions]="{standalone: true}" placeholder="HH" />
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="input-group">
+            <input class="form-control" type="number" name="min2" [(ngModel)]="min2" [ngModelOptions]="{standalone: true}" placeholder="MM" />
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="input-group">
+            <input class="form-control" type="number" name="sec2" [(ngModel)]="sec2" [ngModelOptions]="{standalone: true}" placeholder="SS" />
+          </div>
+        </div>
       </div>
-      <div class="form-row m-4">
-        <label class="col-sm-2 form-check-label" for="place">Her Place of Birth</label>
-        <input class="col-sm-10 form-control" type="text" name="place2" [(ngModel)]="autocomplete.query2" (input)="AddressChange($event, 2)" placeholder="Min 3 chars" />
-        <span class="places col-sm-12 border-light" *ngFor="let item of autocompleteItems2" tappable (click)="chooseItem(item, 2)">
+      <div class="form-group row">
+        <label class="col-sm-2 form-label" for="place">Her Place of Birth</label>
+        <div class="col-sm-10">
+          <div class="input-group">
+            <input class="form-control" type="text" name="place2" [(ngModel)]="autocomplete.query2" (input)="AddressChange($event, 2)" placeholder="Min 3 chars" />
+          </div>
+        </div><span class="places col-sm-12 border-light" *ngFor="let item of autocompleteItems2" tappable (click)="chooseItem(item, 2)">
           {{ item }}
         </span>
       </div>
       <div class="row info"> <p class="text-info" [innerHTML]='info'></p></div>
-      <div class="form-row m-2">
-        <button type="button" class="btn btn-block btn-primary" (click)="save($event)">SUBMIT</button>
-<div *ngIf="wait" class="spinner-border" role="status">
-				  <span class="text-info sr-only">Please wait...</span>
-				</div>		
+      <div class="form-group row">
+        <button type="button" class="btn btn-block btn-primary w-100" (click)="save($event)">SUBMIT</button>
+        <div *ngIf="wait" class="spinner-border" role="status">
+          <span class="text-info sr-only">Please wait...</span>
+        </div>
       </div>
     </div>
   </div>

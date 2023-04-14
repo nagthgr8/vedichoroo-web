@@ -1,6 +1,7 @@
 {
   "projects": {
-    "default": "astrology-e9e07"
+    "default": "vedichoroo-dev",
+    "staging": "vedichoroo-dev"
   },
   "targets": {
     "astrology-e9e07": {
@@ -9,6 +10,17 @@
           "astrology-e9e07"
         ]
       }
+    },
+    "vedichoroo-dev": {
+      "hosting": {
+        "vedichoroo": [
+          "dev.vedichoroo.com"
+        ],
+        "vedichoroo-dev": [
+          "vedichoroo"
+        ]
+      }
     }
-  }
+  },
+  "etags": {}
 }

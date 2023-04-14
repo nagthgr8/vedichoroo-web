@@ -1,0 +1,13 @@
+    <div class="modal-header">
+      <h4 class="modal-title">Incoming call</h4>
+      <button type="button" class="close" aria-label="Close" (click)="onClose('reject')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>You have an incoming call. Do you want to answer?</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="onClose('accept')">Answer</button>
+      <button type="button" class="btn btn-secondary" (click)="onClose('reject')">Reject</button>
+    </div>

@@ -9,3 +9,19 @@
   background-size: cover;
   padding-right:8px;
 }
+.avatar-circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #ffbf00;
+}
+.initials {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  text-transform: uppercase;
+}
+

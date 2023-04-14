@@ -1,0 +1,35 @@
+body {
+  font-family: roboto, "Open Sans", Lato, Montserra;
+}
+h1 {
+    font-size: 36px !important;
+}
+h2 {
+    font-size: 24px !important;
+}
+
+    /* CSS code to style the fixed message div */
+#call-msg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  background-color: #f00; /* Set the background color to red */
+  color: #fff; /* Set the text color to white */
+  text-align: center;
+  z-index: 999; /* Set the z-index to ensure the div appears on top of other elements */
+}
+#call-msg p {
+ display: inline-block;
+  margin: 0;
+}
+.cancel-btn {
+  display: inline-block;
+  background-color: #fff;
+  color: #f00;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}

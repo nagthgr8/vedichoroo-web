@@ -13,11 +13,12 @@ export class ShareService {
     private dsRep = new BehaviorSubject({ uuid: '', qta: 0 });
 	frep = this.dsRep.asObservable();
 
-	private dsVevts = new BehaviorSubject(null);
-	vhevt = this.dsVevts.asObservable();
+	private dsSignIn = new BehaviorSubject(null);
+	signin = this.dsSignIn.asObservable();
 	private dsGevts = new BehaviorSubject('');
 	gevt = this.dsGevts.asObservable();
-	
+	private dsCinf = new BehaviorSubject(null);
+	cinf = this.dsCinf.asObservable();
     place: string;
 	dob: string;
 	timezone: string;
@@ -75,6 +76,7 @@ export class ShareService {
 	    this.lang = lang as string;
      });	 
 	}
+	
 	getEMAIL() { return this.eml; }
 	
 	getItem(key) {
@@ -142,6 +144,7 @@ export class ShareService {
 	}
 	setCLAT(lat) {
 	  this.clat = lat;
+	  localStorage.setItem('clat', lat);
 	}
 	setLNG(lng) {
 	  this.lng = lng;
@@ -149,6 +152,7 @@ export class ShareService {
 	}
 	setCLNG(lng) {
 	  this.clng = lng;
+	  localStorage.setItem('clng', lng);
 	}	
 	setTimezone(timezone) {
 	  this.timezone = timezone;
@@ -234,10 +238,12 @@ export class ShareService {
 	setQUOTA(quo) {
 	  this.dsRep.next(quo);
 	}
-	setVEVT(evt) {
-		this.dsVevts.next(evt);
+	emitSignIn(usr) {
+		this.dsSignIn.next(usr);
 	}
-
+    emitCallerInfo(cinf) {
+	    this.dsCinf.next(cinf);
+	}
 	setGEVT(evt) {
 		this.dsGevts.next(evt);
 	}
@@ -251,6 +257,7 @@ export class ShareService {
 	}
 	setCCODE(ccode) {
 	  this.ccode = ccode;
+	  localStorage.setItem('ccode', ccode);
 	}
 	setRETRO(rpls) {
 	  this.rpls = rpls;

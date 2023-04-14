@@ -4,8 +4,7 @@ import 'rxjs/operators';
 import {saveAs} from 'file-saver';
 import { HoroscopeService } from '../horoscope.service';
 import { ShareService } from '../share.service'
-
-import { GoogleMapsService } from '../google-maps.service';
+import { GoogleMapsAutocompleteService } from '../google-maps-autocomplete.service';
 import { Plan } from '../plan';
 import { BirthInfo } from '../birth-info';
 import { WindowRefService } from '../window-ref.service';
@@ -65,7 +64,7 @@ export class PersonalDetailsComponent implements OnInit {
    dstofset: number = 0;
    smp: string = '';
 
-  constructor(private winRef: WindowRefService, private router: Router, private route: ActivatedRoute, private zone: NgZone, private googleMapsService: GoogleMapsService, public shareService: ShareService, public horoService: HoroscopeService) {
+  constructor(private winRef: WindowRefService, private router: Router, private route: ActivatedRoute, private zone: NgZone, private googleMapsAutocompleteService: GoogleMapsAutocompleteService, public shareService: ShareService, public horoService: HoroscopeService) {
   this.info2 = 'Please wait...';
     this.autocompleteItems = [];
     this.autocomplete = {
@@ -103,10 +102,9 @@ export class PersonalDetailsComponent implements OnInit {
 	} 
    ngOnInit() {
 
-       this.googleMapsService.loadMapScript(environment.apiKey)
-      .then(() => {
-        this.service = this.googleMapsService.getAutocompleteService();
-      })
+      this.googleMapsAutocompleteService.getAutocompleteService().then((autoCompleteService) => {
+	    this.service = autoCompleteService;
+	  })
       .catch(error => {
         console.error(error);
       });    
@@ -751,7 +749,7 @@ export class PersonalDetailsComponent implements OnInit {
  }
 
 	subscribe(evt) {
-		this.shareService.setVEVT('subscribe');
+		this.shareService.setGEVT('subscribe');
 	}
 rgeoCode(lat, lng) {
  //   console.log('lat=', lat);
