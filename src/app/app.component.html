@@ -5,7 +5,7 @@
   <div class="container">
     <router-outlet></router-outlet>
   </div>
-  <app-astro-call (callEndedEvent)="onCallEnded($event)" [callEnded]="callEnded" *ngIf="showAstroCall"></app-astro-call>
+  <!-- <app-astro-call (callEndedEvent)="onCallEnded($event)" [callEnded]="callEnded" *ngIf="showAstroCall"></app-astro-call> -->
   <app-home *ngIf='showHomePage'></app-home>
   <div class="contact" id="support">
     <div class="container">

@@ -1,7 +1,8 @@
 {
   "projects": {
     "default": "vedichoroo-dev",
-    "staging": "vedichoroo-dev"
+    "staging": "vedichoroo-dev",
+    "production": "astrology-e9e07"
   },
   "targets": {
     "astrology-e9e07": {

@@ -1,4 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
+@import '../node_modules/bootstrap/scss/functions';
+@import '../node_modules/bootstrap/scss/variables';
+@import '../node_modules/bootstrap/scss/mixins';
+// Import your existing styles
+@import 'assets/css/styles.scss';
+
+// Import _variables.scss and _bootswatch.scss
+@import 'assets/css/_variables.scss';
+@import 'assets/css/_bootswatch.scss';
+
+/* You can add global styles to this file, and also import other style files 
 $body-bg: #000;
 $body-color: #111;
 :host ::ng-deep .btn-success {
@@ -12,3 +22,4 @@ $body-color: #111;
   border-color: #ff8000;
   color: #fff;
 }
+*/

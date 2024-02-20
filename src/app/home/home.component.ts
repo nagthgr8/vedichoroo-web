@@ -32,18 +32,18 @@ export class HomeComponent implements OnInit {
   asts: any;
   bal: number;
   oAst: Astrologer[] = [];
-  constructor(private router: Router,  private callService: CallService, private modalService: NgbModal, private horoService: HoroscopeService, private shareService: ShareService) {
+  constructor(private router: Router,  private modalService: NgbModal, private horoService: HoroscopeService, private shareService: ShareService) {
   }
   ngOnDestroy() {
      this.oAst = [];
   }
   ngOnInit(): void {
-  astroStatus.subscribe((ast) => {
-    console.log('astroStatus', ast);
-	let a = this.oAst.find((o) => o.eml === ast.aid);
-	a.smsg = (ast.busy) ? 'Not Available': 'Available';
-	a.status = !ast.busy;
-  });
+  // astroStatus.subscribe((ast) => {
+  //   console.log('astroStatus', ast);
+	// let a = this.oAst.find((o) => o.eml === ast.aid);
+	// a.smsg = (ast.busy) ? 'Not Available': 'Available';
+	// a.status = !ast.busy;
+  // });
  this.horoService.getDailyHoro('Aries')
 		.subscribe(res => {
 			//this.showLD = false;
@@ -118,8 +118,9 @@ export class HomeComponent implements OnInit {
       }, (err) => {
         this.pis = JSON.stringify(err);
       });
+      this.showLD = false;
   		this.asts = [];
-    // get panel astrologers
+    //get panel astrologers
     this.horoService.getAllAstrologers().subscribe((oa: any[]) => {
       console.log('oa', oa);
       this.showLD = false;
@@ -240,9 +241,9 @@ export class HomeComponent implements OnInit {
 			this.getMinBal(ast.cfee, ast.ccy, loc.country_code).then(minBal => {
 				//const estimatedCallCost = astrologerFeePerMinute*5; //minimum 5 minutes of balance is required;
 				//if (user.balance >= minBal) {
-			this.callService.callAstro(ast.eml, ast.name, ast.avatar, user.email, user.dob, (user.isprivate) ? 'https://i.imgur.com/LR7e1vw.png' : user.imageUrl).then(() => {
+			// this.callService.callAstro(ast.eml, ast.name, ast.avatar, user.email, user.dob, (user.isprivate) ? 'https://i.imgur.com/LR7e1vw.png' : user.imageUrl).then(() => {
 							   
-							});
+			// 				});
 				//} else {
 							//display recharge dialog
 				//	this.shareService.setGEVT('recharge');

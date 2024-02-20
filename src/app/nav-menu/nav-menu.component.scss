@@ -2,12 +2,6 @@ body nav navbar a.navbar-brand {
   font-family: roboto;
 }
 
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
-}
-
 html {
   font-size: 14px;
 }
@@ -17,30 +11,8 @@ html {
   }
 }
 
-#menu1 > .navbar {
- justify-content: initial !important;
- padding: 0 !important;
-}
-.navbar {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 1rem;
-}
-.nav-link {
-    display: block;
-    padding: 0.5rem 1rem;
-}
 .font-weight-bold {
     font-weight: 700!important;
-}
-.border-secondary {
-    border-color: #6c757d!important;
-}
-.border {
-    border: 1px solid #dee2e6!important;
 }
 .box-shadow {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
@@ -52,28 +24,11 @@ html {
   font-weight: bold;
   color: #ff6a00
 }
-
-.dropdown-menu-right {
-    right: 0;
-    left: auto;
-}
 .vhonav button {
   box-shadow: none !important;
-}
-.navbar-dropdown-item::after {
-  display: none;
-}
-.dropdown-toggle:before, .dropdown-toggle:after {
-  display: none;
-}
-.panch {
-  background-color: var(--app-theme-bg);
 }
 .clickable {
   color: blue;
   text-decoration: underline;
   cursor: pointer;
-}
-.panch {
-  background-color: #ffbf00;
 }

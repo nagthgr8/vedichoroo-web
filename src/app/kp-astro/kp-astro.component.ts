@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import { ShareService } from '../share.service';
 import { HoroscopeService } from '../horoscope.service';
+import { ThemeService } from '../theme.service';
 import { PlanetPos } from '../planet-pos';
 import { HousePos } from '../house-pos';
 import { PlWeekDay } from '../plweek-day';
@@ -107,7 +108,13 @@ export class KpAstroComponent implements OnInit {
   vim: any;
   bvm: boolean = false;
   payn: number = -1;
-  constructor(private router: Router, private translate: TranslateService, public shareService: ShareService, public renderer: Renderer2, public horoService: HoroscopeService ) {
+  bgColor: string;
+  textColor: string;
+  borderColor: string;
+  strokeWidth: number;
+  middleSectionBgColor: string;
+  middleSectionTextColor: string;
+constructor(private router: Router, private translate: TranslateService, public shareService: ShareService, public renderer: Renderer2, public horoService: HoroscopeService, private themeService: ThemeService ) {
 	  if (this.router.getCurrentNavigation().extras.state) {
 		  this.binf = this.router.getCurrentNavigation().extras.state;
 	  } else {
@@ -349,6 +356,15 @@ export class KpAstroComponent implements OnInit {
 			  }
 		});
   }
+  private updateColors(currentTheme: string) {
+	this.bgColor = currentTheme === 'dark' ? '#2c3e50' : '#ffffff';
+	this.textColor = currentTheme === 'dark' ? '#ecf0f1' : '#333333';
+	this.borderColor = currentTheme === 'dark' ? '#3498db' : '#666666';
+	this.strokeWidth = 1;
+	this.middleSectionBgColor = currentTheme === 'dark' ? '#34495e' : '#ecf0f1';
+	this.middleSectionTextColor = currentTheme === 'dark' ? '#ecf0f1' : '#333333';		
+  }
+
   brow() {
 			if(this.plan.name != 'com.mypubz.eportal.astrologer' || this.plan.name != 'com.mypubz.eportal.adfree' || this.plan.name != 'com.mypubz.eportal.month' || this.plan.name != 'com.mypubz.eportal.year') 
 	    switch(this.choice)
@@ -377,8 +393,12 @@ export class KpAstroComponent implements OnInit {
   chkAndLoad() {
 	this.info = 'Loading..';
 	console.log('chkAndLoad()');
-	this.loadHoro();
-	this.horoService.getJson('assets/data/house_groups.json')
+	this.themeService.currentTheme$.subscribe((currentTheme) => {
+		console.log('calling loadHoro..');
+		this.updateColors(currentTheme);
+		this.loadHoro();
+	});
+this.horoService.getJson('assets/data/house_groups.json')
 		.subscribe(hgps => {		
 			for(let key of Object.keys(hgps)) {
 				let hg : Group = {
@@ -500,6 +520,7 @@ export class KpAstroComponent implements OnInit {
 		this.renderer.setAttribute(image, "width", s1.toString());
 		image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href",
 							 "https://66.media.tumblr.com/b18d7fb614523f423cfcdf445a2dabda/tumblr_pg26xre6z91xp0noco1_75sq.png");
+		this.renderer.setAttribute(image, "fill", "#d4cdcd");
 		this.renderer.appendChild(pattern, image);
 		this.renderer.appendChild(defs, pattern);
 
@@ -515,6 +536,7 @@ export class KpAstroComponent implements OnInit {
 		this.renderer.setAttribute(image, "width", s1.toString());
 		image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href",
 							 "https://66.media.tumblr.com/4f93cc3f670bb2e55fce4d217dc9c5f3/tumblr_pg26x0KznG1xp0noco1_75sq.png");
+		this.renderer.setAttribute(image, "fill", "#d4cdcd");
 		this.renderer.appendChild(pattern, image);
 		this.renderer.appendChild(defs, pattern);
         pattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
@@ -529,7 +551,8 @@ export class KpAstroComponent implements OnInit {
 		this.renderer.setAttribute(image, "width", s1.toString());
 		image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href",
 							 "https://66.media.tumblr.com/b8207752e62efd28059f2d5e62e1fbb8/tumblr_pg26w8YAAz1xp0noco1_75sq.png");
-		this.renderer.appendChild(pattern, image);
+							 this.renderer.setAttribute(image, "fill", "#d4cdcd");
+							 this.renderer.appendChild(pattern, image);
 		this.renderer.appendChild(defs, pattern);
         pattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
 		this.renderer.setAttribute(pattern, "id", "sign-3");
@@ -543,7 +566,8 @@ export class KpAstroComponent implements OnInit {
 		this.renderer.setAttribute(image, "width", s1.toString());
 		image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href",
 							 "https://66.media.tumblr.com/750f019326f62f174fb514cb0b79232e/tumblr_pg26vedaAD1xp0noco1_75sq.png");
-		this.renderer.appendChild(pattern, image);
+							 this.renderer.setAttribute(image, "fill", "#d4cdcd");
+							 this.renderer.appendChild(pattern, image);
 		this.renderer.appendChild(defs, pattern);
         pattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
 		this.renderer.setAttribute(pattern, "id", "sign-4");
@@ -557,7 +581,8 @@ export class KpAstroComponent implements OnInit {
 		this.renderer.setAttribute(image, "width", s1.toString());
 		image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href",
 							 "https://66.media.tumblr.com/36037c0cad990e4b04e46cd3a1ec1975/tumblr_pg26nlIb3z1xp0noco1_75sq.png");
-		this.renderer.appendChild(pattern, image);
+							 this.renderer.setAttribute(image, "fill", "#d4cdcd");
+							 this.renderer.appendChild(pattern, image);
 		this.renderer.appendChild(defs, pattern);
 		pattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
 		this.renderer.setAttribute(pattern, "id", "sign-7");
@@ -571,7 +596,8 @@ export class KpAstroComponent implements OnInit {
 		this.renderer.setAttribute(image, "width", s1.toString());
 		image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href",
 							 "https://66.media.tumblr.com/1aff51efa3ed79ddf9b68cd366959e0d/tumblr_pg26uarJnj1xp0noco1_75sq.png");
-		this.renderer.appendChild(pattern, image);
+							 this.renderer.setAttribute(image, "fill", "#d4cdcd");
+							 this.renderer.appendChild(pattern, image);
 		this.renderer.appendChild(defs, pattern);
 		pattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
 		this.renderer.setAttribute(pattern, "id", "sign-8");
@@ -585,7 +611,8 @@ export class KpAstroComponent implements OnInit {
 		this.renderer.setAttribute(image, "width", s1.toString());
 		image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href",
 							 "https://66.media.tumblr.com/68f3a3c2cb4e9122783c5629df911b5a/tumblr_pg26oqqubW1xp0noco1_75sq.png");
-		this.renderer.appendChild(pattern, image);
+							 this.renderer.setAttribute(image, "fill", "#d4cdcd");
+							 this.renderer.appendChild(pattern, image);
 		this.renderer.appendChild(defs, pattern);
 		pattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
 		this.renderer.setAttribute(pattern, "id", "sign-11");
@@ -599,7 +626,8 @@ export class KpAstroComponent implements OnInit {
 		this.renderer.setAttribute(image, "width", s1.toString());
 		image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href",
 							 "https://66.media.tumblr.com/3cbefe595ea9a652917a227e948c81c7/tumblr_pg26tgkrYj1xp0noco1_75sq.png");
-		this.renderer.appendChild(pattern, image);
+							 this.renderer.setAttribute(image, "fill", "#d4cdcd");
+							 this.renderer.appendChild(pattern, image);
 		this.renderer.appendChild(defs, pattern);
 		pattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
 		this.renderer.setAttribute(pattern, "id", "sign-12");
@@ -613,7 +641,8 @@ export class KpAstroComponent implements OnInit {
 		this.renderer.setAttribute(image, "width", s1.toString());
 		image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href",
 							 "https://66.media.tumblr.com/e5363d15ee528c55c229455a30e7c08e/tumblr_pg26ptGPpi1xp0noco1_75sq.png");
-		this.renderer.appendChild(pattern, image);
+							 this.renderer.setAttribute(image, "fill", "#d4cdcd");
+							 this.renderer.appendChild(pattern, image);
 		this.renderer.appendChild(defs, pattern);
 		pattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
 		this.renderer.setAttribute(pattern, "id", "sign-13");
@@ -628,7 +657,8 @@ export class KpAstroComponent implements OnInit {
 		image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href",
 							 "https://66.media.tumblr.com/cec5baaba18d34716137819875ff6b6e/tumblr_pg26qqWSJh1xp0noco1_75sq.png");
 
-		this.renderer.appendChild(pattern, image);
+							 this.renderer.setAttribute(image, "fill", "#d4cdcd");
+							 this.renderer.appendChild(pattern, image);
 		this.renderer.appendChild(defs, pattern);
 		pattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
 		this.renderer.setAttribute(pattern, "id", "sign-14");
@@ -642,7 +672,8 @@ export class KpAstroComponent implements OnInit {
 		this.renderer.setAttribute(image, "width", s1.toString());
 		image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href",
 							 "https://66.media.tumblr.com/2a7d3aa2e249bb1d9805c22f1f1e10fe/tumblr_pg26rvRsjQ1xp0noco1_75sq.png");
-		this.renderer.appendChild(pattern, image);
+							 this.renderer.setAttribute(image, "fill", "#d4cdcd");
+							 this.renderer.appendChild(pattern, image);
 		this.renderer.appendChild(defs, pattern);
 		pattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern");
 		this.renderer.setAttribute(pattern, "id", "sign-15");
@@ -656,7 +687,8 @@ export class KpAstroComponent implements OnInit {
 		this.renderer.setAttribute(image, "width", s1.toString());
 		image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href",
 							 "https://66.media.tumblr.com/d66f5088be7fb4f3cbbbcdfa91c9aaa5/tumblr_pg26sq4Uag1xp0noco1_75sq.png");
-		this.renderer.appendChild(pattern, image);
+							 this.renderer.setAttribute(image, "fill", "#d4cdcd");
+							 this.renderer.appendChild(pattern, image);
 		this.renderer.appendChild(defs, pattern);
 		this.renderer.appendChild(svg, defs);
 		var border = 1;
@@ -674,6 +706,10 @@ export class KpAstroComponent implements OnInit {
 		} else {
 			latlng = this.binf.lat + ',' + this.binf.lng;
 		}
+		const fontSizePercentage = 10; 
+		const fontSize = (size * fontSizePercentage) / 100;
+		const xPositionPercentage = 5; // Adjust this percentage as needed
+		const xPosition = (size * xPositionPercentage) / 100;
 		for (var i = 0; i < numberPerSide; i++) {
 			for (var j = 0; j < numberPerSide; j++) {
 				if ((i * numberPerSide + j) == 5 || (i * numberPerSide + j) == 6 || (i * numberPerSide + j) == 9 || (i * numberPerSide + j) == 10) {
@@ -685,13 +721,14 @@ export class KpAstroComponent implements OnInit {
 						this.renderer.setAttribute(box, "width", s2.toString());
 						this.renderer.setAttribute(box, "height", s2.toString());
 						this.renderer.setAttribute(box, "border", border.toString());
-						this.renderer.setAttribute(box, "stroke", "#d35400");
-						this.renderer.setAttribute(box, "fill", "#ffd9a3");
+						this.renderer.setAttribute(box, "fill", `${this.middleSectionBgColor}`);
+						//this.renderer.setAttribute(box, "stroke", "#d35400");
+						//this.renderer.setAttribute(box, "fill", "#ffd9a3");
 						this.renderer.setAttribute(box, "id", "b" + number);
 						this.renderer.appendChild(g, box);
 						var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
 						this.renderer.appendChild(text, document.createTextNode(this.binf.name));
-						this.renderer.setAttribute(text, "fill", "#d35400");
+						this.renderer.setAttribute(text, "fill", `${this.middleSectionTextColor}`);
 						this.renderer.setAttribute(text, "font-size", "1.35rem");
 						this.renderer.setAttribute(text, "font-weight", "bold");
 						this.renderer.setAttribute(text, "alignment-baseline", "middle");
@@ -702,7 +739,7 @@ export class KpAstroComponent implements OnInit {
 						g.appendChild(text);
 						text = document.createElementNS("http://www.w3.org/2000/svg", "text");
 						this.renderer.appendChild(text, document.createTextNode(db));
-						this.renderer.setAttribute(text, "fill", "#d35400");
+						this.renderer.setAttribute(text, "fill", `${this.middleSectionTextColor}`);
 						this.renderer.setAttribute(text, "font-size", "0.8rem");
 						this.renderer.setAttribute(text, "font-weight", "bold");
 						this.renderer.setAttribute(text, "alignment-baseline", "middle");
@@ -769,9 +806,10 @@ export class KpAstroComponent implements OnInit {
 									pcnt2++;
 									text = document.createElementNS("http://www.w3.org/2000/svg", "text");
 									this.renderer.appendChild(text, document.createTextNode(pls[o]));
-									this.renderer.setAttribute(text, "font-size", s6.toString());
+									this.renderer.setAttribute(text, "font-size", fontSize.toString());
 									this.renderer.setAttribute(text, "font-weight", "bold");
-									this.renderer.setAttribute(text, "x", s7.toString());
+									this.renderer.setAttribute(text, "fill", `${this.textColor}`);
+									this.renderer.setAttribute(text, "x", xPosition.toString());
 									var s8 = top_ofset + (10 * pcnt2);
 									this.renderer.setAttribute(text, "y",  s8.toString());
 									this.renderer.setAttribute(text, "id", "t" + number.toString());

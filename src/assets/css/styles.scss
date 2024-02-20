@@ -6,25 +6,22 @@ $orange-darker: darken($orange, 10%); /* darker shade */
 $orange-brighter: lighten($orange, 10%); /* brighter shade */
 $white: #fff;
 $gray-light: #F5F5F5;
-:root {
---app-theme-bg: #ffbf00;
-}
 /* Provide sufficient contrast against white background */
 body {
   font-family: roboto, "Open Sans", Lato, Montserra;
 }
-
 h1 {
   font-size: 36px !important;
 }
-
 h2 {
   font-size: 24px !important;
 }
 code {
   color: #e01a76;
 }
-
+img {
+  filter: invert(100%); /* Invert the image colors for dark theme */
+}
 .heading-box h2 {
   width: 100%;
   color: red;
@@ -573,11 +570,6 @@ img.lazy {
   overflow: hidden;
   clear: both;
 }
-a, a:link, a:visited {
-  color: #222;
-  text-decoration: none;
-  -webkit-backface-visibility: hidden;
-}
 .recent-posts li.post .post-content {
   overflow: hidden;
   margin-left: 160px;
@@ -679,13 +671,6 @@ img {
   display: block;
 }
 
-img {
-  vertical-align: middle;
-}
-
-img {
-  border: 0;
-}
 post-footer {
   display: block;
   position: relative;
@@ -906,19 +891,6 @@ color: #ffffff;
     color: $white;
   }
 }
-
-.btn-success {
-  background-color: $orange;
-  border-color: $orange-darker;
-  color: $white;
-}
-
-.btn-success:hover {
-  background-color: $orange-brighter;
-  border-color: $orange;
-  color: $white;
-}
-
 
 @-webkit-keyframes spin {
   0% {

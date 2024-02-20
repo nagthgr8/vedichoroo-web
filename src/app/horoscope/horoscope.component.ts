@@ -4,6 +4,7 @@ import {TranslateService} from '@ngx-translate/core';
 import { Chart, registerables } from 'chart.js';
 import { ShareService } from '../share.service'
 import { HoroscopeService } from '../horoscope.service';
+import { ThemeService } from '../theme.service';
 import { PlanetStar } from '../planet-star';
 import { Dasha } from '../dasha';
 import { Observable, forkJoin } from 'rxjs';
@@ -82,7 +83,13 @@ export class HoroscopeComponent implements OnInit {
 	msg3: string ='';
 	msg4: string = '';
 	showBD = false;
-	constructor(private router: Router, private route: ActivatedRoute, public shareService: ShareService, public renderer: Renderer2, public horoService: HoroscopeService, private translate: TranslateService) {
+	bgColor: string;
+	textColor: string;
+	borderColor: string;
+	strokeWidth: number;
+	middleSectionBgColor: string;
+	middleSectionTextColor: string;
+	constructor(private router: Router, private route: ActivatedRoute, public shareService: ShareService, public renderer: Renderer2, public horoService: HoroscopeService, private translate: TranslateService, private themeService: ThemeService) {
 	  Chart.register(...registerables);
 		if (this.router.getCurrentNavigation().extras.state) {
 			this.binf = this.router.getCurrentNavigation().extras.state;
@@ -242,7 +249,12 @@ export class HoroscopeComponent implements OnInit {
 						this.birth_star = this.shareService.translate_func(res['birth_star']);
 						this.star_lord = this.shareService.translate_func(res['star_lord']);
 						this.moon_phase = this.shareService.translate_func(res['moon_phase']);
-						this.loadHoro();
+						console.log('getting theme..');
+						this.themeService.currentTheme$.subscribe((currentTheme) => {
+							console.log('calling loadHoro..');
+							this.updateColors(currentTheme);
+							this.loadHoro();
+						});
 				this.msg1 = 'Calculating Astakavarga..';
 				if(this.binf.akv != null) {
 					this.akvChart(this.binf.akv);
@@ -298,6 +310,14 @@ export class HoroscopeComponent implements OnInit {
 			}
 		}
 	}
+	private updateColors(currentTheme: string) {
+		this.bgColor = currentTheme === 'dark' ? '#2c3e50' : '#ffffff';
+		this.textColor = currentTheme === 'dark' ? '#ecf0f1' : '#333333';
+		this.borderColor = currentTheme === 'dark' ? '#3498db' : '#666666';
+		this.strokeWidth = 1;
+		this.middleSectionBgColor = currentTheme === 'dark' ? '#34495e' : '#ecf0f1';
+		this.middleSectionTextColor = currentTheme === 'dark' ? '#ecf0f1' : '#333333';		
+	  }
   akvChart(akv) {
   			   this.msg1 = '';
 			   this.showHS = true;
@@ -1485,6 +1505,10 @@ export class HoroscopeComponent implements OnInit {
 		} else {
 			latlng = this.binf.lat + ',' + this.binf.lng;
 		}
+		const fontSizePercentage = 10; 
+		const fontSize = (size * fontSizePercentage) / 100;
+		const xPositionPercentage = 5; // Adjust this percentage as needed
+		const xPosition = (size * xPositionPercentage) / 100;
 		for (var i = 0; i < numberPerSide; i++) {
 			for (var j = 0; j < numberPerSide; j++) {
 				if ((i * numberPerSide + j) == 5 || (i * numberPerSide + j) == 6 || (i * numberPerSide + j) == 9 || (i * numberPerSide + j) == 10) {
@@ -1496,13 +1520,14 @@ export class HoroscopeComponent implements OnInit {
 						this.renderer.setAttribute(box, "width", s2.toString());
 						this.renderer.setAttribute(box, "height", s2.toString());
 						this.renderer.setAttribute(box, "border", border.toString());
-						this.renderer.setAttribute(box, "stroke", "#d35400");
-						this.renderer.setAttribute(box, "fill", "#ffd9a3");
+						this.renderer.setAttribute(box, "fill", `${this.middleSectionBgColor}`);
+						//this.renderer.setAttribute(box, "stroke", "#d35400");
+						//this.renderer.setAttribute(box, "fill", "#ffd9a3");
 						this.renderer.setAttribute(box, "id", "b" + number);
 						this.renderer.appendChild(g, box);
 						var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
 						this.renderer.appendChild(text, document.createTextNode(this.binf.name));
-						this.renderer.setAttribute(text, "fill", "#d35400");
+						this.renderer.setAttribute(text, "fill", `${this.middleSectionTextColor}`);
 						this.renderer.setAttribute(text, "font-size", "1.35rem");
 						this.renderer.setAttribute(text, "font-weight", "bold");
 						this.renderer.setAttribute(text, "alignment-baseline", "middle");
@@ -1513,7 +1538,7 @@ export class HoroscopeComponent implements OnInit {
 						g.appendChild(text);
 						text = document.createElementNS("http://www.w3.org/2000/svg", "text");
 						this.renderer.appendChild(text, document.createTextNode(db));
-						this.renderer.setAttribute(text, "fill", "#d35400");
+						this.renderer.setAttribute(text, "fill", `${this.middleSectionTextColor}`);
 						this.renderer.setAttribute(text, "font-size", "0.8rem");
 						this.renderer.setAttribute(text, "font-weight", "bold");
 						this.renderer.setAttribute(text, "alignment-baseline", "middle");
@@ -1524,7 +1549,7 @@ export class HoroscopeComponent implements OnInit {
 						g.appendChild(text);
 						text = document.createElementNS("http://www.w3.org/2000/svg", "text");
 						this.renderer.appendChild(text, document.createTextNode(latlng));
-						this.renderer.setAttribute(text, "fill", "#d35400");
+						this.renderer.setAttribute(text, "fill", `${this.middleSectionTextColor}`);
 						this.renderer.setAttribute(text, "font-size", "0.8rem");
 						this.renderer.setAttribute(text, "font-weight", "bold");
 						this.renderer.setAttribute(text, "alignment-baseline", "middle");
@@ -1547,13 +1572,14 @@ export class HoroscopeComponent implements OnInit {
 				this.renderer.setAttribute(box, "stroke", (this.signs_v[number] == this.asc_sign) ? "#FF5733" : "#d35400");
 				this.renderer.setAttribute(box, "stroke-width", (this.signs_v[number] == this.asc_sign) ? (border+2).toString() : border.toString());
 				this.renderer.setAttribute(box, "fill", sign);
+				this.renderer.setAttribute(box, "fill", `${this.bgColor}`);
 				this.renderer.setAttribute(box, "id", "b" + number.toString());
 				this.renderer.appendChild(g, box);
 				sign = this.signs_v[number];
 				if (plps.hasOwnProperty(sign)) {
 					var pls = plps[sign].split('\|');
 					var pcnt = 0;
-					var s6 = 10;
+					//var s6 = 10;
 					var s7 = 5;
 					for (var k = 0; k < pls.length; k++) {
 						if (pls[k].split(' ')[1] == 'me' || pls[k].split(' ')[1] == 'os') continue;
@@ -1567,12 +1593,13 @@ export class HoroscopeComponent implements OnInit {
 						var plt = pls[k];
 						if(this.shareService.getRETRO().indexOf(pls[k].split(' ')[1]) > -1) plt += '[R]';
 						this.renderer.appendChild(text, document.createTextNode(plt));
-						this.renderer.setAttribute(text, "font-size", s6.toString());
+						this.renderer.setAttribute(text, "font-size", fontSize.toString());
 						this.renderer.setAttribute(text, "font-weight", "bold");
+						this.renderer.setAttribute(text, "fill", `${this.textColor}`);
 						if(pls[k].split(' ')[1] == 'AC') this.renderer.addClass(text, "redText");
 						else if(pls[k].split(' ')[1] == 'Mo') this.renderer.addClass(text, "blueText");
-						this.renderer.setAttribute(text, "x", s7.toString());
-						var s8 = 10 * pcnt;
+						this.renderer.setAttribute(text, "x", xPosition.toString());
+						var s8 = fontSize * pcnt;
 						this.renderer.setAttribute(text, "y",  s8.toString());
 						this.renderer.setAttribute(text, "id", "t" + number.toString());
 						g.appendChild(text);

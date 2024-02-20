@@ -8,7 +8,7 @@ import { ShareService } from './share.service';
 import { DobComponent } from './dob/dob.component';
 import { RechargeComponent } from './recharge/recharge.component';
 import { Plan } from './plan';
-import { CallService } from './call.service';
+//import { CallService } from './call.service';
 import { User } from './user';
 import { Astrologer } from './astrologer';
 import { Caller } from './caller';
@@ -59,7 +59,7 @@ export class AppComponent implements OnInit {
 	user: any;
 	
 	loading: boolean = false;
-	constructor(private router: Router,  private callService: CallService, public modalService: NgbModal, private horoService: HoroscopeService, private shareService: ShareService) {
+	constructor(private router: Router,  public modalService: NgbModal, private horoService: HoroscopeService, private shareService: ShareService) {
 		this.user  = {
 			email: '',
 			pwd: ''
@@ -91,7 +91,7 @@ export class AppComponent implements OnInit {
       }
     });	
 	this.googleAuthSDK();
-	this.callService.callStarted.subscribe((cinf) => {
+/* 	this.callService.callStarted.subscribe((cinf) => {
 	  console.log('AppComponent: callStarted');
 		  let callerInfo: Caller  = {
 		    uuid: '',
@@ -115,7 +115,7 @@ export class AppComponent implements OnInit {
 	  this.showHomePage = false;
       this.showAstroCall = false;
     });  
-	this.shareService.plan
+ */	this.shareService.plan
 			.subscribe(res => {
 				if (res['name'] != '') {
 					let pln: Plan = { uuid: res['uuid'], name: res['name'], credits: res['credits'], dobs: res['dobs'] };
@@ -134,14 +134,14 @@ export class AppComponent implements OnInit {
 					console.log('app.component signin', usr);
 					this.horoService.isAstro(usr.email).subscribe((ast) => {
  					 console.log('isAstro', ast);
-					 this.callService.initPeer(usr.email, ast).then((peer) => {
-						console.log('initPeer', peer);
-						if(peer.id != '-1') {
-							usr.peerid = peer.id;
-							this.shareService.setItem('user', JSON.stringify(usr));
-							if(ast) this.callService.listenToCalls(usr.email, usr.peerid);
-						}
-					 });
+					//  this.callService.initPeer(usr.email, ast).then((peer) => {
+					// 	console.log('initPeer', peer);
+					// 	if(peer.id != '-1') {
+					// 		usr.peerid = peer.id;
+					// 		this.shareService.setItem('user', JSON.stringify(usr));
+					// 		if(ast) this.callService.listenToCalls(usr.email, usr.peerid);
+					// 	}
+					//  });
 					});
 				}
 			});
@@ -180,7 +180,7 @@ export class AppComponent implements OnInit {
 	//this.showHomePage = true;
   }
   ngOnDestroy() {
-    this.callService.stopTracks();
+  //  this.callService.stopTracks();
   }
    	loginGPLUS() {
 	  if(this.oauth2Loaded) {
@@ -324,7 +324,7 @@ console.log('expiresAt', expirationDate.toString());
       if (d.getElementById(id)) {return;}
       js = d.createElement('script'); 
       js.id = id;
-      js.src = "https://apis.google.com/js/platform.js?onload=googleSDKLoaded";
+      js.src = "https://chartss.google.com/js/platform.js?onload=googleSDKLoaded";
       fjs?.parentNode?.insertBefore(js, fjs);
     }(document, 'script', 'google-jssdk'));
    }
@@ -374,7 +374,7 @@ console.log('expiresAt', expirationDate.toString());
 
   signOut(): void {
     this.shareService.getItem('user').then((usr: User) => {
-      this.callService.disconnect(usr.email);
+    //  this.callService.disconnect(usr.email);
       if (this.auth2 && this.auth2.isSignedIn.get()) {
         this.auth2.signOut().then(() => {
           console.log('User signed out.');

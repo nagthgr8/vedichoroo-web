@@ -402,6 +402,7 @@ export class PersonalDetailsComponent implements OnInit {
     processReq(lat, lng, dob, tz, nam)
     {
 	 this.nwait = 18;
+	 console.log('processReq', this.source);
 	 if(this.source == 'Personalized Calendar') {
 		 let binf: BirthInfo = { dob: dob, dob_short: '', lat: lat, lng: lng, timezone: tz, lagna:'',lagna_lord:'',moon_sign:'',sun_sign:'',tithi:'',birth_star:'',star_lord:'',moon_phase:'',name:nam,gender:'',ref:'2', fetch: false, show: true, genrep: false};
 		 this.router.navigate(['/star-const'], {state: binf});
@@ -413,9 +414,12 @@ export class PersonalDetailsComponent implements OnInit {
 		let ofset: number = Number(n.toFixed(1));
 		let ayanid: number = 4;
 		var res = this.shareService.getAYNM();
+		console.log('getAYNM', res);
 		if(res) ayanid = Number(res);
-		   this.horoService.getBirthchartEx2(lat, lng, dob, tz, ofset, ayanid)
+		console.log('calling getBirthChartEx2');
+		this.horoService.getBirthchartEx2(lat, lng, dob, tz, ofset, ayanid)
 		   .subscribe(res => {
+			console.log('getBirthChartEx2', res);
 			this.shareService.setPLPOS(res['planetPos']);
 			this.shareService.setRETRO(res['retroPls']);
 			this.shareService.setPLSTR(res['plStren']);
