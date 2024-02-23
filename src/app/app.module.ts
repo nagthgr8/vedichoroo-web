@@ -13,7 +13,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { library as fontLibrary } from '@fortawesome/fontawesome-svg-core';
 import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons';
-import { NgwWowModule } from 'ngx-wow';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
@@ -75,7 +74,6 @@ fontLibrary.add(
 	  AppRoutingModule,
       FontAwesomeModule,
 	  BrowserAnimationsModule,
-	  NgwWowModule,
 	  NgbModule,
 	  FormsModule,
 	  ReactiveFormsModule,

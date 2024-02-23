@@ -327,10 +327,10 @@ export class PersonalDetailsComponent implements OnInit {
 		this.horoService.addReport('web', dobs, this.chtyp, this.aynm, this.lan, this.eml, this.mob)
 		.subscribe(res => {
 			if(res['status'] != 'E') {
-				this.info = '<strong>Submitted successfully, we will send you the report to your mail id in 24hrs. Please write to <a href="mailto:info@vedichoroo.com">info@vedichoroo.com</a> further you have any questions.</strong>';
+				this.info = '<strong>Submitted successfully, we will send you the report to your mail id in 24hrs. Please write to <a href="mailto:info@vedichoroo.com">info&#64;vedichoroo.com</a> further you have any questions.</strong>';
 				this.razpay(99);
 			} else {
-			   this.info2 = 'There was some internal failure, we regret inconvinience. Please report this error to <a href="mailto:info@vedichoroo.com">info@vedichoroo.com</a>.';
+			   this.info2 = 'There was some internal failure, we regret inconvinience. Please report this error to <a href="mailto:info@vedichoroo.com">info&#64;vedichoroo.com</a>.';
 			}
 		}, (err) => {
 			this.info2 = JSON.stringify(err);
