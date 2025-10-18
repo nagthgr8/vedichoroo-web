@@ -5,6 +5,7 @@
   },
   "version": 1,
   "newProjectRoot": "projects",
+  "defaultProject": "vedichoroo",
   "projects": {
     "vedichoroo": {
       "projectType": "application",
@@ -95,9 +96,7 @@
         },
         "serve": {
 		  "options": {
-			  "ssl": true,
-			  "sslKey": "private.key",
-			  "sslCert": "server.pem"
+			  "ssl": false
 			},
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
@@ -145,6 +144,5 @@
         }
       }
     }
-  },
-  "defaultProject": "vedichoroo"
+  }
 }

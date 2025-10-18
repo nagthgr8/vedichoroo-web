@@ -8,6 +8,7 @@ import { map, catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class HoroscopeService {
+  private oauthToken: string | null = null;
   private apiUrl = 'https://charts.vedichoroo.com/v1/Birthchart';
   private apiUrl43 = 'https://charts.vedichoroo.com/v1/BirthchartEx';
   private apiUrl54 = 'https://charts.vedichoroo.com/v1/BirthchartPro';
@@ -95,6 +96,8 @@ export class HoroscopeService {
   private apiUrl93 = 'https://charts.vedichoroo.com/v1/CreateOrder';
   private apiUrl94 = 'https://charts.vedichoroo.com/v1/Orders';
   private apiUrl95 = 'https://charts.vedichoroo.com/v1/IsAstrologer';
+  private apiUrl96 = 'https://charts.vedichoroo.com/v1/IsSubscriber';
+
   private monthList = [
 	{name: "January",   numdays: 31, abbr: "Jan"},
 	{name: "February",  numdays: 28, abbr: "Feb"},
@@ -110,22 +113,56 @@ export class HoroscopeService {
 	{name: "December",  numdays: 31, abbr: "Dec"},
 ];
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { 
+      this.oauthToken = localStorage.getItem('oauthToken');
+  }
+
+    setOAuthToken(token: string) {
+      localStorage.setItem('oauthToken', token);
+      this.oauthToken = token;
+      console.log('token', token);
+    }
+
+    private getHeaders(url: string, extraHeaders?: {[key: string]: string}): HttpHeaders {
+  let headers = new HttpHeaders().set('Accept', 'application/json; charset=utf-8');
+      if (extraHeaders) {
+        Object.keys(extraHeaders).forEach(key => {
+          headers = headers.set(key, extraHeaders[key]);
+        });
+      }
+      if (this.oauthToken && (url.startsWith('https://charts.vedichoroo.com') || url.startsWith('https://scharts.vedichoroo.com'))) {
+        headers = headers.set('Authorization', `Bearer ${this.oauthToken}`);
+      }
+      return headers;
+    }
   getConnectedAstros() : Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	return this.http.get('https://ast.vedichoroo.com/astrologers', {headers: headers}).pipe(
+    let url = 'https://ast.vedichoroo.com/astrologers';
+    let headers = this.getHeaders(url);
+    return this.http.get(url, {headers: headers}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
     
   }
  getActivePeers(): Observable<any> {
-  let headers = new HttpHeaders().set('Accept', 'application/json; charset=utf-8');
-  return this.http.get('https://ast.vedichoroo.com/active-peers', {headers: headers}).pipe(
+  let url = 'https://ast.vedichoroo.com/active-peers';
+  let headers = this.getHeaders(url);
+  return this.http.get(url, {headers: headers}).pipe(
     map(this.extractData),
     catchError(this.handleError)
   );
+}
+exchangeCodeForTokens(code, codeVerifier, provider) : Observable<any> {
+  var oDat = {
+    code: code,
+    codeVerifier: codeVerifier
+  };
+  let url = 'https://ast.vedichoroo.com/token/' + provider;
+  let headers = this.getHeaders(url, {'Content-Type': 'application/json; charset=utf-8'});
+  return this.http.post(url, JSON.stringify(oDat), { headers: headers }).pipe(
+    map(this.extractData),
+    catchError(this.handleError)
+    );
 }
   getgapiProfilePic(accessToken) : Observable<{}> {
   const headers = { Authorization: `Bearer ${accessToken}` }; 
@@ -137,36 +174,34 @@ export class HoroscopeService {
 }
   
   loginUser(email, password) : Observable<{}> {
-	  var oDat = {
-		  Email: email,
-		  Password: password
-	  };
-	  let headers = new HttpHeaders()
-		  .set('Accept', 'application/json; charset=utf-8')
-		  .set('Content-Type', 'application/json; charset=utf-8');
-	  return this.http.post('https://reg.vedichoroo.com/User/login', JSON.stringify(oDat), { headers: headers }).pipe(
+    var oDat = {
+      Email: email,
+      Password: password
+    };
+    let url = 'https://reg.vedichoroo.com/User/login';
+    let headers = this.getHeaders(url, {'Content-Type': 'application/json; charset=utf-8'});
+    return this.http.post(url, JSON.stringify(oDat), { headers: headers }).pipe(
 		  map(this.extractData),
 		  catchError(this.handleError)
 		  );
   }  
   createUser(name, email, password) : Observable<{}> {
-	  var oDat = {
-		  UserName: name,
-		  Email: email,
-		  Password: password
-	  };
-	  let headers = new HttpHeaders()
-		  .set('Accept', 'application/json; charset=utf-8')
-		  .set('Content-Type', 'application/json; charset=utf-8');
-	  return this.http.post('https://reg.vedichoroo.com/User/create', JSON.stringify(oDat), { headers: headers }).pipe(
+    var oDat = {
+      UserName: name,
+      Email: email,
+      Password: password
+    };
+    let url = 'https://reg.vedichoroo.com/User/create';
+    let headers = this.getHeaders(url, {'Content-Type': 'application/json; charset=utf-8'});
+    return this.http.post(url, JSON.stringify(oDat), { headers: headers }).pipe(
 		  map(this.extractData),
 		  catchError(this.handleError)
 		  );
   }
   getCurrencyExchangeRate(ccode, ccy): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl91;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
                         .set('ccode', ccode)
 						.set('ccy', ccy);
 	return this.http.get(this.apiUrl91, {headers: headers, params: httpParams}).pipe(
@@ -175,31 +210,29 @@ export class HoroscopeService {
    );
   }
   getOrderStatus(orderid): Observable<{}> {
-     let url = this.apiUrl94 + '/' + orderid + '/status';
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	return this.http.get(url, {headers: headers}).pipe(
+  let url = this.apiUrl94 + '/' + orderid + '/status';
+     let headers = this.getHeaders(url);
+     return this.http.get(url, {headers: headers}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
   }
   createOrder(amt, ccy):Observable<{}> {
-	  var oDat = {
-		  Amount: amt,
-		  Currency: ccy
-	  };
-	  let headers = new HttpHeaders()
-		  .set('Accept', 'application/json; charset=utf-8')
-		  .set('Content-Type', 'application/json; charset=utf-8');
-	  return this.http.post(this.apiUrl93, JSON.stringify(oDat), { headers: headers }).pipe(
+    var oDat = {
+      Amount: amt,
+      Currency: ccy
+    };
+  let url = this.apiUrl93;
+    let headers = this.getHeaders(url, {'Content-Type': 'application/json; charset=utf-8'});
+    return this.http.post(url, JSON.stringify(oDat), { headers: headers }).pipe(
 		  map(this.extractData),
 		  catchError(this.handleError)
 		  );
    }
    isAstro(eml):Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl95;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
                         .set('eml', eml);
 	return this.http.get(this.apiUrl95, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
@@ -208,9 +241,9 @@ export class HoroscopeService {
 	);
    }
   getBalance(uid):Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl92;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
                         .set('cid', uid);
 	return this.http.get(this.apiUrl92, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
@@ -224,35 +257,33 @@ export class HoroscopeService {
    );
 	}
 	getIP(): Observable<{}> {
-		let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-		return this.http.get(this.apiUrl86, { headers: headers}).pipe(
+  let url = this.apiUrl86;
+  let headers = this.getHeaders(url);
+  return this.http.get(url, { headers: headers}).pipe(
 			map(this.extractData),
 			catchError(this.handleError)
 		);
 	}
 	setProfileBnr(uuid: string, banner: string): Observable<{}> {
-	  var oDat = {
-		  uuid: uuid,
-		  banner: banner
-	  };
-	  let headers = new HttpHeaders()
-		  .set('Accept', 'application/json; charset=utf-8')
-		  .set('Content-Type', 'application/json; charset=utf-8');
-	  return this.http.post(this.apiUrl88, JSON.stringify(oDat), { headers: headers }).pipe(
+    var oDat = {
+      uuid: uuid,
+      banner: banner
+    };
+  let url = this.apiUrl88;
+    let headers = this.getHeaders(url, {'Content-Type': 'application/json; charset=utf-8'});
+    return this.http.post(url, JSON.stringify(oDat), { headers: headers }).pipe(
 		  map(this.extractData),
 		  catchError(this.handleError)
 	  );
   }  
   setProfileBio(uuid: string, bio: string): Observable<{}> {
-	  var oDat = {
-		  uuid: uuid,
-		  bio: bio
-	  };
-	  let headers = new HttpHeaders()
-		  .set('Accept', 'application/json; charset=utf-8')
-		  .set('Content-Type', 'application/json; charset=utf-8');
-	  return this.http.post(this.apiUrl89, JSON.stringify(oDat), { headers: headers }).pipe(
+    var oDat = {
+      uuid: uuid,
+      bio: bio
+    };
+  let url = this.apiUrl89;
+    let headers = this.getHeaders(url, {'Content-Type': 'application/json; charset=utf-8'});
+    return this.http.post(url, JSON.stringify(oDat), { headers: headers }).pipe(
 		  map(this.extractData),
 		  catchError(this.handleError)
 	  );
@@ -262,28 +293,27 @@ export class HoroscopeService {
  console.log(tsec);
  tsec = (tsec == '00') ? '0' : tsec;
  var oDat = {
-	 uuid: uuid,
-	 name: name,
-	 gender: gender,
-	 dob: dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0],
-	 tob: dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + tsec,
-	 pob: pob,
-	 latlng: lat + '|'+lng,
-	 timezone: timezone,
-	 dstofset: dstofset,
-	 ayanid: ayanid,
-	 lang: lang,
-	 chtyp: chtyp,
-	 cimg: cimg,
-	 cnme: cnme,
-	 cnum: cnum,
-	 ceml: ceml
-   };
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/pdf; charset=utf-8') 
-			.set('Content-Type', 'application/json; charset=utf-8');
-return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : headers,responseType : 
-         'blob' as 'json'});			
+    uuid: uuid,
+    name: name,
+    gender: gender,
+    dob: dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0],
+    tob: dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + tsec,
+    pob: pob,
+    latlng: lat + '|'+lng,
+    timezone: timezone,
+    dstofset: dstofset,
+    ayanid: ayanid,
+    lang: lang,
+    chtyp: chtyp,
+    cimg: cimg,
+    cnme: cnme,
+    cnum: cnum,
+    ceml: ceml
+  };
+  let url = this.apiUrl90;
+  let headers = this.getHeaders(url, {'Accept': 'application/pdf; charset=utf-8', 'Content-Type': 'application/json; charset=utf-8'});
+  return this.http.post<Blob>(url, JSON.stringify(oDat), { headers : headers,responseType : 
+         'blob' as 'json'});      
 	//return this.http.post(this.apiUrl85, JSON.stringify(oDat), {headers: headers}).pipe(
     // map(this.extractData),
     //catchError(this.handleError)
@@ -291,39 +321,38 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    }
   
   getDailyHoro(moonSign: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8')
-	let httpParams = new HttpParams()
+  let url = this.apiUrl2;
+    let headers = this.getHeaders(url);
+    let httpParams = new HttpParams()
                         .set('sign', moonSign);
-	console.log('calling api', this.apiUrl2);
-  return this.http.get(this.apiUrl2, {headers: headers, params: httpParams}).pipe(
+    console.log('calling api', url);
+  return this.http.get(url, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
   }
   subscribeAstroUser(token: string, moonSign: string, moonDeg: number): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
-                        .set('token', token)
-						.set('sign', moonSign)
-						.set('deg', moonDeg.toString());
-  return this.http.get(this.apiUrl3, {headers: headers, params: httpParams}).pipe(
+  let url = this.apiUrl3;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
+            .set('token', token)
+            .set('sign', moonSign)
+            .set('deg', moonDeg.toString());
+  return this.http.get(url, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
   }
   addSubscriber(uuid: string, nam: string, mob: string, eml: string): Observable<{}> {
-	  var oDat = {
-		  uuid: uuid,
-		  nam: nam,
-		  mob: mob,
+    var oDat = {
+      uuid: uuid,
+      nam: nam,
+      mob: mob,
       eml: eml
-	  };
-	  let headers = new HttpHeaders()
-		  .set('Accept', 'application/json; charset=utf-8')
-		  .set('Content-Type', 'application/json; charset=utf-8');
-	  return this.http.post(this.apiUrl30, JSON.stringify(oDat), { headers: headers }).pipe(
+    };
+  let url = this.apiUrl30;
+    let headers = this.getHeaders(url, {'Content-Type': 'application/json; charset=utf-8'});
+    return this.http.post(url, JSON.stringify(oDat), { headers: headers }).pipe(
 		  map(this.extractData),
 		  catchError(this.handleError)
 	  );
@@ -348,10 +377,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    oDat.latlng = latlng;
    oDat.timezone = tz;
    oDat.lang = lang;
-   //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl1111;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
 						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0')
 						.set('latlng', latlng)
@@ -364,10 +392,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
   }
   calcVim(dob: string, lord: string, mpos: number, nsp: number, msi: number, nsi: number, lang: string): Observable<{}> {
 
-   //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl55;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('dob', dob)
 						.set('lord', lord)
 						.set('mpos', mpos.toString())
@@ -388,10 +415,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
 	var latlng = lat + '|' + lng;
 	//var oDat = 'dob=' + dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0] + '&tob=' + //dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0' + '&latlng=' + latlng + '&timezone=' + tz + '&name=' + '&eml=';
 
-   //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl50;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
 						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0')
 						.set('latlng', latlng)
@@ -411,10 +437,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
 	var latlng = lat + '|' + lng;
 	//var oDat = 'dob=' + dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0] + '&tob=' + //dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0' + '&latlng=' + latlng + '&timezone=' + tz + '&name=' + '&eml=';
 
-   //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl57;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
 						.set('das', das)
                         .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
 						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0')
@@ -435,10 +460,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
 	var latlng = lat + '|' + lng;
 	//var oDat = 'dob=' + dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0] + '&tob=' + //dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0' + '&latlng=' + latlng + '&timezone=' + tz + '&name=' + '&eml=';
 
-   //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl58;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
 						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0')
 						.set('latlng', latlng)
@@ -458,10 +482,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
 	var latlng = lat + '|' + lng;
 	//var oDat = 'dob=' + dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0] + '&tob=' + //dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0' + '&latlng=' + latlng + '&timezone=' + tz + '&name=' + '&eml=';
 
-   //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl60;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
 						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0')
 						.set('latlng', latlng)
@@ -480,10 +503,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
 		lng = lng.split("º")[0] + '.' + lng.split("º")[1].split("'")[0];
 	var latlng = lat + '|' + lng;
 	//var oDat = 'dob=' + dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0] + '&tob=' + //dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0' + '&latlng=' + latlng + '&timezone=' + tz + '&name=' + '&eml=';
-   //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl51;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
 						.set('mdas', mdas)
                         .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
 						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0')
@@ -498,10 +520,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
   }
   getTransPreds(dob: string): Observable<{}> {
 
-   //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl38;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
 						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0');
 	return this.http.get(this.apiUrl38, {headers: headers, params: httpParams}).pipe(
@@ -510,9 +531,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    );
   }
   getNotif(uuid: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl29;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
                         .set('uuid', uuid);
 	return this.http.get(this.apiUrl29, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
@@ -520,9 +541,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    );
   }
   getQuota(uuid: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl77;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
                         .set('uuid', uuid);
 	return this.http.get(this.apiUrl77, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
@@ -530,9 +551,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    );
   }
 	getSubscriber(uuid: string, eml: string): Observable<{}> {
-		let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');
-		let httpParams = new HttpParams()
+  let url = this.apiUrl87;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
 			.set('uuid', uuid)
 			.set('eml', eml);
 		return this.http.get(this.apiUrl87, { headers: headers, params: httpParams }).pipe(
@@ -541,9 +562,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
 		);
 	}
   getPlan(uuid: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl23;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('uuid', uuid);
 	return this.http.get(this.apiUrl23, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
@@ -551,9 +572,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    );
   }
   getOffer(uuid: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl53;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('uuid', uuid);
 	return this.http.get(this.apiUrl53, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
@@ -561,9 +582,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    );
   }  
   getAllAstrologers(): Observable<{}> {
-    let headers = new HttpHeaders()
-    .set('Accept', 'application/json; charset=utf-8');  
-	return this.http.get(this.apiUrl36, {headers: headers}).pipe(
+  let url = this.apiUrl36;
+  let headers = this.getHeaders(url);
+   return this.http.get(url, {headers: headers}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
@@ -575,9 +596,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    );
   }  
   getReports(uuid: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl70;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('uuid', uuid);
 	return this.http.get(this.apiUrl70, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
@@ -591,9 +612,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    );
   }   
   getAstrologer(uuid: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl32;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('uuid', uuid);
 	return this.http.get(this.apiUrl32, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
@@ -601,9 +622,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    );
   }
   getStory(uuid: string, title: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl74;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('uuid', uuid)
 						.set('title', title);
 	return this.http.get(this.apiUrl74, {headers: headers, params: httpParams}).pipe(
@@ -612,9 +633,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    );
   }
   getComments(title: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl83;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
 						.set('page_id', title);
 	return this.http.get(this.apiUrl83, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
@@ -622,9 +643,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    );
   }
   getMsg(uuid: string, tag: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl75;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('uuid', uuid)
 						.set('tag', tag);
 	return this.http.get(this.apiUrl75, {headers: headers, params: httpParams}).pipe(
@@ -633,9 +654,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    );
   }
   getProfile(uuid: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl72;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('uuid', uuid);
 	return this.http.get(this.apiUrl72, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
@@ -643,9 +664,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    );
   }
   setProfile(uuid: string, avatar: string, dob: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl73;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('uuid', uuid)
 						.set('avatar', avatar)
 						.set('dob', dob);
@@ -656,9 +677,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
   }  
   
   isAdmin(uuid: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl67;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('uuid', uuid);
 	return this.http.get(this.apiUrl67, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
@@ -666,9 +687,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    );
   }
   getAstroBio(uid: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl64;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('uid', uid);
 	return this.http.get(this.apiUrl64, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
@@ -676,9 +697,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    );
   }
   setAstStatus(uuid: string, status: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl33;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('uuid', uuid)
 						.set('status', status);
 	return this.http.get(this.apiUrl33, {headers: headers, params: httpParams}).pipe(
@@ -687,9 +708,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    );
   }
   setAstTagline(uuid: string, tagline: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl34;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('uuid', uuid)
 						.set('tagline', tagline);
 	return this.http.get(this.apiUrl34, {headers: headers, params: httpParams}).pipe(
@@ -702,9 +723,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
 	uuid: uuid,
 	avatar: avatar
    };
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl35;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('uuid', uuid)
 						.set('avatar', avatar);
 	return this.http.get(this.apiUrl35, {headers: headers, params: httpParams}).pipe(
@@ -713,9 +734,9 @@ return this.http.post<Blob>(this.apiUrl90, JSON.stringify(oDat), { headers : hea
    );
   }
 setQuota(uuid: string, qta: number): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl78;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('uuid', uuid)
 						.set('qta', qta.toString());
 	return this.http.get(this.apiUrl78, {headers: headers, params: httpParams}).pipe(
@@ -724,9 +745,9 @@ setQuota(uuid: string, qta: number): Observable<{}> {
    );
   }  
   setPlan(uuid: string, name: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl24;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('uuid', uuid)
 						.set('name', name);
 	return this.http.get(this.apiUrl24, {headers: headers, params: httpParams}).pipe(
@@ -734,10 +755,21 @@ setQuota(uuid: string, qta: number): Observable<{}> {
     catchError(this.handleError)
    );
   }
-  addCredits(uuid: string, credits: number): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  isSubscriber(eml):Observable<{}> {
+  let url = this.apiUrl96;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
+                          .set('eml', eml);
+    return this.http.get(this.apiUrl96, {headers: headers, params: httpParams}).pipe(
+      map(this.extractData),
+    map((res: any) => res === true),
+      catchError(this.handleError)
+    );
+     }
+    addCredits(uuid: string, credits: number): Observable<{}> {
+  let url = this.apiUrl25;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
                         .set('uuid', uuid)
 						.set('credits', credits.toString());
 	return this.http.get(this.apiUrl25, {headers: headers, params: httpParams}).pipe(
@@ -746,9 +778,9 @@ setQuota(uuid: string, qta: number): Observable<{}> {
    );
   }
   addDOB(uuid: string, dob: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl26;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
                         .set('uuid', uuid)
 						.set('dob', dob);
 	return this.http.get(this.apiUrl26, {headers: headers, params: httpParams}).pipe(
@@ -757,9 +789,9 @@ setQuota(uuid: string, qta: number): Observable<{}> {
    );
   }
   remDOB(uuid: string, dob: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl81;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
                         .set('uuid', uuid)
 						.set('dob', dob);
 	return this.http.get(this.apiUrl81, {headers: headers, params: httpParams}).pipe(
@@ -768,9 +800,9 @@ setQuota(uuid: string, qta: number): Observable<{}> {
    );
   }
   addTicket(uuid: string, cat: string, sub: string, msg: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl27;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('uuid', uuid)
 						.set('cat', cat)
 						.set('sub', sub)
@@ -796,10 +828,9 @@ setQuota(uuid: string, qta: number): Observable<{}> {
    email: '',
    upvote_users: ''
  };
- let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8')
-			.set('Content-Type', 'application/json; charset=utf-8');
- 	return this.http.post(this.apiUrl84, JSON.stringify(oDat), {headers: headers}).pipe(
+ let url = this.apiUrl84;
+ let headers = this.getHeaders(url, {'Content-Type': 'application/json; charset=utf-8'});
+ return this.http.post(url, JSON.stringify(oDat), {headers: headers}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
@@ -810,9 +841,9 @@ setQuota(uuid: string, qta: number): Observable<{}> {
    guid: guid,
    msg: msg
    };
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl28;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
                         .set('uuid', uuid)
 						.set('guid', guid)
 						.set('msg', msg);
@@ -822,9 +853,9 @@ setQuota(uuid: string, qta: number): Observable<{}> {
    );
   } 
   addReport(uuid: string, dobs: string, chtyp: string, aynm: string, lan: string, eml: string, mob: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl69;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
                         .set('uuid', uuid)
 						.set('dobs', dobs)
 						.set('chtyp', chtyp)
@@ -838,9 +869,9 @@ setQuota(uuid: string, qta: number): Observable<{}> {
    );
   }  
   updateReport(uuid: string, guid: string, lnk: string): Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl71;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
                         .set('uuid', uuid)
 						.set('guid', guid)
 						.set('lnk', lnk);
@@ -849,42 +880,15 @@ setQuota(uuid: string, qta: number): Observable<{}> {
     catchError(this.handleError)
    );
   }  
-getHoro(lat: any, lng: any, dob: string, tz: string): Observable<{}> {
-    console.log('getHoro', lat);
-	if(lat.toString().indexOf('º') > -1)
-		lat = lat.split("º")[0] + '.' + lat.split("º")[1].split("'")[0];
-	if(lng.toString().indexOf('º') > -1)
-		lng = lng.split("º")[0] + '.' + lng.split("º")[1].split("'")[0];
-	var latlng = lat + '|' + lng;
-	//var oDat = 'dob=' + dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0] + '&tob=' + //dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0' + '&latlng=' + latlng + '&timezone=' + tz + '&name=' + '&eml=';
-
-   //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
-                        .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
-						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0')
-						.set('latlng', latlng)
-						.set('timezone', tz);
-	return this.http.get(this.apiUrl, {headers: headers, params: httpParams}).pipe(
-    map(this.extractData),
-    catchError(this.handleError)
-   );
-  }
 getProHoro(lat: any, lng: any, dob: string, tz: string, ofset: number, ayanid: number): Observable<{}> {
-	//var lat = dmslat.split("º")[0] + '.' + dmslat.split("º")[1].split("'")[0];
-	//var lng = dmslng.split("º")[0] + '.' + dmslng.split("º")[1].split("'")[0];
 	if(lat.toString().indexOf('º') > -1)
 		lat = lat.split("º")[0] + '.' + lat.split("º")[1].split("'")[0];
 	if(lng.toString().indexOf('º') > -1)
 		lng = lng.split("º")[0] + '.' + lng.split("º")[1].split("'")[0];
 	var latlng = lat + '|' + lng;
-	//var oDat = 'dob=' + dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0] + '&tob=' + //dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0' + '&latlng=' + latlng + '&timezone=' + tz + '&name=' + '&eml=';
-
-   //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl54;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
 						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0')
 						.set('latlng', latlng)
@@ -911,9 +915,9 @@ getBirthchartEx2(lat: any, lng: any, dob: string, tz: string, ofset: number, aya
    //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
    let tsec: string = dob.split('T')[1].split(':')[2].split('Z')[0]; 
     tsec = (tsec == '00') ? '0' : tsec;
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl80;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
 						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + tsec)
 						.set('latlng', latlng)
@@ -936,11 +940,11 @@ getBirthchartEx2(lat: any, lng: any, dob: string, tz: string, ofset: number, aya
 	//var oDat = 'dob=' + dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0] + '&tob=' + //dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0' + '&latlng=' + latlng + '&timezone=' + tz + '&name=' + '&eml=';
 
    //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-    let tsec: string = dob.split('T')[1].split(':')[2].split('Z')[0]; 
-	 tsec = (tsec == '00') ? '0' : tsec;
-	let httpParams = new HttpParams()
+   let url = this.apiUrl63;
+   let headers = this.getHeaders(url);
+   let tsec: string = dob.split('T')[1].split(':')[2].split('Z')[0]; 
+   tsec = (tsec == '00') ? '0' : tsec;
+   let httpParams = new HttpParams()
                         .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
 						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + tsec)
 						.set('latlng', latlng)
@@ -963,9 +967,9 @@ getBirthchartEx2(lat: any, lng: any, dob: string, tz: string, ofset: number, aya
    //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
    let tsec: string = dob.split('T')[1].split(':')[2].split('Z')[0]; 
     tsec = (tsec == '00') ? '0' : tsec;
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl65;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
 						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + tsec)
 						.set('latlng', latlng)
@@ -989,9 +993,9 @@ getTransPredsEx(lat: any, lng: any, dob: string, tz: string, ofset: number, ayan
    //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
    let tsec: string = dob.split('T')[1].split(':')[2].split('Z')[0]; 
     tsec = (tsec == '00') ? '0' : tsec;
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl56;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
 						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + tsec)
 						.set('latlng', latlng)
@@ -1013,15 +1017,11 @@ getTransPredsEx(lat: any, lng: any, dob: string, tz: string, ofset: number, ayan
 	var latlng = lat + '|' + lng;
 	//var oDat = 'dob=' + dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0] + '&tob=' + //dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0' + '&latlng=' + latlng + '&timezone=' + tz + '&name=' + '&eml=';
    //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
-   let tsec: string = dob.split('T')[1].split(':')[2].split('Z')[0]; 
-    tsec = (tsec == '00') ? '0' : tsec;
-	let headers = new HttpHeaders();
-	headers = headers.set('Accept', 'application/json; charset=utf-8');  
-    headers.append('Cache-control', 'no-cache');
-	headers.append('Cache-control', 'no-store');
-	headers.append('Expires', '0');
-	headers.append('Pragma', 'no-cache');	
-	let httpParams = new HttpParams()
+  let tsec: string = dob.split('T')[1].split(':')[2].split('Z')[0]; 
+   tsec = (tsec == '00') ? '0' : tsec;
+  let url = this.apiUrl42;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
                         .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
 						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' +  tsec)
 						.set('latlng', latlng)
@@ -1037,16 +1037,12 @@ getTransPredsEx(lat: any, lng: any, dob: string, tz: string, ofset: number, ayan
 	var latlng = lat.toString() + '|' + lng.toString();
 	//var oDat = 'dob=' + dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0] + '&tob=' + //dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0' + '&latlng=' + latlng + '&timezone=' + tz + '&name=' + '&eml=';
    //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
-   let tsec: string = dob.split('T')[1].split(':')[2].split('Z')[0]; 
-   (tsec == '00') ? '0' :  tsec;
-   console.log(tsec);
-	let headers = new HttpHeaders();
-	headers = headers.set('Accept', 'application/json; charset=utf-8');  
-    headers.append('Cache-control', 'no-cache');
-	headers.append('Cache-control', 'no-store');
-	headers.append('Expires', '0');
-	headers.append('Pragma', 'no-cache');	
-	let httpParams = new HttpParams()
+  let tsec: string = dob.split('T')[1].split(':')[2].split('Z')[0]; 
+  (tsec == '00') ? '0' :  tsec;
+  console.log(tsec);
+  let url = this.apiUrl47;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
                         .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
 						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + tsec)
 						.set('latlng', latlng)
@@ -1197,12 +1193,12 @@ getTransPredsEx(lat: any, lng: any, dob: string, tz: string, ofset: number, ayan
   }
   getBirthStar(dob: string): Observable<{}> {
 	//var oDat = 'dob=' + dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0] + '&tob=' + //dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0';
-	let headers = new HttpHeaders()
-				.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
-                        .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
-						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0');
-  return this.http.get(this.apiUrl5, {headers: headers, params: httpParams}).pipe(
+  let url = this.apiUrl5;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
+                .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
+ 					.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0');
+  return this.http.get(url, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
@@ -1216,72 +1212,72 @@ getTransPredsEx(lat: any, lng: any, dob: string, tz: string, ofset: number, ayan
 	//var oDat = 'dob=' + dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0] + '&tob=' + //dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0';
    let tsec: string = dob.split('T')[1].split(':')[2].split('Z')[0]; 
    tsec = (tsec == '00') ? '0' : tsec;
-	let headers = new HttpHeaders()
-				.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
-                        .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
-						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + tsec)
-						.set('latlng', latlng)
-						.set('timezone', tz)
-						.set('ayanid', ayanid.toString());
-  return this.http.get(this.apiUrl45, {headers: headers, params: httpParams}).pipe(
+  let url = this.apiUrl45;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
+                .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
+ 					.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + tsec)
+ 					.set('latlng', latlng)
+ 					.set('timezone', tz)
+ 					.set('ayanid', ayanid.toString());
+  return this.http.get(url, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
   }
   getStarConst(star: string, sign: string, moondeg: string): Observable<{}> {
 	//var oDat = 'star=' + star + '&sign=' + sign + '&moondeg=' + moondeg;
-	let headers = new HttpHeaders()
-				.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
-                        .set('star', star)
-						.set('sign', sign)
-						.set('moondeg', moondeg);
-  return this.http.get(this.apiUrl6, {headers: headers, params: httpParams}).pipe(
+  let url = this.apiUrl6;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
+                .set('star', star)
+ 					.set('sign', sign)
+ 					.set('moondeg', moondeg);
+  return this.http.get(url, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
   }
   getProStarConst(star: string, sign: string, moondeg: string, latlng: string, tz: string, ayanid: number): Observable<{}> {
 	//var oDat = 'star=' + star + '&sign=' + sign + '&moondeg=' + moondeg;
-	let headers = new HttpHeaders()
-				.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
-                        .set('star', star)
-						.set('sign', sign)
-						.set('moondeg', moondeg)
-						.set('latlng', latlng)
-						.set('timezone', tz)
-						.set('ayanid', ayanid.toString());
-  return this.http.get(this.apiUrl46, {headers: headers, params: httpParams}).pipe(
+  let url = this.apiUrl46;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
+                .set('star', star)
+ 					.set('sign', sign)
+ 					.set('moondeg', moondeg)
+ 					.set('latlng', latlng)
+ 					.set('timezone', tz)
+ 					.set('ayanid', ayanid.toString());
+  return this.http.get(url, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
   }
   calForMon(mon: number, yer: number, latlng: string, tz: string, ayanid: number): Observable<{}> {
 	//var oDat = 'star=' + star + '&sign=' + sign + '&moondeg=' + moondeg;
-	let headers = new HttpHeaders()
-				.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
-                        .set('mon', mon.toString())
-						.set('yer', yer.toString())
-						.set('latlng', latlng)
-						.set('timezone', tz)
-						.set('ayanid', ayanid.toString());
-  return this.http.get(this.apiUrl82, {headers: headers, params: httpParams}).pipe(
+  let url = this.apiUrl82;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
+                .set('mon', mon.toString())
+ 					.set('yer', yer.toString())
+ 					.set('latlng', latlng)
+ 					.set('timezone', tz)
+ 					.set('ayanid', ayanid.toString());
+  return this.http.get(url, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
   }
   getTimezone(lat: any, lng: any, timestamp: string): Observable<{}> {
    //var oDat = 'location=' + lat + ',' + lng + '&timestamp=' + timestamp + '&key=' + 'AIzaSyANvr-rVst44P0DMBpDxsu6s0GXUVPrl9M';
-	let headers = new HttpHeaders()
-				.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
-                        .set('location', lat + ',' + lng)
-						.set('timestamp', timestamp)
-						.set('key', 'AIzaSyCx1IH3j2RVc6hT12jR0kG3D8g-cDDq3MA');
-  return this.http.get(this.apiUrl7, {headers: headers, params: httpParams}).pipe(
+  let url = this.apiUrl7;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
+                .set('location', lat + ',' + lng)
+ 					.set('timestamp', timestamp)
+ 					.set('key', 'AIzaSyCx1IH3j2RVc6hT12jR0kG3D8g-cDDq3MA');
+  return this.http.get(url, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
@@ -1293,22 +1289,22 @@ getTransPredsEx(lat: any, lng: any, dob: string, tz: string, ofset: number, ayan
 	);
   }
 getArticle(tok: string): Observable<{}> {
-  let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');
-	let httpParams = new HttpParams()
-                        .set('tok', tok);
-   return this.http.get(this.apiUrl44, {headers: headers, params: httpParams}).pipe(
+  let url = this.apiUrl44;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
+                .set('tok', tok);
+  return this.http.get(url, {headers: headers, params: httpParams}).pipe(
 	map(this.extractData),
     catchError(this.handleError)
 	);
   }  
   
 getBlogs(uid: string): Observable<{}> {
-  let headers = new HttpHeaders()
-  .set('Accept', 'application/json; charset=utf-8');
-	let httpParams = new HttpParams()
-                        .set('uid', uid);
-   return this.http.get(this.apiUrl39, {headers: headers, params: httpParams}).pipe(
+  let url = this.apiUrl39;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
+                .set('uid', uid);
+  return this.http.get(url, {headers: headers, params: httpParams}).pipe(
 	map(this.extractData),
     catchError(this.handleError)
 	);
@@ -1321,12 +1317,11 @@ pubBlog(uuid: string, name: string, avatar: string, title: string, story: string
    title: title,
    story: story,
    img: img
- };
-  let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8')
-			.set('Content-Type', 'application/json; charset=utf-8');
-   return this.http.post(this.apiUrl40, JSON.stringify(oDat), {headers: headers}).pipe(
-	map(this.extractData),
+  };
+  let url = this.apiUrl40;
+  let headers = this.getHeaders(url, {'Content-Type': 'application/json; charset=utf-8'});
+  return this.http.post(url, JSON.stringify(oDat), {headers: headers}).pipe(
+ 	map(this.extractData),
     catchError(this.handleError)
 	);
   }   
@@ -1335,23 +1330,23 @@ addSuggestion(uuid: string, cat: string, msg: string): Observable<{}> {
    uuid: uuid,
    cat: cat,
    msg: msg
- };
-  let headers = new HttpHeaders()
-		.set('Accept', 'application/json; charset=utf-8');
-   return this.http.post(this.apiUrl44, JSON.stringify(oDat), {headers: headers}).pipe(
-	map(this.extractData),
+  };
+  let url = this.apiUrl44;
+  let headers = this.getHeaders(url, {'Content-Type': 'application/json; charset=utf-8'});
+  return this.http.post(url, JSON.stringify(oDat), {headers: headers}).pipe(
+ 	map(this.extractData),
     catchError(this.handleError)
 	);
   }   
 getTransits(mdas: string, adas: string, pdas: string, pend: string): Observable<{}> {
-	let headers = new HttpHeaders();
-	headers = headers.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl10;
+  let headers = this.getHeaders(url);
+ let httpParams = new HttpParams()
                         .set('mdas', mdas)
-						.set('adas', adas)
-						.set('pdas', pdas)
-						.set('pend', pend);
-  return this.http.get(this.apiUrl10, {headers: headers, params: httpParams}).pipe(
+ 					.set('adas', adas)
+ 					.set('pdas', pdas)
+ 					.set('pend', pend);
+  return this.http.get(url, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
@@ -1362,17 +1357,17 @@ getDashTransEx(mdas: string, adas: string, pdas: string, pend: string, lat: any,
 	if(lng.toString().indexOf('º') > -1)
 		lng = lng.split("º")[0] + '.' + lng.split("º")[1].split("'")[0];
 	var latlng = lat + '|' + lng;
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let url = this.apiUrl59;
+   let headers = this.getHeaders(url);
+   let httpParams = new HttpParams()
                         .set('mdas', mdas)
-						.set('adas', adas)
-						.set('pdas', pdas)
-						.set('pend', pend)
-						.set('latlng', latlng)
-						.set('timezone', tz)
-						.set('ayanid', ayanid.toString());
-  return this.http.get(this.apiUrl59, {headers: headers, params: httpParams}).pipe(
+ 					.set('adas', adas)
+ 					.set('pdas', pdas)
+ 					.set('pend', pend)
+ 					.set('latlng', latlng)
+ 					.set('timezone', tz)
+ 					.set('ayanid', ayanid.toString());
+  return this.http.get(url, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
@@ -1388,24 +1383,24 @@ getDashTrans(mdas: string, adas: string, pdas: string, pend: string): Observable
    oDat.adas = adas;
    oDat.pdas = pdas;
    oDat.pend = pend;
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');  
-	let httpParams = new HttpParams()
+  let url = this.apiUrl20;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
                         .set('mdas', mdas)
-						.set('adas', adas)
-						.set('pdas', pdas)
-						.set('pend', pend);
-			
-  return this.http.get(this.apiUrl20, {headers: headers, params: httpParams}).pipe(
+    					.set('adas', adas)
+    					.set('pdas', pdas)
+    					.set('pend', pend);
+  			
+  return this.http.get(url, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
   }  
 getDashaTransits(vim: any): Observable<{}> {
    
-	let headers = new HttpHeaders();
-	headers = headers.set('Accept', 'application/json; charset=utf-8');   
-  return this.http.post(this.apiUrl11, JSON.stringify(vim), {headers: headers}).pipe(
+  let url = this.apiUrl11;
+  let headers = this.getHeaders(url, {'Content-Type': 'application/json; charset=utf-8'});
+  return this.http.post(url, JSON.stringify(vim), {headers: headers}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
@@ -1433,14 +1428,14 @@ getBirthInfo(lat: any, lng: any, dob: string, tz: string): Observable<{}> {
    //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
    let tsec: string = dob.split('T')[1].split(':')[2].split('Z')[0]; 
    tsec = (tsec == '00') ? '0' : tsec;
-	let headers = new HttpHeaders()
-				.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl31;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
                         .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
-						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + tsec)
-						.set('latlng', latlng)
-						.set('timezone', tz);
-	return this.http.get(this.apiUrl31, {headers: headers, params: httpParams}).pipe(
+    					.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + tsec)
+    					.set('latlng', latlng)
+    					.set('timezone', tz);
+  return this.http.get(url, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
@@ -1451,30 +1446,27 @@ getBirthInfoEx(lat: any, lng: any, dob: string, tz: string, ayanid: number): Obs
 	if(lng.toString().indexOf('º') > -1)
 		lng = lng.split("º")[0] + '.' + lng.split("º")[1].split("'")[0];
 	var latlng = lat + '|' + lng;
-	//var oDat = 'dob=' + dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0] + '&tob=' + //dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + '0' + '&latlng=' + latlng + '&timezone=' + tz + '&name=' + '&eml=';
-
-   //let headers = new Headers({ 'Accept': 'application/json; charset=utf-8' });
- let tsec: string = dob.split('T')[1].split(':')[2].split('Z')[0]; 
- tsec = (tsec == '00') ? '0' : tsec;
-	let headers = new HttpHeaders()
-				.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+   let tsec: string = dob.split('T')[1].split(':')[2].split('Z')[0]; 
+   tsec = (tsec == '00') ? '0' : tsec;
+  let url = this.apiUrl79;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
                         .set('dob', dob.split('T')[0].split('-')[2] + '|' + dob.split('T')[0].split('-')[1] + '|' + dob.split('T')[0].split('-')[0])
-						.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + tsec)
-						.set('latlng', latlng)
-						.set('timezone', tz)
-						.set('ayanid', ayanid.toString());
-	return this.http.get(this.apiUrl79, {headers: headers, params: httpParams}).pipe(
+    					.set('tob', dob.split('T')[1].split(':')[0]  + '|' + dob.split('T')[1].split(':')[1] + '|' + tsec)
+    					.set('latlng', latlng)
+    					.set('timezone', tz)
+    					.set('ayanid', ayanid.toString());
+  return this.http.get(url, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
   }
   getKPHouseGroup(uuid: string) : Observable<{}> {
-	let headers = new HttpHeaders()
-				.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl61;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
                         .set('uuid', uuid);
-	return this.http.get(this.apiUrl61, {headers: headers, params: httpParams}).pipe(
+  return this.http.get(url, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
@@ -1484,10 +1476,9 @@ getBirthInfoEx(lat: any, lng: any, dob: string, tz: string, ayanid: number): Obs
 	 uuid: uuid,
 	 hgp: hgp
    };
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8') 
-			.set('Content-Type', 'application/json; charset=utf-8');   
-	return this.http.post(this.apiUrl62, JSON.stringify(oDat), {headers: headers}).pipe(
+  let url = this.apiUrl62;
+  let headers = this.getHeaders(url, {'Content-Type': 'application/json; charset=utf-8'});
+  return this.http.post(url, JSON.stringify(oDat), {headers: headers}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );
@@ -1510,24 +1501,19 @@ getBirthInfoEx(lat: any, lng: any, dob: string, tz: string, ayanid: number): Obs
 	 lang: lang,
 	 chtyp: chtyp
    };
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/pdf; charset=utf-8') 
-			.set('Content-Type', 'application/json; charset=utf-8');
-return this.http.post<Blob>(this.apiUrl85, JSON.stringify(oDat), { headers : headers,responseType : 
-         'blob' as 'json'});			
-	//return this.http.post(this.apiUrl85, JSON.stringify(oDat), {headers: headers}).pipe(
-    // map(this.extractData),
-    //catchError(this.handleError)
-   //);
+  let url = this.apiUrl85;
+  let headers = this.getHeaders(url, {'Accept': 'application/pdf; charset=utf-8', 'Content-Type': 'application/json; charset=utf-8'});
+  return this.http.post<Blob>(url, JSON.stringify(oDat), { headers : headers,responseType : 
+           'blob' as 'json'}); 			
    }
   talkToAstro(uid: string, uuid: string, aid: string) : Observable<{}> {
-	let headers = new HttpHeaders()
-			.set('Accept', 'application/json; charset=utf-8');   
-	let httpParams = new HttpParams()
+  let url = this.apiUrl49;
+  let headers = this.getHeaders(url);
+  let httpParams = new HttpParams()
                         .set('uid', uid)
-						.set('uuid', uuid)
-						.set('aid', aid);
-	return this.http.get(this.apiUrl49, {headers: headers, params: httpParams}).pipe(
+    					.set('uuid', uuid)
+    					.set('aid', aid);
+  return this.http.get(url, {headers: headers, params: httpParams}).pipe(
     map(this.extractData),
     catchError(this.handleError)
    );

@@ -80,7 +80,7 @@
       <a href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <app-user-avatar [name]="user.name" [imageUrl]="user.imageUrl"></app-user-avatar>
       </a>
-      <div class="dropdown-menu dropdown-menu-right mr-50" aria-labelledby="navbarDropdownMenuLink">
+      <div class="dropdown-menu dropdown-menu-end mr-50" aria-labelledby="navbarDropdownMenuLink">
         <div class="dropdown-item"><strong>Balance:</strong> {{user.balance}} {{user.ccy}}<button class="btn btn-success" (click)="vhoevt($event, 'recharge')">Recharge Now</button></div>
         <a class="dropdown-item" href="#">Call History</a>
         <a class="dropdown-item" href="#">Customer Support</a>
@@ -176,6 +176,12 @@
         </div>
       </div>
       <div class="row font-weight-bold text-center"><div class="col-12 col-md-12 d-flex align-items-center justify-content-center">LAGNA: {{lagna}} <span class="text-muted text-uppercase">{{lagml}}-{{lagal}}-{{lagsl}}</span></div></div>
+    </div>
+  </div>
+  <div *ngIf="subscr">
+    <!-- Show download link for subscribed users -->
+    <div class="container text-center py-3">
+      <a href="https://vedichoroo.com/assets/downloads/VEDICHOROO-126.92.8.zip" class="btn btn-primary">Download Software</a>
     </div>
   </div>
 </header>

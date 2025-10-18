@@ -1,10 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, ViewChild, Renderer2, ElementRef, NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, AfterViewInit, OnInit, Input, Output, EventEmitter, SimpleChanges, ViewChild, Renderer2, ElementRef, NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, forkJoin, interval } from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import { HoroscopeService } from '../horoscope.service';
 import { ShareService } from '../share.service';
-import { astroCallStatus, CallService } from '../call.service';
+//import { astroCallStatus, CallService } from '../call.service';
 declare var AudioToggle: any;
 interface CallEndedData {
   callEnded: boolean;
@@ -22,6 +22,7 @@ interface BirthDetails {
   dst: number;
 }
 const parseBirthDetails = (detailsString: string): BirthDetails => {
+  console.log('parseBirthDetails', detailsString);
   const [dateTime, locationPlaceTzDSTNam] = detailsString.split('L');
   const [coordinates, placeTzDSTNam] = locationPlaceTzDSTNam.split('@');
   const [place, tzDSTNam] = placeTzDSTNam.split('$');
@@ -46,8 +47,7 @@ const parseBirthDetails = (detailsString: string): BirthDetails => {
   templateUrl: './astro-call.component.html',
   styleUrls: ['./astro-call.component.scss']
 })
-export class AstroCallComponent {
-  // @ViewChild('remoteAudio', { static: false }) remoteAudio: ElementRef;
+export class AstroCallComponent implements OnInit, AfterViewInit  {
 	@ViewChild('birthChart', {static: true}) birthChart : ElementRef;
 	@Input() callEnded: EventEmitter<true> = new EventEmitter<true>();
 	@Output() callEndedEvent: EventEmitter<void> = new EventEmitter<void>();
@@ -106,57 +106,67 @@ export class AstroCallComponent {
 	showFC: boolean = false;
 	callerInfo: any;
 	subscription: any;
-	liveStream: MediaStream;
+	localStream: MediaStream;
+	remoteStream: MediaStream;
 	mediaRecorder: MediaRecorder | undefined;
     chunks: Blob[] = [];
 	showRec: boolean = false;
   isMuted: boolean = false;
-  remoteAudio;
-  constructor(private router: Router, private callService: CallService, private horoService: HoroscopeService, private shareService: ShareService, public renderer: Renderer2, private translate: TranslateService) { 
+  remoteAudio: any;
+  localAudio: any;
+  constructor(private router: Router, private horoService: HoroscopeService, private shareService: ShareService, public renderer: Renderer2, private translate: TranslateService) { 
   }
-  ngOnInit() {
-    //const audioElement = this.remoteAudio.nativeElement as HTMLAudioElement;
-
+  ngAfterViewInit(): void {
     this.remoteAudio = document.getElementById('remoteAudio') as HTMLAudioElement;
 	console.log('remoteAudio', this.remoteAudio);
-    this.callService.astroCallStarted$.subscribe((stream: MediaStream) => {
-      // Add incoming media stream to the audio element
-	  console.log('astro-call streaming', stream)
-      this.remoteAudio.srcObject = stream;
-	   this.liveStream = stream;
-	  this.remoteAudio.play();
-    });
+	// this.callService.remoteMediaStream$.subscribe((stream: MediaStream) => {
+	// 	console.log('astro-call streaming', stream);
+  
+	// 	// Set the stream as the source object for the audio element
+	// 	if (this.remoteAudio ) {
+	// 	  this.remoteAudio.srcObject = stream;
+	// 	  this.remoteAudio.muted = false;
+	// 	  // Play the audio
+	// 	  this.remoteAudio.play().then(() => {
+	// 		console.log('Audio playback started successfully for remoteAudio');
+	// 	  }).catch((error) => {
+	// 		console.error('Error starting audio playback:', error.message);
+	// 	  });
+	// 	} else {
+	// 	  console.error('Audio element not available.');
+	// 	}
+	//   });
+	  
+  }
+  ngOnInit() {
     this.shareService.cinf.subscribe((callerInfo) => {
     console.log('astro-call ngOnInit callerInfo', callerInfo);
 	  this.callerInfo = callerInfo;
 	  if(!this.callerInfo.iscaller) { 
-			let pinf: any = this.callService.getPeerInfo();
-			console.log('pinf', pinf);
-			let pname: string = pinf.dob.split('#')[1].split('&')[0];
+			let pname: string = callerInfo.dob.split('#')[1].split('&')[0];
 			this.txt1 = 'Incomming call from ' + pname;
-			this.callerInfo.avatar = pinf.pic;
 			this.btn = 'End Call';
 		} 
 	   else {
 			this.txt1 = 'Ringing...';
 	   }
 	 });
-	   astroCallStatus.subscribe((ast) => {
-			console.log('call ended by peer', ast);
-			this.endCallHandler();
-	   });
-		//this.callService.endCall$.subscribe(() => {
-		//		console.log('endCall$');
-		//		this.endCallHandler();
-		//	});
+	//    astroCallStatus.subscribe((ast) => {
+	// 		console.log('call ended by peer', ast);
+	// 		this.endCallHandler();
+	//    });
+	// 	this.callService.endCall$.subscribe(() => {
+	// 			console.log('endCall$');
+	// 			this.endCallHandler();
+	// 		});
 		this.cdt = new Date();
 		this.callerInfo.starttime = this.cdt.getHours().toString() + ':' + this.cdt.getMinutes().toString() + ':' + this.cdt.getSeconds().toString();
 		if(this.callerInfo.iscaller)
 			this.txt1 = 'Talking to ' + this.callerInfo.name;
 		else {
-			let pinf: any = this.callService.getPeerInfo();
-			let pname: string = pinf.dob.split('#')[1].split('&')[0];
-			this.txt1 = 'Talking to ' + pname;
+			//let pinf: any = this.callService.getPeerInfo();
+			//let pname: string = pinf.dob.split('#')[1].split('&')[0];
+			//this.txt1 = 'Talking to ' + pname;
 		}
 	  this.cactv = true;
 	  const interval$ = interval(1000);
@@ -170,13 +180,13 @@ export class AstroCallComponent {
 
 }
 startRecording() {
-  if (this.liveStream) {
-    this.mediaRecorder = new MediaRecorder(this.liveStream);
-    this.mediaRecorder.addEventListener("dataavailable", event => {
-      this.chunks.push(event.data);
-    });
-    this.mediaRecorder.start();
-  }
+//   if (this.liveStream) {
+//     this.mediaRecorder = new MediaRecorder(this.liveStream);
+//     this.mediaRecorder.addEventListener("dataavailable", event => {
+//       this.chunks.push(event.data);
+//     });
+//     this.mediaRecorder.start();
+//   }
 }
 stopRecording() {
   this.mediaRecorder?.stop();
@@ -204,7 +214,6 @@ private endCallHandler() {
 }
 ngOnDestroy() {
 	this.subscription.unsubscribe();
-	//const audioElement = this.remoteAudio.nativeElement as HTMLAudioElement;
 	this.remoteAudio.srcObject = null;
 }
 
@@ -216,9 +225,11 @@ ngOnDestroy() {
     if (this.showRec) this.stopRecording();
 	if(this.btn == 'End Call') { 
 	    this.endCallHandler();
-		this.callService.endCall(this.callerInfo.iscaller, this.callerInfo.aid);
+		//this.callService.endCall(this.callerInfo.iscaller, this.callerInfo.aid, this.callerInfo.uid);
 		this.btn = 'Close';
-	} else this.callService.stopTracks();
+	} else {
+		//this.callService.callEnded.emit();
+	}
  }
   tohms(sec) {
 	let hours   = Math.floor(sec / 3600); // get hours
@@ -309,10 +320,10 @@ ngOnDestroy() {
   }
 
   togglemic(event: any) {
-    this.isMuted = !this.isMuted;
-    this.liveStream.getAudioTracks().forEach(track => {
-      track.enabled = !this.isMuted;
-    });
+    // this.isMuted = !this.isMuted;
+    // this.liveStream.getAudioTracks().forEach(track => {
+    //   track.enabled = !this.isMuted;
+    // });
   }	
   bdtails(evt) {
 	  evt.stopPropagation();
@@ -329,19 +340,19 @@ ngOnDestroy() {
 		}
 		return;
 	  } else this.loading = true;
-	  let pinf: any = this.callService.getPeerInfo();
+	   // let pinf: any = this.callService.getPeerInfo();
 		// Extract date of birth
-		const { dob, tob, lat, lng, place, timezone, gender, name, dst } = parseBirthDetails(pinf.dob);
-		console.log('detailsString', pinf.dob);
-		console.log('dob', dob);
-		console.log('tob', tob);
-		console.log('lng', lng);
-		console.log('lat', lat);
-		console.log('timezone', timezone);
-		console.log('place', place);
-		console.log('name', name);
-		console.log('gender', gender);
-		console.log('dst', dst);
+		// const { dob, tob, lat, lng, place, timezone, gender, name, dst } = parseBirthDetails(pinf.dob);
+		// console.log('detailsString', pinf.dob);
+		// console.log('dob', dob);
+		// console.log('tob', tob);
+		// console.log('lng', lng);
+		// console.log('lat', lat);
+		// console.log('timezone', timezone);
+		// console.log('place', place);
+		// console.log('name', name);
+		// console.log('gender', gender);
+		// console.log('dst', dst);
 		console.log('ngOnInit-Horoscope');
 		forkJoin(
 			this.horoService.getJson('assets/data/signs.json'),
@@ -382,27 +393,27 @@ ngOnDestroy() {
 				let ayanid: number = 4;
 				var res = this.shareService.getAYNM();
 				if(res) ayanid = Number(res);
-			this.horoService.getBirthInfoEx(lat, lng, pinf.dob.split('L')[0], timezone, ayanid)
-			   .subscribe(res => {
-				   this.showBD = true;
-				   this.dob = res['dob'];
-				   this.lagna = this.shareService.translate_func(res['lagna']);
-				   this.lagna_lord = this.shareService.translate_func(res['lagna_lord']);
-				   this.moon_sign = this.shareService.translate_func(res['moon_sign']);
-				   this.sun_sign = this.shareService.translate_func(res['sun_sign']);
-				   this.tithi = this.shareService.translate_func(res['tithi']);
-				   this.birth_star = this.shareService.translate_func(res['birth_star']);
-				   this.star_lord = this.shareService.translate_func(res['star_lord']);
-				   this.moon_phase = this.shareService.translate_func(res['moon_phase']);
-			  }, (err) => {
-			  }) ;
-			   this.horoService.getBirthchartEx2(lat, lng, pinf.dob.split('L')[0], timezone, dst, ayanid)
-		   .subscribe(res => {
-		        this.binf.retro = res['retroPls'];
-				this.loadHoro(res['planetPos']);
-				this.loading = false;
-				this.fetched = true;
-				});
+		// 	this.horoService.getBirthInfoEx(lat, lng, pinf.dob.split('L')[0], timezone, ayanid)
+		// 	   .subscribe(res => {
+		// 		   this.showBD = true;
+		// 		   this.dob = res['dob'];
+		// 		   this.lagna = this.shareService.translate_func(res['lagna']);
+		// 		   this.lagna_lord = this.shareService.translate_func(res['lagna_lord']);
+		// 		   this.moon_sign = this.shareService.translate_func(res['moon_sign']);
+		// 		   this.sun_sign = this.shareService.translate_func(res['sun_sign']);
+		// 		   this.tithi = this.shareService.translate_func(res['tithi']);
+		// 		   this.birth_star = this.shareService.translate_func(res['birth_star']);
+		// 		   this.star_lord = this.shareService.translate_func(res['star_lord']);
+		// 		   this.moon_phase = this.shareService.translate_func(res['moon_phase']);
+		// 	  }, (err) => {
+		// 	  }) ;
+		// 	   this.horoService.getBirthchartEx2(lat, lng, pinf.dob.split('L')[0], timezone, dst, ayanid)
+		//    .subscribe(res => {
+		//         this.binf.retro = res['retroPls'];
+		// 		this.loadHoro(res['planetPos']);
+		// 		this.loading = false;
+		// 		this.fetched = true;
+		// 		});
 		 });
 	  
 	}
@@ -453,18 +464,16 @@ ngOnDestroy() {
         this.renderer.appendChild(this.birthChart.nativeElement, this.svgHoro);
   }
 	drawSIChart(plps) {
-	    let pinf: any = this.callService.getPeerInfo();
-		let pname: string = pinf.dob.split('#')[1].split('&')[0];
-		let dob: string = pinf.dob;
+	    //let pinf: any = this.callService.getPeerInfo();
+		//let pname: string = pinf.dob.split('#')[1].split('&')[0];
+		//let dob: string = pinf.dob;
 		let latlng: string = '';
-		if(dob.indexOf('L') > -1) {
-			let db = dob.split('L')[0].trim();
-			let lat: string = dob.split('L')[1].split('@')[0].split(',')[0].trim();
-			let lng: string = dob.split('L')[1].split('@')[0].split(',')[1].trim();
-			latlng = lat + ',' + lng;
-		} else {
-			//latlng = this.binf.lat + ',' + this.binf.lng;
-		}
+		// if(dob.indexOf('L') > -1) {
+		// 	let db = dob.split('L')[0].trim();
+		// 	let lat: string = dob.split('L')[1].split('@')[0].split(',')[0].trim();
+		// 	let lng: string = dob.split('L')[1].split('@')[0].split(',')[1].trim();
+		// 	latlng = lat + ',' + lng;
+		// } 
         var size = this.device_width;
 		var bxz = size/4;
 		var isz = Math.floor(bxz/3);
@@ -585,7 +594,7 @@ ngOnDestroy() {
 		var tpy: number = (bxz*2);
 		var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
 		
-		this.renderer.appendChild(text, document.createTextNode(pname));
+		//this.renderer.appendChild(text, document.createTextNode(pname));
 		this.renderer.setAttribute(text, "fill", "#d35400");
 		this.renderer.setAttribute(text, "font-size", "1.35rem");
 		this.renderer.setAttribute(text, "font-weight", "bold");
@@ -596,7 +605,7 @@ ngOnDestroy() {
 		this.renderer.setAttribute(text, "id", "tc1");
 		g.appendChild(text);
 		text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-		this.renderer.appendChild(text, document.createTextNode(dob.split('L')[0].trim()));
+		//this.renderer.appendChild(text, document.createTextNode(dob.split('L')[0].trim()));
 		this.renderer.setAttribute(text, "fill", "#d35400");
 		this.renderer.setAttribute(text, "font-size", "1rem");
 		this.renderer.setAttribute(text, "font-weight", "bold");

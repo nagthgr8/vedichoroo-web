@@ -4,7 +4,9 @@ import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { HoroscopeService } from '../horoscope.service';
 import { ShareService } from '../share.service';
 import { Location } from '../location';
+import { User } from '../user';
 import * as moment from 'moment';
+import { Subscriber } from 'rxjs';
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
@@ -49,9 +51,9 @@ export class NavMenuComponent implements OnInit {
 	intervalID = 0;
 	bal: number = 0;
     csym: string = '₹'; 
-  user: any;
+  user: User = null;
   cdt: any;
- 
+  subscr: boolean = false
 	constructor(private horoService: HoroscopeService, private shareService: ShareService, private modalService: NgbModal) {
 		this.showAS = false;
 		this.showLB = true;
@@ -175,12 +177,16 @@ export class NavMenuComponent implements OnInit {
 		});
 	}
   ngOnInit() {
-     
-;
 		this.shareService.signin	
-			.subscribe(usr => {
+			.subscribe((usr: User) => {
 			    console.log('signin', usr);
-				if(usr) { this.user = usr; }
+				if(usr) { 
+					this.user = usr;
+					this.horoService.isSubscriber(usr.email).subscribe((ast) => {
+						console.log('isSubscriber', ast);
+						if(ast) this.subscr = true;
+					});
+				}
 			});
 		this.shareService.gevt
 			.subscribe(res => {

@@ -1,5 +1,6 @@
 import { Component, OnInit,ViewChild, Output, EventEmitter, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HoroscopeService } from '../horoscope.service';
 import { ShareService } from '../share.service';
 import { User } from '../user';
@@ -17,7 +18,7 @@ export class LoginComponent implements OnInit {
   showReg: boolean = false;
   regMsg: string = "Don't have an account?";
   regBtn: string = 'Register now';
-  constructor(private fb: FormBuilder, private shareService: ShareService, private horoService: HoroscopeService) {}
+  constructor(private modalService: NgbModal, private fb: FormBuilder, private shareService: ShareService, private horoService: HoroscopeService) {}
 
   ngOnInit() {
     this.loginForm = this.fb.group({
@@ -32,6 +33,12 @@ export class LoginComponent implements OnInit {
     }, {
       validators: this.passwordMatchValidator,
     });
+	//this.openModal();
+	this.loginForm.disable();
+	this.registerForm.disable();
+  }
+  openModal() {
+  	this.modalService.open(this.loginMdl, { centered: true });
   }
   ngAfterViewInit() {
     this.loginMdlLoaded.emit(this.loginMdl);
@@ -56,22 +63,28 @@ export class LoginComponent implements OnInit {
   }
   onLoginGPLUS(evt) {
 	evt.stopPropagation();
+	this.onSubmitEvent.emit();
 	this.shareService.setGEVT('login-gpls');
   }
   onLoginFB(evt) {
 	evt.stopPropagation();
+	this.onSubmitEvent.emit();
 	this.shareService.setGEVT('login-fb');
   }
   onLogin(evt) {
-    evt.stopProopagation();
+    evt.stopPropagation();
     if(this.loginForm.valid){ 
 		const formData = this.loginForm.value;
 		console.log('formData', formData.email);
 		console.log('formData', formData.password);
 		this.horoService.loginUser(formData.email, formData.password)
-				.subscribe((res) => {
-				  if(res['status'] == 200) {
-					  this.horoService.getBalance(formData.email).subscribe((bal) => {
+			.subscribe((res) => {
+				if(res['status'] == 200) {
+					// Set OAuth token if present in response
+					if (res['token']) {
+						this.horoService.setOAuthToken(res['token']);
+					}
+					this.horoService.getBalance(formData.email).subscribe((bal) => {
 						let user: User = {
 							name: formData.email,
 							email: formData.email,
@@ -80,17 +93,17 @@ export class LoginComponent implements OnInit {
 							ccy: (bal['currency_code'].length > 3) ? '' : bal['currency_code'],
 							peerid: '',
 							dob: '',
-							isprivate: true
+							isprivate: true,
+							issubscr: false
 						};
 						this.shareService.setItem('user', JSON.stringify(user));
 						this.shareService.emitSignIn(user);
 					});
-				  }
-				}, (error) => {
-					console.log('Error while logging in: ', error);
-				});
-			
-		 this.onSubmitEvent.emit();
+				}
+			}, (error) => {
+				console.log('Error while logging in: ', error);
+			});
+		this.onSubmitEvent.emit();
     }
   }
   onRegister(evt) {
@@ -110,7 +123,8 @@ export class LoginComponent implements OnInit {
 						ccy: '',
 						peerid: '',
 						dob: '',
-						isprivate: true
+						isprivate: true,
+						issubscr: false
 					};
 					this.shareService.setItem('user', JSON.stringify(user));
 					this.shareService.emitSignIn(user);

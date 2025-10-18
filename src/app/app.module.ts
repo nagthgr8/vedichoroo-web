@@ -1,8 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, isDevMode } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -30,7 +29,7 @@ import { ChartAnalysisComponent } from './chart-analysis/chart-analysis.componen
 import { TermsandconditionsComponent } from './termsandconditions/termsandconditions.component';
 import { RefundpolicyComponent } from './refundpolicy/refundpolicy.component';
 import { environment } from '../environments/environment';
-import { CallService } from './call.service';
+//import { CallService } from './call.service';
 import { GoogleMapsService } from './google-maps.service';
 import { GoogleMapsAutocompleteService } from './google-maps-autocomplete.service';
 import { UserAvatarComponent } from './user-avatar/user-avatar.component';
@@ -41,6 +40,10 @@ import { AstroCallComponent } from './astro-call/astro-call.component';
 import { CallDialogComponent } from './call-dialog/call-dialog.component';
 import { LoginComponent } from './login/login.component';
 import { DateTimePickerComponent } from './date-time-picker/date-time-picker.component';
+import { FirebaseAppModule } from '@angular/fire/app';
+import { SubscribeComponent } from './subscribe/subscribe.component';
+import { SubscriptionService } from './services/subscription.service';
+import { VerifyComponent } from './verify/verify.component';
 fontLibrary.add(
   faCalendar,
   faClock
@@ -69,18 +72,20 @@ fontLibrary.add(
   AstroCallComponent,
   CallDialogComponent,
   LoginComponent,
-  DateTimePickerComponent
+  DateTimePickerComponent,
+  SubscribeComponent,
+  VerifyComponent
   ],
   imports: [
-	  AppRoutingModule,
+    AppRoutingModule,
       FontAwesomeModule,
 	  BrowserAnimationsModule,
-	  NgwWowModule,
 	  NgbModule,
-	  FormsModule,
+    FormsModule,
 	  ReactiveFormsModule,
     HttpClientModule,
-	  TranslateModule.forRoot({
+    
+    TranslateModule.forRoot({
 		  loader: {
 			  provide: TranslateLoader,
 			  useFactory: HttpLoaderFactory,
@@ -95,9 +100,10 @@ fontLibrary.add(
    })	  
 	],
 	providers: [
-		CallService,
+		//CallService,
 		GoogleMapsService,
-		GoogleMapsAutocompleteService
+		GoogleMapsAutocompleteService,
+    SubscriptionService
 	],
   bootstrap: [AppComponent]
 })

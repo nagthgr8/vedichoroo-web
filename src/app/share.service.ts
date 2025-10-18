@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { VimDasha } from './vim-das';
+import { User } from './user';
+import { Astrologer } from './astrologer';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,7 @@ export class ShareService {
     private dsRep = new BehaviorSubject({ uuid: '', qta: 0 });
 	frep = this.dsRep.asObservable();
 
-	private dsSignIn = new BehaviorSubject(null);
+	private dsSignIn = new BehaviorSubject<User>(null);
 	signin = this.dsSignIn.asObservable();
 	private dsGevts = new BehaviorSubject('');
 	gevt = this.dsGevts.asObservable();
@@ -65,6 +67,8 @@ export class ShareService {
 	uid: string = '';
 	nam: string = '';
 	eml: string = '';
+	private oAst: Astrologer[] = [];
+	subscr: boolean = false;
     constructor() {
      this.getItem('nam').then(nam => {
 	    this.nam = nam as string;
@@ -76,7 +80,12 @@ export class ShareService {
 	    this.lang = lang as string;
      });	 
 	}
-	
+	getASTS() {
+		return this.oAst; 
+	}
+	addAST(ast) {
+		this.oAst.push(ast);
+	}
 	getEMAIL() { return this.eml; }
 	
 	getItem(key) {
@@ -98,10 +107,12 @@ export class ShareService {
 			}
 		});
 	}
+	setSUBSCR(subscr) { this.subscr = subscr; }
 	setItem(key, val) {
 	   localStorage.setItem(key,val);
 	}
 	setUID(uid) { this.uid = uid; }
+	
 	getUID() { return this.uid; }
 	isAST() { return this.bAST; }
 	setPeerId(p) { this.peerid = p; }

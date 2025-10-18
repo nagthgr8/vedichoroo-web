@@ -1,5 +1,7 @@
 import { Component, Directive, ViewChild, ContentChild, TemplateRef, ElementRef, OnInit} from '@angular/core';
-import { Router, NavigationStart, NavigationEnd } from '@angular/router';
+import { Router, ActivatedRoute, NavigationStart, NavigationEnd } from '@angular/router';
+import { initializeApp } from "firebase/app";
+import { getAuth, signInWithPopup, onAuthStateChanged, signInWithCredential, GoogleAuthProvider, signOut  } from "firebase/auth"
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs/internal/Subject';
 import { environment } from '../environments/environment';
@@ -13,9 +15,13 @@ import { User } from './user';
 import { Astrologer } from './astrologer';
 import { Caller } from './caller';
 import { Location } from './location';
+
 declare const FB: any;
 declare const gapi: any;
 declare var Razorpay: any;
+const app = initializeApp(environment);
+const auth = getAuth();
+const provider = new GoogleAuthProvider();
 const timer = ms => new Promise(res => setTimeout(res, ms));
 @Component({
   selector: 'my-app',
@@ -24,14 +30,13 @@ const timer = ms => new Promise(res => setTimeout(res, ms));
 
 })
 export class AppComponent implements OnInit {
-	auth2: any;
 	@ViewChild('loginMdl') loginMdl: TemplateRef<any>;
 	@ViewChild('orderMdl', {static: true }) orderMdl: TemplateRef<any>;
 	@ViewChild('actvMdl') actvMdl: TemplateRef<any>;
     @ViewChild('vhoring', {static: true}) vhoRing;
     @ViewChild('recMdl') recMdl: TemplateRef<any>;
 	@ViewChild('dobMdl') dobMdl: TemplateRef<any>;
-    showAstroCallPage = false;
+	showAstroCallPage = false;
 	showHomePage = true;
 	callEnded: any;
 	callEndedEvent: any;
@@ -57,13 +62,53 @@ export class AppComponent implements OnInit {
     bal: number = 0;
     upro: any = {};
 	user: any;
-	
 	loading: boolean = false;
-	constructor(private router: Router,  public modalService: NgbModal, private horoService: HoroscopeService, private shareService: ShareService) {
+	constructor(private router: Router,  private route: ActivatedRoute, public modalService: NgbModal, private horoService: HoroscopeService, private shareService: ShareService) {
 		this.user  = {
 			email: '',
 			pwd: ''
 		};
+	// Listen for changes in the authentication state
+    onAuthStateChanged(auth, (user) => {
+		if(user) {
+			console.log('onAuthSatateChanged', user);
+				let usr: User = {
+					name: user.displayName,
+					email: user.email,
+					imageUrl: user.photoURL,
+					balance: 0,
+					ccy:'INR',
+					peerid: '',
+					dob: '',
+					isprivate: true,
+					issubscr: false,
+				};
+				this.shareService.getItem('user').then((cusr: User) => {
+					console.log('getItem: User', cusr);
+					usr.dob = cusr.dob;
+					this.shareService.setItem('user', JSON.stringify(usr));
+					this.shareService.emitSignIn(usr);
+				}, (err) => { 
+					console.log('getItem: User', err);
+					this.shareService.setItem('user', JSON.stringify(usr));	
+					this.shareService.emitSignIn(usr);
+				});
+			this.horoService.getBalance(user.email).subscribe((bal) => {
+				usr.balance = bal['balance'];
+				usr.ccy = (bal['currency_code'].length > 3) ? '' : bal['currency_code'];
+				this.shareService.getItem('user').then((cusr: User) => {
+					console.log('getItem: User', cusr);
+					usr.dob = cusr.dob;
+					this.shareService.setItem('user', JSON.stringify(usr));
+					this.shareService.emitSignIn(usr);
+				}, (err) => { 
+					console.log('getItem: User', err);
+					this.shareService.setItem('user', JSON.stringify(usr));	
+					this.shareService.emitSignIn(usr);
+				});
+			})
+		}
+	  });
    
 		// this.vring = new Audio('assets/sounds/ring.mp3');
 			// this.vring.addEventListener('ended', (evt) => {
@@ -81,6 +126,113 @@ export class AppComponent implements OnInit {
 	// }
  // }	
   ngOnInit() {
+	this.horoService.getAllAstrologers().subscribe((oa: any[]) => {
+		console.log('oa', oa);
+		//this.showLD = false;
+		//console.log('showLD', this.showLD);
+		// build Astrologer array
+		let a: number = 0;
+		for (var i = 0; i < oa.length; i++) {
+		  console.log(i, oa[i]);
+		  let call: string = oa[i].mob;
+		  let chat: string = oa[i].mob;
+		  if (oa[i].mob.indexOf('|') > -1) {
+			call = oa[i].mob.split('|')[0];
+			chat = oa[i].mob.split('|')[1];
+		  }
+		  let smsg = 'Not Available';
+		  let status = false;
+		  let cfee: string = '';
+		  let ast: Astrologer = {
+			uuid: oa[i].uuid,
+			name: oa[i].name,
+			tagline: oa[i].tagline,
+			avatar: oa[i].avatar,
+			uid: oa[i].uid,
+			mob: call,
+			walnk: '',
+			smsg: smsg,
+			status: status,
+			peerid: '',
+			cfee: oa[i].cfee,
+			ccy: 'INR',
+			rating: oa[i].rating,
+			tot_ratings: oa[i].tot_ratings,
+			str1: 'fa fa-star-o',
+			str2: 'fa fa-star-o',
+			str3: 'fa fa-star-o',
+			str4: 'fa fa-star-o',
+			str5: 'fa fa-star-o',
+			lng: oa[i].lng,
+			eml: oa[i].eml
+		  };
+  
+		  if (oa[i].rating >= 1 && oa[i].rating < 2) {
+			ast.str1 = 'fa-solid fa-star';
+			ast.str2 = (oa[i].rating > 1) ? 'fa fa-star-half-o' : 'fa fa-star-o';
+			ast.str3 = 'fa fa-star-o';
+			ast.str4 = 'fa fa-star-o';
+			ast.str5 = 'fa fa-star-o';
+		  }
+		  else if (oa[i].rating >= 2 && oa[i].rating < 3) {
+			ast.str1 = 'fa-solid fa-star';
+			ast.str2 = 'fa-solid fa-star';
+			ast.str3 = (oa[i].rating > 2) ? 'fa fa-star-half-o' : 'fa fa-star-o';
+			ast.str4 = 'fa fa-star-o';
+			ast.str5 = 'fa fa-star-o';
+		  }
+		  else if (oa[i].rating >= 3 && oa[i].rating < 4) {
+			ast.str1 = 'fa-solid fa-star';
+			ast.str2 = 'fa-solid fa-star';
+			ast.str3 = 'fa-solid fa-star';
+			ast.str4 = (oa[i].rating > 3) ? 'fa fa-star-half-o' : 'fa fa-star-o';
+			ast.str5 = 'fa fa-star-o';
+		  }
+		  else if (oa[i].rating >= 4 && oa[i].rating < 5) {
+			ast.str1 = 'fa-solid fa-star';
+			ast.str2 = 'fa-solid fa-star';
+			ast.str3 = 'fa-solid fa-star';
+			ast.str4 = 'fa-solid fa-star';
+			ast.str5 = (oa[i].rating > 4) ? 'fa fa-star-half-o' : 'fa fa-star-o';
+		  } else {
+			ast.str1 = 'fa-solid fa-star';
+			ast.str2 = 'fa-solid fa-star';
+			ast.str3 = 'fa-solid fa-star';
+			ast.str4 = 'fa-solid fa-star';
+			ast.str5 = 'fa-solid fa-star';
+		  }
+		  console.log(ast.name, ast.status);
+		  this.shareService.addAST(ast);
+		}
+		// get connected astrologers
+		this.horoService.getConnectedAstros().subscribe((casts: any[]) => {
+		  console.log('casts', casts);
+		
+		  // Extract 'aid' property from each item after parsing JSON
+		  const aids = casts.map(item => {
+			const email: string = Object.keys(item)[0] as string;
+			const astroData: any = JSON.parse(Object.values(item)[0] as string);
+			return astroData?.aid;
+		  }).filter(Boolean);
+		
+		  // Update status values
+		  this.shareService.getASTS().forEach(item1 => {
+			const index = aids.indexOf(item1.eml);
+			if (index !== -1) {
+			  console.log('astrologer found', casts[index]);
+			  const astroData = JSON.parse(Object.values(casts[index])[0] as string);
+			  item1.smsg = astroData.busy ? 'Busy' : 'Available';
+			  item1.status = !astroData.busy;
+			}
+		  });
+		}, (error) => {
+		  console.log(error);
+		});
+	  }, (error) => {
+		console.log(error);
+	  });
+  
+
 	this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
           this.showHomePage = false;
@@ -90,32 +242,32 @@ export class AppComponent implements OnInit {
         }
       }
     });	
-	this.googleAuthSDK();
-/* 	this.callService.callStarted.subscribe((cinf) => {
-	  console.log('AppComponent: callStarted');
-		  let callerInfo: Caller  = {
-		    uuid: '',
-			uid: cinf.cid,
-		    aid: cinf.aid,
-		    caller_name: '',
-		    name: '',
-			avatar: cinf.pic,
-		    iscaller: cinf.is_caller,
-		    duration: 0,
-		    starttime: '',
-		    endtime: '',
-           };
-		  console.log('emitting callerInfo', callerInfo);
-          this.shareService.emitCallerInfo(callerInfo);		   
-		  console.log('showAstroCall');
-		  this.showHomePage = false;
-		  this.showAstroCall = true;
-	});
-    this.callService.callEnded.subscribe(() => {
-	  this.showHomePage = false;
-      this.showAstroCall = false;
-    });  
- */	this.shareService.plan
+ 	// this.callService.callStarted.subscribe((cinf) => {
+	//   console.log('AppComponent: callStarted');
+	// 	  let callerInfo: Caller  = {
+	// 	    uuid: '',
+	// 		uid: cinf.cid,
+	// 		dob: cinf.dob,
+	// 	    aid: cinf.aid,
+	// 	    caller_name: '',
+	// 	    name: '',
+	// 		avatar: cinf.pic,
+	// 	    iscaller: cinf.is_caller,
+	// 	    duration: 0,
+	// 	    starttime: '',
+	// 	    endtime: '',
+    //        };
+	// 	  console.log('emitting callerInfo', callerInfo);
+    //       this.shareService.emitCallerInfo(callerInfo);		   
+	// 	  console.log('showAstroCall');
+	// 	  this.showHomePage = false;
+	// 	  this.showAstroCall = true;
+	// });
+    // this.callService.callEnded.subscribe(() => {
+    //   this.showAstroCall = false;
+	//   this.showHomePage = true;
+    // });  
+ 	this.shareService.plan
 			.subscribe(res => {
 				if (res['name'] != '') {
 					let pln: Plan = { uuid: res['uuid'], name: res['name'], credits: res['credits'], dobs: res['dobs'] };
@@ -133,15 +285,7 @@ export class AppComponent implements OnInit {
 			    if(usr) {
 					console.log('app.component signin', usr);
 					this.horoService.isAstro(usr.email).subscribe((ast) => {
- 					 console.log('isAstro', ast);
-					//  this.callService.initPeer(usr.email, ast).then((peer) => {
-					// 	console.log('initPeer', peer);
-					// 	if(peer.id != '-1') {
-					// 		usr.peerid = peer.id;
-					// 		this.shareService.setItem('user', JSON.stringify(usr));
-					// 		if(ast) this.callService.listenToCalls(usr.email, usr.peerid);
-					// 	}
-					//  });
+						console.log('isAstro', ast);
 					});
 				}
 			});
@@ -180,154 +324,40 @@ export class AppComponent implements OnInit {
 	//this.showHomePage = true;
   }
   ngOnDestroy() {
-  //  this.callService.stopTracks();
+   // this.callService.stopTracks();
   }
-   	loginGPLUS() {
-	  if(this.oauth2Loaded) {
-		this.auth2.signIn().then((googleAuthUser:any) => {
-			this.modalService.dismissAll();
-			localStorage.setItem('id_token', googleAuthUser.getAuthResponse().id_token);
-			localStorage.setItem('access_token', googleAuthUser.getAuthResponse().access_token);			
-			let profile = googleAuthUser.getBasicProfile();
-			console.log('Token || ' + googleAuthUser.getAuthResponse().id_token);
-			console.log('ID: ' + profile.getId());
-			console.log('Name: ' + profile.getName());
-			console.log('Image URL: ' + profile.getImageUrl());
-			console.log('Email: ' + profile.getEmail());
-			/* Write Your Code Here */
-			this.horoService.getBalance(profile.getEmail()).subscribe((res) => {
-				let user: User = {
-					name: profile.getName(),
-					email: profile.getEmail(),
-					imageUrl: null,
-					balance: res['balance'],
-					ccy: (res['currency_code'].length > 3) ? '' : res['currency_code'],
-					peerid: '',
-					dob: '',
-					isprivate: true
-				};
-				this.horoService.getgapiProfilePic(googleAuthUser.getAuthResponse().access_token).subscribe((resp) => {
-				    console.log('getgapiProfilePic', resp);
-					user.imageUrl = resp['photos'][0].url;
-					user.isprivate =  resp['photos'][0]['metadata'] && resp['photos'][0]['metadata']['source'] && resp['photos'][0]['metadata']['source']['type'] === 'PROFILE';7
-					if(user.isprivate) user.imageUrl = null;
-					this.shareService.setItem('user', JSON.stringify(user));
-					this.shareService.emitSignIn(user);
-				}, (err) => {
-					console.log('getgapiProfilePic', err);
-					this.shareService.setItem('user', JSON.stringify(user));
-					this.shareService.emitSignIn(user);
-				});
-				
-			}, (err) => {
-				let user: User = {
-					name: profile.getName(),
-					email: profile.getEmail(),
-					imageUrl: null,
-					balance: -1,
-					ccy: JSON.stringify(err),
-					peerid: '',
-					dob: '',
-					isprivate: true
-				};
-				this.shareService.setItem('user', JSON.stringify(user));
-				this.shareService.emitSignIn(user);
-			});
-			
-		}).catch((error:any) => {
-			//alert(JSON.stringify(error, undefined, 2));
-			console.log('Error:', error);
-			if (error && error.error && error.error.error_description) {
-				alert(error.error.error_description);
-			} else {
-				alert('Error signing in with Google. Please try again later.');
-			}		
-	  });	  
-	  } else {
-		alert('Please wait for OAuth2 library to load.');
-	  }
-	}
-
-  async googleAuthSDK() {
-    (<any>window)['googleSDKLoaded'] = () => {
-      (<any>window)['gapi'].load('auth2', () => {
-		const idToken = localStorage.getItem('id_token');
-		const accessToken = localStorage.getItem('access_token');
-		console.log('id_token', idToken);	
-		console.log('accessToken', accessToken);
-		
-		if(idToken && accessToken) {
-			(<any>window)['gapi'].auth2.init({
-			  client_id: '242286730499-tr8dq77hb8k2e0s55cvhh3m57cjabf1i.apps.googleusercontent.com',
-			  scope: 'email profile openid',
-			  id_token: idToken, // Stored ID token
-			  access_token: accessToken // Stored access token
-			}).then((auth2) => {
-			    const expiresIn = auth2.currentUser.get().getAuthResponse().expires_in;
-				const expiresAt = new Date().getTime() + expiresIn * 1000;
-  const expirationDate = new Date(expiresAt);
-console.log('expiresIn', expiresIn);
-console.log('expiresAt', expirationDate.toString());
-				// Check if the access token has expired
-				if (expiresAt < new Date().getTime()) {
-				  console.log('Access token has expired');
-				  localStorage.removeItem('id_token');
-				  localStorage.removeItem('access_token');
-				  return this.loginGPLUS();
-				} else {
-				  console.log('Access token is still valid');
-				}
-			  this.auth2 = auth2;
-				let profile = auth2.currentUser.get().getBasicProfile();
-				console.log('profile', profile);
-				console.log('Name: ' + profile.getName());
-				console.log('Image URL: ' + profile.getImageUrl());
-				console.log('Email: ' + profile.getEmail());
-				/* Write Your Code Here */
-				this.shareService.getItem('user').then((usr: User) => {
-				   console.log('user', usr);
-				   if(usr) {
-				    if(!usr.hasOwnProperty('balance') || usr.ccy == '' || usr.ccy.length > 3) {
-				     this.horoService.getBalance(profile.getEmail()).subscribe((res) => {
-						usr.balance = res['balance'];
-						usr.ccy = (res['currency_code'] > 3) ? '': res['currency_code'];
-						this.shareService.setItem('user', JSON.stringify(usr));
-						this.shareService.emitSignIn(usr);
-					 });
-				   } 
-					else this.shareService.emitSignIn(usr);
-				  }
-				}, (error) => {
-				  
-				  console.error(error);
-				});
-	
-			}).catch((error) => {
-			  console.error('Failed to initialize auth2:', error);
-			});		
-		} else {
-		    localStorage.removeItem('user');
-			this.auth2 = (<any>window)['gapi'].auth2.init({
-			client_id: '242286730499-tr8dq77hb8k2e0s55cvhh3m57cjabf1i.apps.googleusercontent.com',
-			cookiepolicy: 'single_host_origin',
-			scope: 'profile email'
-			});
-        //this.callgLogin();
-			console.log('goolge oauth2 loaded');
-			this.oauth2Loaded = true;
-		}
-      });
-    }
-     
-    (function(d, s, id){
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) {return;}
-      js = d.createElement('script'); 
-      js.id = id;
-      js.src = "https://chartss.google.com/js/platform.js?onload=googleSDKLoaded";
-      fjs?.parentNode?.insertBefore(js, fjs);
-    }(document, 'script', 'google-jssdk'));
-   }
+  loginGPLUS() {
+	console.log('loginGPLUS');
+	signInWithPopup(auth, provider)
+	.then((result) => {
+	  // This gives you a Google Access Token. You can use it to access the Google API.
+	  const credential = GoogleAuthProvider.credentialFromResult(result);
+	  const token = credential.accessToken;
+  	  
+	  result.user.getIdTokenResult().then((idTokenResult) => {
+  		const expirationTime = idTokenResult.expirationTime; // ISO string
+  		localStorage.setItem('tokenExpiry', expirationTime);
+     });
+	 result.user.getIdToken().then((idToken) => {
+		console.log('idToken', idToken);
+		this.horoService.setOAuthToken(token);
+	});
+	  // The signed-in user info.
+	  const user = result.user;
+	  console.log('user', user);
+	  // IdP data available using getAdditionalUserInfo(result)
+	  // ...
+	}).catch((error) => {
+	  // Handle Errors here.
+	  const errorCode = error.code;
+	  const errorMessage = error.message;
+	  // The email of the user's account used.
+	  const email = error.customData.email;
+	  // The AuthCredential type that was used.
+	  const credential = GoogleAuthProvider.credentialFromError(error);
+	  // ...
+	});
+  }
 
   vstory(s) {
     this.router.navigate(['/Article/' + s.title.replaceAll(' ', '-')], { state: s });
@@ -336,18 +366,19 @@ console.log('expiresAt', expirationDate.toString());
 
    async gevts(evt) {
     console.log('gevts', evt);
-	if(evt == 'login-gpls'){
+	let sevt = evt.toString();
+	if(sevt == 'login-gpls'){
+		console.log('calling loginGPLUS');
 	    this.loginGPLUS();
-	} else if (evt == 'login') {
+	} else if (sevt == 'login') {
 	  const mRef = this.modalService.open(this.loginMdl);
-      
-    } else if(evt == 'dob') {
+    } else if(sevt == 'dob') {
 	  console.log('dobMdl', this.dobMdl);
 	  const user = await this.shareService.getItem('user') as User;
 	  const mRef = this.modalService.open(this.dobMdl);
 	  this.userSubject.next(user);
 	  //mRef.componentInstance.user = user;
-	} else if (evt == 'subscribe') {
+	} else if (sevt == 'subscribe') {
       this.mtitle = 'Subscribe As,';
       this.showLogin = false;
       this.showSO = false;
@@ -359,9 +390,18 @@ console.log('expiresAt', expirationDate.toString());
       });
  
     } 
-    else if (evt == 'logout') {
-      this.signOut();
-     } else if(evt == 'recharge') {
+    else if (sevt == 'logout') {
+		signOut(auth).then(() => {
+			// Sign-out successful.
+			console.log('signout successful');
+			this.shareService.getItem("user").then((usr: User) => {
+	//			this.callService.disconnect(usr.email);
+				localStorage.removeItem('user');
+			});
+		  }).catch((error) => {
+			// An error happened.
+		  });
+     } else if(sevt == 'recharge') {
 		this.modalService.open(this.recMdl).result.then((result) => {
 			}, (reason) => {
 			});
@@ -372,26 +412,9 @@ console.log('expiresAt', expirationDate.toString());
 
 	 }
 
-  signOut(): void {
-    this.shareService.getItem('user').then((usr: User) => {
-    //  this.callService.disconnect(usr.email);
-      if (this.auth2 && this.auth2.isSignedIn.get()) {
-        this.auth2.signOut().then(() => {
-          console.log('User signed out.');
-          localStorage.removeItem('id_token');
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('user');
-          //this.shareService.setGEVT('log');
-          this.router.navigate(['/']);
-        });
-      }
-    });
-	 }
-  // addmoney(evt,amt) {
-	// evt.stopPropagation();
-	// this.razpay(amt);
-	// this.modalService.dismissAll();
-  // }
+  dismissAll() {
+	this.modalService.dismissAll();
+  }
   onLoginMdlLoaded(loginMdl: TemplateRef<any>) {
     console.log('this.loginMdl-OnLoginMdlLoaded', loginMdl);
     this.loginMdl = loginMdl;

@@ -10,30 +10,35 @@ export class GoogleMapsAutocompleteService {
   private autocompleteService: any;
 
   constructor(private googleMapsService: GoogleMapsService) {
-    this.googleMapsService.loadMapScript(environment.apiKey).then(() => {
-      if (google.maps && google.maps.places) {
-        this.autocompleteService = new google.maps.places.AutocompleteService();
-      } else {
-        console.error('Google Maps API not loaded or places library not available');
-      }
-    }).catch(error => {
-      console.error(error);
-    });
+    // this.googleMapsService.loadMapScript(environment.apiKey).then(() => {
+    //   if (google.maps && google.maps.places) {
+    //     this.autocompleteService = new google.maps.places.AutocompleteService();
+    //   } else {
+    //     console.error('Google Maps API not loaded or places library not available');
+    //   }
+    // }).catch(error => {
+    //   console.error(error);
+    // });
   }
 
   getAutocompleteService(): Promise<any> {
-  return new Promise((resolve, reject) => {
-    if (this.autocompleteService) {
-      resolve(this.autocompleteService);
-    } else {
-      this.googleMapsService.loadMapScript(environment.apiKey).then(() => {
+    return new Promise((resolve, reject) => {
+      if (this.autocompleteService) {
+        resolve(this.autocompleteService);
+      } else if (this.googleMapsService.isMapScriptLoaded()) {
+        // The map script is already loaded, initialize AutocompleteService
         this.autocompleteService = new google.maps.places.AutocompleteService();
         resolve(this.autocompleteService);
-      }).catch(error => {
-        reject(error);
-      });
-    }
-  });
-}
-
+      } else {
+        // Load the map script and then initialize AutocompleteService
+        this.googleMapsService.loadMapScript(environment.apiKey).then(() => {
+          this.autocompleteService = new google.maps.places.AutocompleteService();
+          resolve(this.autocompleteService);
+        }).catch(error => {
+          reject(error);
+        });
+      }
+    });
+  }
+  
 }

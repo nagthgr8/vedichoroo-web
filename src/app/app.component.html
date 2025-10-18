@@ -5,7 +5,7 @@
   <div class="container">
     <router-outlet></router-outlet>
   </div>
-  <!-- <app-astro-call (callEndedEvent)="onCallEnded($event)" [callEnded]="callEnded" *ngIf="showAstroCall"></app-astro-call> -->
+  <app-astro-call (callEndedEvent)="onCallEnded($event)" [callEnded]="callEnded" *ngIf="showAstroCall"></app-astro-call>
   <app-home *ngIf='showHomePage'></app-home>
   <div class="contact" id="support">
     <div class="container">
@@ -17,7 +17,7 @@
             <div class="get-intouch-left-address">
               <p>Block 10, Hill Ridge Springs</p>
               <p>Gachibowli, Hyderabad, India</p>
-              <p class="style1">Email: <a href="mailto:info@vedichoroo.com"> info@vedichoroo.com</a></p>
+              <p class="style1">Email: <a href="mailto:info@vedichoroo.com">info&#64;vedichoroo.com</a></p>
               <p class="style2">Phone: +91-9010264567</p>
             </div>
             <div>
@@ -88,8 +88,8 @@
       </div>
     </div>
   </ng-template>
-  <app-login (loginMdlLoaded)="onLoginMdlLoaded($event)" (onSubmitEvent)="modalService.dismissAll()"></app-login>
- <app-dob (dobMdlLoaded)="onDobMdlLoaded($event)" [userEvent]="userSubject.asObservable()" (onSubmitEvent)="modalService.dismissAll()"></app-dob>
+  <app-login (loginMdlLoaded)="onLoginMdlLoaded($event)" (onSubmitEvent)="dismissAll()"></app-login>
+ <app-dob (dobMdlLoaded)="onDobMdlLoaded($event)" [userEvent]="userSubject.asObservable()" (onSubmitEvent)="dismissAll()"></app-dob>
  <app-recharge (recMdlLoaded)="onRecMdlLoaded($event)" (paymentSubmitted)="handlePaymentSubmitted($event)"></app-recharge>
  <ng-template #orderMdl let-modal>
  <div class="modal-header">

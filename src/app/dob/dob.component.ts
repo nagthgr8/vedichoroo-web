@@ -128,6 +128,7 @@ private service: any;
 	this.user.dob = this.dob.year.toString() + '-' + this.dob.month.toString() + '-' + this.dob.day.toString() + 'T' + this.tob.hour.toString() + ':' + this.tob.minute.toString() + ':'  + this.tob.second.toString() + 'L' + this.lat.toString() + ',' + this.lng.toString() + '@' + this.place + '$' + this.timezone + '%' + this.dstofset.toString() + '#' + this.user.name + '&' + this.gen;
 	console.log('user.dob', this.user.dob);
 	this.shareService.setItem('user', JSON.stringify(this.user));
+	console.log('emitting submit event..');
 	this.onSubmitEvent.emit();
    }
     isValidDate(d, m, y, hou, min, sec) {

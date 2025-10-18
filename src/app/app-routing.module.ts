@@ -14,6 +14,8 @@ import { LoveCompatibilityComponent } from './love-compatibility/love-compatibil
 import { DivchartsComponent } from './divcharts/divcharts.component';
 import { ChartAnalysisComponent } from './chart-analysis/chart-analysis.component';
 import { AstroCallComponent } from './astro-call/astro-call.component';
+import { SubscribeComponent } from './subscribe/subscribe.component';
+import { VerifyComponent } from './verify/verify.component';
 const routes: Routes = [
 	{ path: 'home',  component: HomeComponent },
 	{ path: 'privacy-policy',  component: PrivacyPolicyComponent },
@@ -29,11 +31,17 @@ const routes: Routes = [
 	{ path: 'love-compatibility',  component: LoveCompatibilityComponent },
 	{ path: 'divcharts',  component: DivchartsComponent },
 	{ path: 'chart-analysis',  component: ChartAnalysisComponent },
-	{ path: 'astro-call',  component: AstroCallComponent }
+	{ path: 'astro-call',  component: AstroCallComponent },
+	{ path: 'subscribe',  component: SubscribeComponent },
+	{ path: 'verify', component: VerifyComponent }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+  RouterModule.forRoot(routes, {
+    useHash: false,                    // Important if you’re not using hash-based routing
+    onSameUrlNavigation: 'reload'
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

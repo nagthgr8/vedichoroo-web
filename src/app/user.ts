@@ -7,4 +7,5 @@ balance: number,
 ccy: string,
 peerid: string,
 isprivate: boolean
+issubscr: boolean
 }

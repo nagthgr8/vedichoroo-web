@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { astroStatus, CallService } from '../call.service';
+//import { astroStatus, CallService } from '../call.service';
 import { HoroscopeService } from '../horoscope.service';
 import { ShareService } from '../share.service';
 import { Astrologer } from '../astrologer';
@@ -31,16 +31,16 @@ export class HomeComponent implements OnInit {
   pis: string = '';
   asts: any;
   bal: number;
-  oAst: Astrologer[] = [];
   constructor(private router: Router,  private modalService: NgbModal, private horoService: HoroscopeService, private shareService: ShareService) {
   }
   ngOnDestroy() {
-     this.oAst = [];
   }
   ngOnInit(): void {
   // astroStatus.subscribe((ast) => {
   //   console.log('astroStatus', ast);
-	// let a = this.oAst.find((o) => o.eml === ast.aid);
+  //   console.log('oAst', this.shareService.getASTS());
+	// let a = this.shareService.getASTS().find((o) => o.eml === ast.aid);
+  // console.log('a', a);
 	// a.smsg = (ast.busy) ? 'Not Available': 'Available';
 	// a.status = !ast.busy;
   // });
@@ -121,105 +121,6 @@ export class HomeComponent implements OnInit {
       this.showLD = false;
   		this.asts = [];
     //get panel astrologers
-    this.horoService.getAllAstrologers().subscribe((oa: any[]) => {
-      console.log('oa', oa);
-      this.showLD = false;
-      console.log('showLD', this.showLD);
-      // build Astrologer array
-      let a: number = 0;
-      for (var i = 0; i < oa.length; i++) {
-        console.log(i, oa[i]);
-        let call: string = oa[i].mob;
-        let chat: string = oa[i].mob;
-        if (oa[i].mob.indexOf('|') > -1) {
-          call = oa[i].mob.split('|')[0];
-          chat = oa[i].mob.split('|')[1];
-        }
-        let smsg = 'Not Available';
-        let status = false;
-        let cfee: string = '';
-        let ast: Astrologer = {
-          uuid: oa[i].uuid,
-          name: oa[i].name,
-          tagline: oa[i].tagline,
-          avatar: oa[i].avatar,
-          uid: oa[i].uid,
-          mob: call,
-          walnk: '',
-          smsg: smsg,
-          status: status,
-          peerid: '',
-          cfee: oa[i].cfee,
-          ccy: 'INR',
-          rating: oa[i].rating,
-          tot_ratings: oa[i].tot_ratings,
-          str1: 'fa fa-star-o',
-          str2: 'fa fa-star-o',
-          str3: 'fa fa-star-o',
-          str4: 'fa fa-star-o',
-          str5: 'fa fa-star-o',
-          lng: oa[i].lng,
-          eml: oa[i].eml
-        };
-
-        if (oa[i].rating >= 1 && oa[i].rating < 2) {
-          ast.str1 = 'fa-solid fa-star';
-          ast.str2 = (oa[i].rating > 1) ? 'fa fa-star-half-o' : 'fa fa-star-o';
-          ast.str3 = 'fa fa-star-o';
-          ast.str4 = 'fa fa-star-o';
-          ast.str5 = 'fa fa-star-o';
-        }
-        else if (oa[i].rating >= 2 && oa[i].rating < 3) {
-          ast.str1 = 'fa-solid fa-star';
-          ast.str2 = 'fa-solid fa-star';
-          ast.str3 = (oa[i].rating > 2) ? 'fa fa-star-half-o' : 'fa fa-star-o';
-          ast.str4 = 'fa fa-star-o';
-          ast.str5 = 'fa fa-star-o';
-        }
-        else if (oa[i].rating >= 3 && oa[i].rating < 4) {
-          ast.str1 = 'fa-solid fa-star';
-          ast.str2 = 'fa-solid fa-star';
-          ast.str3 = 'fa-solid fa-star';
-          ast.str4 = (oa[i].rating > 3) ? 'fa fa-star-half-o' : 'fa fa-star-o';
-          ast.str5 = 'fa fa-star-o';
-        }
-        else if (oa[i].rating >= 4 && oa[i].rating < 5) {
-          ast.str1 = 'fa-solid fa-star';
-          ast.str2 = 'fa-solid fa-star';
-          ast.str3 = 'fa-solid fa-star';
-          ast.str4 = 'fa-solid fa-star';
-          ast.str5 = (oa[i].rating > 4) ? 'fa fa-star-half-o' : 'fa fa-star-o';
-        } else {
-          ast.str1 = 'fa-solid fa-star';
-          ast.str2 = 'fa-solid fa-star';
-          ast.str3 = 'fa-solid fa-star';
-          ast.str4 = 'fa-solid fa-star';
-          ast.str5 = 'fa-solid fa-star';
-        }
-        console.log(ast.name, ast.status);
-        this.oAst.push(ast);
-      }
-      // get connected astrologers
-      this.horoService.getConnectedAstros().subscribe((casts: any[]) => {
-        console.log('casts', casts);
-        const aids = casts.map(item => item[1]?.aid).filter(Boolean);
-        // update status values
-        this.oAst.forEach(item1 => {
-          const index = aids.indexOf(item1.eml);
-          if (index !== -1) {
-            console.log('astrologer found', casts[index][1]);
-            item1.smsg = (casts[index][1].busy) ? 'Busy' : 'Available';
-            item1.status = casts[index][1].busy;
-          }
-        });
-        // update UI with new status values
-        //this.updateAstros(this.oAst, casts);
-      }, (error) => {
-        console.log(error);
-      });
-    }, (error) => {
-      console.log(error);
-    });
   }
 	astro(ast) {
 
@@ -235,28 +136,32 @@ export class HomeComponent implements OnInit {
 	  } else {
 	    console.log('user', user);
 		this.horoService.getBalance(user.email).subscribe((res) => {	
-		  //if(res['balance'] > 0) {
+      //this.callService.callAstro(ast.eml, ast.name, ast.avatar, user.email, user.dob, (user.isprivate) ? 'https://i.imgur.com/LR7e1vw.png' : user.imageUrl).then(() => {
+							   
+      //});
+      return;
+		  if(res['balance'] > 0) {
 		  // Parse the astrologer's fee from the string format
 		   this.shareService.getItem('vho:loc').then((loc: Location) => {
 			this.getMinBal(ast.cfee, ast.ccy, loc.country_code).then(minBal => {
 				//const estimatedCallCost = astrologerFeePerMinute*5; //minimum 5 minutes of balance is required;
-				//if (user.balance >= minBal) {
-			// this.callService.callAstro(ast.eml, ast.name, ast.avatar, user.email, user.dob, (user.isprivate) ? 'https://i.imgur.com/LR7e1vw.png' : user.imageUrl).then(() => {
+				if (user.balance >= minBal) {
+			      //this.callService.callAstro(ast.eml, ast.name, ast.avatar, user.email, user.dob, (user.isprivate) ? 'https://i.imgur.com/LR7e1vw.png' : user.imageUrl).then(() => {
 							   
-			// 				});
-				//} else {
+							//});
+				} else {
 							//display recharge dialog
-				//	this.shareService.setGEVT('recharge');
-				//}
+					this.shareService.setGEVT('recharge');
+				}
 			});
 		   });
-		// } else {
-			// if(res['balance'] == 0) {
-				// this.shareService.setGEVT('recharge');
-			// } else {
-				// alert('Our server did not respond, please try afer sometime.');
-			// }
-	    // }
+		} else {
+			if(res['balance'] == 0) {
+				this.shareService.setGEVT('recharge');
+			} else {
+				alert('Our server did not respond, please try afer sometime.');
+			}
+	    }
 	}, (err) => {
 		      console.log(JSON.stringify(err));
 	}); 
@@ -283,8 +188,8 @@ export class HomeComponent implements OnInit {
   getConnAstros() {
 	this.horoService.getConnectedAstros().subscribe((casts: any[]) => {
         console.log('casts', casts);
-		console.log('oAst', this.oAst);
-		this.oAst.forEach(item1 => {
+		console.log('oAst', this.shareService.getASTS());
+		this.shareService.getASTS().forEach(item1 => {
 		  //console.log('ast', item1.eml);
 		  const cast = casts.find(item2 => item2.aid === item1.eml);
 		  
@@ -298,8 +203,10 @@ export class HomeComponent implements OnInit {
 		console.log(error);
 	  });
   }
+  getAstros() {
+    return this.shareService.getASTS();
+  }
   updateAstros(oa: Astrologer[], casts: any[]) {
-    this.oAst = [];
     oa.forEach(ast => {
       if (casts.length > 0) {
         let cast = casts.find(item => item.aid === ast.eml);

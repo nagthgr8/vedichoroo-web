@@ -1,0 +1,15 @@
+<div class="container mt-5" *ngIf="!loading">
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!error && subscriptionDetails">
+    <h3>Email Verified</h3>
+    <p><strong>Name:</strong> {{ subscriptionDetails.name }}</p>
+    <p><strong>Email:</strong> {{ subscriptionDetails.email }}</p>
+    <p><strong>Plan:</strong> {{ subscriptionDetails.plan_type | titlecase }}</p>
+    <p><strong>Status:</strong> Not yet subscribed</p>
+
+    <button class="btn btn-success" (click)="proceedToPayment()">Proceed to Payment</button>
+  </div>
+</div>
