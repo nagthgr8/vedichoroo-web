@@ -1,6 +1,6 @@
 {
   "projects": {
-    "default": "vedichoroo-dev",
+    "default": "astrology-e9e07",
     "staging": "vedichoroo-dev",
     "production": "astrology-e9e07"
   },
