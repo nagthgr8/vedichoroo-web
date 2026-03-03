@@ -7,10 +7,12 @@ const {onMessagePublished} = require("firebase-functions/v2/pubsub");
 const admin = require("firebase-admin");
 const {XMLParser} = require("fast-xml-parser");
 const cors = require("cors")({origin: true});
-const OpenAI = require("openai");
+const OpenAI = require("openai").default;
 const {defineSecret} = require("firebase-functions/params");
 
 const OPENAI_KEY = defineSecret("OPENAI_KEY");
+const AZURE_FUNC_URL = defineSecret("AZURE_FUNC_URL");
+const AZURE_FUNC_KEY = defineSecret("AZURE_FUNC_KEY");
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -41,7 +43,7 @@ function cleanHtml(input = "") {
 }
 
 function removeReferences(input = "") {
-  input = input.replace(/Astrobix\.com:?/gi, "");
+  // input = input.replace(/Astrobix\.com:?/gi, "");
   input = input.replace(/Your Moon sign is [A-Za-z]+\./gi, "");
   return input.replace(/\s+/g, " ").trim();
 }
@@ -406,22 +408,31 @@ exports.notifyDailyHoroscope = onDocumentWritten(
         return;
       }
 
-      const tokens = [];
+      // Parallel reads: all users processed concurrently.
+      // Prefer fcmToken on profile (no extra read);
+      // fall back to fcmTokens subcollection for older users.
+      const tokenResults = await Promise.all(
+          profilesSnap.docs.map(async (profileDoc) => {
+            const profileData = profileDoc.data();
+            const userRef = profileDoc.ref.parent.parent;
+            if (!userRef) return [];
 
-      for (const doc of profilesSnap.docs) {
-        const userRef = doc.ref.parent.parent;
-        if (!userRef) continue;
+            const userSnap = await userRef.get();
+            if (!userSnap.exists) return [];
+            if (userSnap.data()?.notificationsEnabled === false) return [];
 
-        const userSnap = await userRef.get();
-        if (!userSnap.exists) continue;
+            if (profileData.fcmToken) {
+              return [profileData.fcmToken];
+            }
 
-        const user = userSnap.data();
-        if (user?.notificationsEnabled === false) continue;
-
-        if (user?.fcmTokens) {
-          tokens.push(...Object.keys(user.fcmTokens));
-        }
-      }
+            const tokensSnap =
+              await userRef.collection("fcmTokens").get();
+            return tokensSnap.docs
+                .map((d) => d.data().token)
+                .filter(Boolean);
+          }),
+      );
+      const tokens = tokenResults.flat();
 
       if (tokens.length === 0) {
         console.log("No FCM tokens found");
@@ -450,3 +461,220 @@ exports.notifyDailyHoroscope = onDocumentWritten(
     },
 );
 
+/* -----------------------------
+   TEXT EMBEDDING (OpenAI)
+   POST { text: string }  →  { embedding: number[] }
+   Model: text-embedding-3-small (1536 dims)
+----------------------------- */
+
+exports.embedText = functions.https.onRequest(
+    {secrets: [OPENAI_KEY]},
+    async (req, res) => {
+      cors(req, res, async () => {
+        try {
+          if (req.method !== "POST") {
+            return res.status(405).send("Method Not Allowed");
+          }
+
+          const {text} = req.body;
+          if (!text || typeof text !== "string") {
+            return res.status(400).json({
+              error: "text is required",
+            });
+          }
+
+          if (text.length > 10000) {
+            return res.status(400).json({
+              error: "text too long (max 10000 chars)",
+            });
+          }
+
+          const openai = new OpenAI({
+            apiKey: OPENAI_KEY.value(),
+          });
+
+          const response = await openai.embeddings.create({
+            model: "text-embedding-3-small",
+            input: text,
+          });
+
+          const embedding = response.data?.[0]?.embedding;
+
+          if (!Array.isArray(embedding)) {
+            console.error("Unexpected OpenAI response:", response);
+            return res.status(502).json({
+              error: "Unexpected embedding response",
+            });
+          }
+
+          res.set("Cache-Control", "no-store");
+          res.json({embedding});
+        } catch (err) {
+          console.error("embedText error:", err);
+          return res.status(err?.status || 500).json({
+            error: err?.message || "Embedding failed",
+          });
+        }
+      });
+    },
+);
+
+/* -----------------------------
+   KP EVENT FRUCTIFICATION NOTIFICATION
+   Runs daily at 05:30 IST (after daily horoscope at 05:00 IST).
+   For each user whose SELF profile has dasha lords stored,
+   calls the Azure CheckKPEventFructification function to check
+   if any KP life event is favorable today, then sends FCM push.
+----------------------------- */
+
+async function checkAndNotifyKPEvents() {
+  const azureBase = AZURE_FUNC_URL.value();
+  const azureKey = AZURE_FUNC_KEY.value();
+
+  // 1. Load all SELF profiles
+  const profilesSnap = await db
+      .collectionGroup("profiles")
+      .where("type", "==", "SELF")
+      .get();
+
+  if (profilesSnap.empty) {
+    console.log("No SELF profiles found");
+    return;
+  }
+
+  // Filter to profiles that have dasha lords stored
+  const withLords = profilesSnap.docs.filter((d) => {
+    const lord = d.data().mahaDashaLord;
+    return typeof lord === "string" && lord.trim().length > 0;
+  });
+
+  console.log(`KP check: ${withLords.length} profiles with dasha lords`);
+
+  await Promise.all(
+      withLords.map(async (profileDoc) => {
+        const profile = profileDoc.data();
+        const userRef = profileDoc.ref.parent.parent;
+        if (!userRef) return;
+
+        try {
+          // Respect global notifications toggle on user doc
+          const userSnap = await userRef.get();
+          if (!userSnap.exists) return;
+          if (userSnap.data()?.notificationsEnabled === false) return;
+
+          const {
+            dob,
+            latitude,
+            longitude,
+            timezone,
+            mahaDashaLord,
+            antarDashaLord,
+            pratyantarDashaLord,
+            fcmToken,
+          } = profile;
+
+          if (!dob || !latitude || !longitude || !timezone) {
+            console.log(`Skipping ${profileDoc.id} — missing birth data`);
+            return;
+          }
+
+          // Parse Firestore dob "YYYY-M-DDTHH:MM:SS[Z]"
+          // → Dob "DD|MM|YYYY", Tob "HH|MM|SS"
+          const clean = dob.replace("Z", "");
+          const [datePart, rawTime = "0:0:0"] = clean.split("T");
+          const [yr, mo, dy] = datePart.split("-").map(Number);
+          const [hh = 0, mm = 0, ss = 0] = rawTime.split(":").map(Number);
+
+          // 2. Call Azure CheckKPEventFructification
+          const endpoint =
+            `${azureBase}/api/CheckKPEventFructification` +
+            `?code=${azureKey}`;
+
+          const azureRes = await fetch(endpoint, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+              Dob: `${dy}|${mo}|${yr}`,
+              Tob: `${hh}|${mm}|${ss}`,
+              LatLng: `${latitude}|${longitude}`,
+              Timezone: timezone,
+              AyanId: 4, // NC Lahiri — app default
+              CurrentMaha: mahaDashaLord || "",
+              CurrentAntar: antarDashaLord || "",
+              CurrentPratyantar: pratyantarDashaLord || "",
+            }),
+          });
+
+          if (!azureRes.ok) {
+            console.error(
+                `Azure error for ${profileDoc.id}: ${azureRes.status}`,
+            );
+            return;
+          }
+
+          const result = await azureRes.json();
+          if (!result.hasFavorableEvents) return;
+
+          // 3. FCM token — prefer denormalized field, fallback to subcollection
+          let token = fcmToken;
+          if (!token) {
+            const tokensSnap = await userRef
+                .collection("fcmTokens")
+                .get();
+            const toks = tokensSnap.docs
+                .map((d) => d.data().token)
+                .filter(Boolean);
+            if (toks.length === 0) return;
+            token = toks[0];
+          }
+
+          // 4. Build notification
+          const eventNames = [
+            ...new Set(
+                result.favorableEvents.map((e) => e.eventName),
+            ),
+          ];
+          const top = eventNames.slice(0, 2).join(" & ");
+          const extra = eventNames.length > 2 ? " & more" : "";
+          const body =
+            `${top}${extra} — your stars are aligned today.`;
+
+          await admin.messaging().send({
+            token,
+            notification: {
+              title: "Your Stars Are Active Today",
+              body,
+            },
+            data: {
+              type: "kp_event",
+              events: eventNames.join(","),
+              date: result.date,
+            },
+          });
+
+          console.log(
+              `✅ KP notification → ${userRef.id}: ` +
+              `${eventNames.join(", ")}`,
+          );
+        } catch (err) {
+          console.error(
+              `❌ KP check failed for ${profileDoc.id}:`, err,
+          );
+        }
+      }),
+  );
+
+  console.log("KP event notification job completed");
+}
+
+exports.notifyKPEvents = onSchedule(
+    {
+      schedule: "30 5 * * *", // 05:30 IST — after daily horoscope
+      timeZone: "Asia/Kolkata",
+      secrets: [AZURE_FUNC_URL, AZURE_FUNC_KEY],
+    },
+    async (_event) => {
+      console.log("KP event notification job started");
+      await checkAndNotifyKPEvents();
+    },
+);
