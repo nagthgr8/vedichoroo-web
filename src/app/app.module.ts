@@ -16,6 +16,7 @@ import { NgwWowModule } from 'ngx-wow';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
+import { ModelValidationComponent } from './model-validation/model-validation.component';
 import { HomeComponent } from './home/home.component';
 import { HoroscopeComponent } from './horoscope/horoscope.component';
 import { PersonalDetailsComponent } from './personal-details/personal-details.component';
@@ -54,6 +55,7 @@ fontLibrary.add(
 		AppComponent,
 		NavMenuComponent,
   PrivacyPolicyComponent,
+  ModelValidationComponent,
   HomeComponent,
   HoroscopeComponent,
   PersonalDetailsComponent,

@@ -38,6 +38,7 @@ export class AppComponent implements OnInit {
 	@ViewChild('dobMdl') dobMdl: TemplateRef<any>;
 	showAstroCallPage = false;
 	showHomePage = true;
+	isFullPage = false;   // true for routes that render without nav/footer
 	callEnded: any;
 	callEndedEvent: any;
 	oauth2Loaded: boolean = false;	
@@ -240,6 +241,7 @@ export class AppComponent implements OnInit {
         if (event.url === '/') {
           this.showHomePage = true;
         }
+        this.isFullPage = event.urlAfterRedirects.startsWith('/model-validation');
       }
     });	
  	// this.callService.callStarted.subscribe((cinf) => {

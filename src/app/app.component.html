@@ -1,13 +1,12 @@
 <body>
-  <app-nav-menu>
-  </app-nav-menu>
+  <app-nav-menu *ngIf="!isFullPage"></app-nav-menu>
   <div id="call-msg" class="fixed-message" style="display:none;"></div>
-  <div class="container">
+  <div [class.container]="!isFullPage">
     <router-outlet></router-outlet>
   </div>
-  <app-astro-call (callEndedEvent)="onCallEnded($event)" [callEnded]="callEnded" *ngIf="showAstroCall"></app-astro-call>
-  <app-home *ngIf='showHomePage'></app-home>
-  <div class="contact" id="support">
+  <app-astro-call (callEndedEvent)="onCallEnded($event)" [callEnded]="callEnded" *ngIf="showAstroCall && !isFullPage"></app-astro-call>
+  <app-home *ngIf='showHomePage && !isFullPage'></app-home>
+  <div class="contact" id="support" *ngIf="!isFullPage">
     <div class="container">
       <div class="row">
         <div class="col-md-6">
@@ -54,7 +53,7 @@
 
     </div>
   </div>
-  <div class="footer">
+  <div class="footer" *ngIf="!isFullPage">
     <div class="container">
       <div class="row">
         <div class="col-md-12">

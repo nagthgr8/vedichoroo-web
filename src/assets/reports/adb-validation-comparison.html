@@ -1,0 +1,120 @@
+<!DOCTYPE html><html><head><meta charset='utf-8'>
+<title>KP Fructification — Ayanamsha Comparison</title>
+<style>
+html,body{background:#ffffff;color:#1a1a1a;font-family:Arial,sans-serif;margin:0;padding:20px 32px;font-size:14px}
+h1{font-size:1.5em;color:#1a1a2e;margin-bottom:4px}
+p.sub{color:#555;margin-top:2px;margin-bottom:24px;font-size:0.9em}
+h2{font-size:1.1em;margin-top:2em;color:#1a1a2e;border-bottom:2px solid #ccc;padding-bottom:4px}
+.badges{display:flex;gap:16px;margin-bottom:28px;flex-wrap:wrap}
+.badge-card{padding:14px 22px;border-radius:8px;color:#fff;min-width:140px;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.badge-card .name{font-size:1.1em;font-weight:700}
+.badge-card .sub{font-size:0.78em;opacity:.85;margin-top:2px}
+.badge-card .rate{font-size:2em;font-weight:800;margin-top:6px}
+.badge-card .rate-lbl{font-size:0.75em;opacity:.85}
+table{border-collapse:collapse;width:100%;max-width:1100px;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+th,td{border:1px solid #ddd;padding:9px 14px;text-align:center}
+th{background:#343a40;color:#fff;font-weight:600}
+th.metric{text-align:left;width:200px}
+td.metric{text-align:left;font-weight:500;color:#333}
+td.metric span{font-size:0.8em;color:#777;font-weight:400;display:block}
+tr:nth-child(even) td{background:#f7f8fa}
+.win-hi{background:#d4edda !important;color:#155724;font-weight:700}
+.win-lo{background:#d4edda !important;color:#155724;font-weight:700}
+.pct{font-size:0.78em;color:#888;margin-left:4px;font-weight:400}
+.bars{display:flex;gap:32px;margin-top:24px;flex-wrap:wrap;align-items:flex-end}
+.bar-group{text-align:center;flex:1;min-width:120px}
+.bar-group .label{font-size:0.85em;color:#555;margin-bottom:4px}
+.bar-wrap{display:flex;gap:4px;justify-content:center;align-items:flex-end;height:160px}
+.bar{width:28px;border-radius:3px 3px 0 0;position:relative}
+.bar .val{position:absolute;top:-18px;width:100%;text-align:center;font-size:0.72em;font-weight:700}
+.bar-sh{background:#28a745}
+.bar-wh{background:#007bff}
+.bar-ng{background:#dc3545}
+.bar-ms{background:#adb5bd}
+.legend{display:flex;gap:16px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:6px;font-size:0.82em}
+.leg span{width:14px;height:14px;border-radius:2px;display:inline-block}
+</style></head><body>
+<h1>KP Event Fructification — Ayanamsha Comparison</h1>
+<p class='sub'>Generated: 2026-03-25 00:37 &nbsp;|&nbsp; Dataset: ADB 5K (Rodden AA+A) &nbsp;|&nbsp; Window: ±7 days</p>
+<div class='badges'>
+<div class='badge-card' style='background:#e67e22'><div class='name'>Raman</div><div class='sub'>ayanId=1</div><div class='rate'>69%</div><div class='rate-lbl'>Positive Rate</div></div>
+<div class='badge-card' style='background:#6f42c1'><div class='name'>KP New</div><div class='sub'>ayanId=2</div><div class='rate'>67%</div><div class='rate-lbl'>Positive Rate</div></div>
+<div class='badge-card' style='background:#17a2b8'><div class='name'>Lahiri</div><div class='sub'>ayanId=4</div><div class='rate'>68%</div><div class='rate-lbl'>Positive Rate</div></div>
+<div class='badge-card' style='background:#20c997'><div class='name'>Yukteshwar</div><div class='sub'>ayanId=7</div><div class='rate'>68%</div><div class='rate-lbl'>Positive Rate</div></div>
+<div class='badge-card' style='background:#e83e8c'><div class='name'>TrueCitra</div><div class='sub'>ayanId=27</div><div class='rate'>68%</div><div class='rate-lbl'>Positive Rate</div></div>
+<div class='badge-card' style='background:#fd7e14'><div class='name'>TruePushya</div><div class='sub'>ayanId=29</div><div class='rate'>68%</div><div class='rate-lbl'>Positive Rate</div></div>
+</div>
+<h2>Side-by-Side Metrics</h2>
+<table>
+<tr><th class='metric'>Metric</th>
+<th style='background:#e67e22'>Raman<br><small style='font-weight:400;opacity:.85'>ayanId=1</small></th>
+<th style='background:#6f42c1'>KP New<br><small style='font-weight:400;opacity:.85'>ayanId=2</small></th>
+<th style='background:#17a2b8'>Lahiri<br><small style='font-weight:400;opacity:.85'>ayanId=4</small></th>
+<th style='background:#20c997'>Yukteshwar<br><small style='font-weight:400;opacity:.85'>ayanId=7</small></th>
+<th style='background:#e83e8c'>TrueCitra<br><small style='font-weight:400;opacity:.85'>ayanId=27</small></th>
+<th style='background:#fd7e14'>TruePushya<br><small style='font-weight:400;opacity:.85'>ayanId=29</small></th>
+</tr>
+<tr><td class='metric'>Records Evaluated<span>Total ADB events tested</span></td><td class='win-hi'>3841 <span class='pct'>100%</span></td><td class='win-hi'>3841 <span class='pct'>100%</span></td><td class='win-hi'>3841 <span class='pct'>100%</span></td><td class='win-hi'>3841 <span class='pct'>100%</span></td><td class='win-hi'>3841 <span class='pct'>100%</span></td><td class='win-hi'>3841 <span class='pct'>100%</span></td></tr>
+<tr><td class='metric'>Qualified<span>Excluding parse errors</span></td><td class='win-hi'>3576 <span class='pct'>93%</span></td><td class='win-hi'>3576 <span class='pct'>93%</span></td><td class=''>3575 <span class='pct'>93%</span></td><td class=''>3575 <span class='pct'>93%</span></td><td class=''>3575 <span class='pct'>93%</span></td><td class=''>3575 <span class='pct'>93%</span></td></tr>
+<tr><td class='metric'>Strong Hit ★<span>Transit on exact event date</span></td><td class=''>1870 <span class='pct'>49%</span></td><td class=''>1823 <span class='pct'>47%</span></td><td class=''>1866 <span class='pct'>49%</span></td><td class='win-hi'>1880 <span class='pct'>49%</span></td><td class='win-hi'>1880 <span class='pct'>49%</span></td><td class='win-hi'>1880 <span class='pct'>49%</span></td></tr>
+<tr><td class='metric'>Window Hit ~<span>Transit within ±1 day</span></td><td class='win-hi'>582 <span class='pct'>15%</span></td><td class=''>571 <span class='pct'>15%</span></td><td class=''>562 <span class='pct'>15%</span></td><td class=''>546 <span class='pct'>14%</span></td><td class=''>546 <span class='pct'>14%</span></td><td class=''>546 <span class='pct'>14%</span></td></tr>
+<tr><td class='metric'>Negated ⊗<span>12th-house sub lord suppression — fewer = better</span></td><td class='win-lo'>250 <span class='pct'>7%</span></td><td class=''>267 <span class='pct'>7%</span></td><td class=''>266 <span class='pct'>7%</span></td><td class=''>271 <span class='pct'>7%</span></td><td class=''>271 <span class='pct'>7%</span></td><td class=''>271 <span class='pct'>7%</span></td></tr>
+<tr><td class='metric'>Not Promised ⊘<span>Natal cusp gate blocked</span></td><td class='win-hi'>0 <span class='pct'>0%</span></td><td class='win-hi'>0 <span class='pct'>0%</span></td><td class='win-hi'>0 <span class='pct'>0%</span></td><td class='win-hi'>0 <span class='pct'>0%</span></td><td class='win-hi'>0 <span class='pct'>0%</span></td><td class='win-hi'>0 <span class='pct'>0%</span></td></tr>
+<tr><td class='metric'>Miss ✗<span>No fructifying transit found — fewer = better</span></td><td class='win-lo'>874 <span class='pct'>23%</span></td><td class=''>915 <span class='pct'>24%</span></td><td class=''>881 <span class='pct'>23%</span></td><td class=''>878 <span class='pct'>23%</span></td><td class=''>878 <span class='pct'>23%</span></td><td class=''>878 <span class='pct'>23%</span></td></tr>
+<tr><td class='metric'>Error ?<span>Unmapped ADB event codes</span></td><td class='win-lo'>265 <span class='pct'>7%</span></td><td class='win-lo'>265 <span class='pct'>7%</span></td><td class=''>266 <span class='pct'>7%</span></td><td class=''>266 <span class='pct'>7%</span></td><td class=''>266 <span class='pct'>7%</span></td><td class=''>266 <span class='pct'>7%</span></td></tr>
+<tr><td class='metric'>Positive Rate ★<span>( StrongHit + WindowHit + NotPromised ) / Qualified</span></td><td class='win-hi'><b>69%</b></td><td class=''><b>67%</b></td><td class=''><b>68%</b></td><td class=''><b>68%</b></td><td class=''><b>68%</b></td><td class=''><b>68%</b></td></tr>
+</table>
+<p style='font-size:0.8em;color:#888;margin-top:6px'>Green cells = best value for that metric.</p>
+<h2>Distribution Breakdown</h2>
+<div class='bars'>
+<div class='bar-group'><div class='label' style='color:#e67e22;font-weight:700'>Raman<br><small style='color:#888'>ayanId=1</small></div>
+<div class='bar-wrap'>
+<div class='bar bar-sh' style='height:149px' title='Strong Hit'><span class='val'>1870</span></div>
+<div class='bar bar-wh' style='height:46px' title='Window Hit'><span class='val'>582</span></div>
+<div class='bar bar-ng' style='height:19px' title='Negated'><span class='val'>250</span></div>
+<div class='bar bar-ms' style='height:69px' title='Miss'><span class='val'>874</span></div>
+</div></div>
+<div class='bar-group'><div class='label' style='color:#6f42c1;font-weight:700'>KP New<br><small style='color:#888'>ayanId=2</small></div>
+<div class='bar-wrap'>
+<div class='bar bar-sh' style='height:145px' title='Strong Hit'><span class='val'>1823</span></div>
+<div class='bar bar-wh' style='height:45px' title='Window Hit'><span class='val'>571</span></div>
+<div class='bar bar-ng' style='height:21px' title='Negated'><span class='val'>267</span></div>
+<div class='bar bar-ms' style='height:73px' title='Miss'><span class='val'>915</span></div>
+</div></div>
+<div class='bar-group'><div class='label' style='color:#17a2b8;font-weight:700'>Lahiri<br><small style='color:#888'>ayanId=4</small></div>
+<div class='bar-wrap'>
+<div class='bar bar-sh' style='height:148px' title='Strong Hit'><span class='val'>1866</span></div>
+<div class='bar bar-wh' style='height:44px' title='Window Hit'><span class='val'>562</span></div>
+<div class='bar bar-ng' style='height:21px' title='Negated'><span class='val'>266</span></div>
+<div class='bar bar-ms' style='height:70px' title='Miss'><span class='val'>881</span></div>
+</div></div>
+<div class='bar-group'><div class='label' style='color:#20c997;font-weight:700'>Yukteshwar<br><small style='color:#888'>ayanId=7</small></div>
+<div class='bar-wrap'>
+<div class='bar bar-sh' style='height:150px' title='Strong Hit'><span class='val'>1880</span></div>
+<div class='bar bar-wh' style='height:43px' title='Window Hit'><span class='val'>546</span></div>
+<div class='bar bar-ng' style='height:21px' title='Negated'><span class='val'>271</span></div>
+<div class='bar bar-ms' style='height:70px' title='Miss'><span class='val'>878</span></div>
+</div></div>
+<div class='bar-group'><div class='label' style='color:#e83e8c;font-weight:700'>TrueCitra<br><small style='color:#888'>ayanId=27</small></div>
+<div class='bar-wrap'>
+<div class='bar bar-sh' style='height:150px' title='Strong Hit'><span class='val'>1880</span></div>
+<div class='bar bar-wh' style='height:43px' title='Window Hit'><span class='val'>546</span></div>
+<div class='bar bar-ng' style='height:21px' title='Negated'><span class='val'>271</span></div>
+<div class='bar bar-ms' style='height:70px' title='Miss'><span class='val'>878</span></div>
+</div></div>
+<div class='bar-group'><div class='label' style='color:#fd7e14;font-weight:700'>TruePushya<br><small style='color:#888'>ayanId=29</small></div>
+<div class='bar-wrap'>
+<div class='bar bar-sh' style='height:150px' title='Strong Hit'><span class='val'>1880</span></div>
+<div class='bar bar-wh' style='height:43px' title='Window Hit'><span class='val'>546</span></div>
+<div class='bar bar-ng' style='height:21px' title='Negated'><span class='val'>271</span></div>
+<div class='bar bar-ms' style='height:70px' title='Miss'><span class='val'>878</span></div>
+</div></div>
+</div>
+<div class='legend'>
+<div class='leg'><span style='background:#28a745'></span>Strong Hit</div>
+<div class='leg'><span style='background:#007bff'></span>Window Hit</div>
+<div class='leg'><span style='background:#dc3545'></span>Negated</div>
+<div class='leg'><span style='background:#adb5bd'></span>Miss</div>
+</div>
+</body></html>

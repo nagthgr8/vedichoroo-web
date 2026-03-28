@@ -1,0 +1,22 @@
+<div class="validation-page">
+
+  <div class="tab-bar">
+    <span class="tab-title">KP Event Fructification &mdash; ADB Validation</span>
+    <div class="tabs">
+      <button
+        *ngFor="let tab of tabs"
+        class="tab"
+        [class.active]="tab.id === activeTab"
+        [style.--tab-color]="tab.color"
+        (click)="select(tab.id)">
+        {{ tab.label }}
+        <span class="badge">{{ tab.badge }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="frame-wrap">
+    <iframe [src]="activeUrl" frameborder="0" width="100%" height="100%"></iframe>
+  </div>
+
+</div>

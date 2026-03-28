@@ -16,6 +16,7 @@ import { ChartAnalysisComponent } from './chart-analysis/chart-analysis.componen
 import { AstroCallComponent } from './astro-call/astro-call.component';
 import { SubscribeComponent } from './subscribe/subscribe.component';
 import { VerifyComponent } from './verify/verify.component';
+import { ModelValidationComponent } from './model-validation/model-validation.component';
 const routes: Routes = [
 	{ path: 'home',  component: HomeComponent },
 	{ path: 'privacy-policy',  component: PrivacyPolicyComponent },
@@ -33,7 +34,8 @@ const routes: Routes = [
 	{ path: 'chart-analysis',  component: ChartAnalysisComponent },
 	{ path: 'astro-call',  component: AstroCallComponent },
 	{ path: 'subscribe',  component: SubscribeComponent },
-	{ path: 'verify', component: VerifyComponent }
+	{ path: 'verify', component: VerifyComponent },
+	{ path: 'model-validation', component: ModelValidationComponent }
 ];
 
 @NgModule({

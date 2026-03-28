@@ -1,0 +1,20 @@
+{
+  "indexes": [],
+  "fieldOverrides": [
+    {
+      "collectionGroup": "vectors",
+      "fieldPath": "embedding",
+      "indexes": [
+        {
+          "order": "ASCENDING"
+        },
+        {
+          "vector": {
+            "dimension": 1536,
+            "flat": {}
+          }
+        }
+      ]
+    }
+  ]
+}
