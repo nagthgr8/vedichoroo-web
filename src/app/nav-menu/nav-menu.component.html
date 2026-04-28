@@ -62,6 +62,9 @@
       <a class="nav-link" [routerLink]="['/love-compatibility']" (click)="hidePanch()">Marriage Compatibility</a>
     </li>
     <li class="nav-item">
+      <a class="nav-link" [routerLink]="['/vedic-yogas']" (click)="hidePanch()">Vedic Yogas</a>
+    </li>
+    <li class="nav-item">
       <a class="nav-link" [routerLink]="['/personal-details']" [queryParams]="{title:'Report'}" (click)="hidePanch()">Reports</a>
     </li>
     <li *ngIf="showSU" class="nav-item">
@@ -72,7 +75,23 @@
     </li>
     </ul>
     </div>
-    <div class="navbar-nav ml-auto">
+    <div class="navbar-nav ml-auto d-flex align-items-center">
+    <li *ngIf="user && profiles.length > 1" class="nav-item me-2">
+      <div class="dropdown">
+        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" [disabled]="profileSwitching">
+          <i class="fa fa-user me-1"></i>{{ activeProfile?.name || 'Select Profile' }}
+          <span *ngIf="profileSwitching" class="spinner-border spinner-border-sm ms-1" role="status"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li *ngFor="let p of profiles">
+            <a class="dropdown-item" [class.active]="activeProfile?.dob === p.dob" href="javascript:void(0)" (click)="switchProfile(p)">
+              <strong>{{ p.name }}</strong><br/>
+              <small class="text-muted">{{ p.dob_short }}</small>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
     <li *ngIf="!user" class="nav-item">
       <button type="button" class="btn btn-link" (click)="vhoevt($event, 'login')">Login</button>
     </li>

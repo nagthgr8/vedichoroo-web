@@ -17,6 +17,8 @@ import { AstroCallComponent } from './astro-call/astro-call.component';
 import { SubscribeComponent } from './subscribe/subscribe.component';
 import { VerifyComponent } from './verify/verify.component';
 import { ModelValidationComponent } from './model-validation/model-validation.component';
+import { VedicYogasComponent } from './vedic-yogas/vedic-yogas.component';
+import { AboutUsComponent } from './about-us/about-us.component';
 const routes: Routes = [
 	{ path: 'home',  component: HomeComponent },
 	{ path: 'privacy-policy',  component: PrivacyPolicyComponent },
@@ -35,7 +37,9 @@ const routes: Routes = [
 	{ path: 'astro-call',  component: AstroCallComponent },
 	{ path: 'subscribe',  component: SubscribeComponent },
 	{ path: 'verify', component: VerifyComponent },
-	{ path: 'model-validation', component: ModelValidationComponent }
+	{ path: 'model-validation', component: ModelValidationComponent },
+	{ path: 'vedic-yogas', component: VedicYogasComponent },
+	{ path: 'about-us', component: AboutUsComponent }
 ];
 
 @NgModule({

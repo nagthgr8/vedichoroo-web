@@ -183,6 +183,55 @@ export class HoroscopeComponent implements OnInit {
 		 // });
 
   
+  reloadBirthData() {
+	  this.showBD = false;
+	  this.oDas = [];
+	  this.horo = '';
+	  this.msg1 = '';
+	  this.msg2 = '';
+	  this.msg3 = '';
+	  this.msg4 = 'Fetching...';
+	  this.moon_sign = '';
+	  this.moon_deg = '';
+	  this.asc_sign = '';
+	  this.trikona_lords = '';
+	  this.kendra_lords = '';
+	  this.akashWani = '';
+	  if (this.svgHoro && this.birthChart) {
+		  try { this.renderer.removeChild(this.birthChart.nativeElement, this.svgHoro); } catch(e) {}
+	  }
+	  var dt = new Date();
+	  var n = dt.getTimezoneOffset() / 60;
+	  let ofset: number = Number(n.toFixed(1));
+	  var ayn = this.shareService.getAYNM();
+	  if (!ayn) ayn = '4';
+	  this.msg4 = 'Analyzing stars..';
+	  this.horoService.getBirthInfoEx(this.binf.lat, this.binf.lng, this.binf.dob, this.binf.timezone, Number(ayn))
+		  .subscribe(res => {
+			  this.showBD = true;
+			  this.msg4 = '';
+			  this.dob = res['dob'];
+			  this.lagna = this.shareService.translate_func(res['lagna']);
+			  this.lagna_lord = this.shareService.translate_func(res['lagna_lord']);
+			  this.moon_sign_f = this.shareService.translate_func(res['moon_sign']);
+			  this.sun_sign = this.shareService.translate_func(res['sun_sign']);
+			  this.tithi = this.shareService.translate_func(res['tithi']);
+			  this.birth_star = this.shareService.translate_func(res['birth_star']);
+			  this.star_lord = this.shareService.translate_func(res['star_lord']);
+			  this.moon_phase = this.shareService.translate_func(res['moon_phase']);
+			  this.themeService.currentTheme$.subscribe((currentTheme) => {
+				  this.updateColors(currentTheme);
+				  this.loadHoro();
+			  });
+			  this.msg1 = 'Calculating Astakavarga..';
+			  this.horoService.getAstakvarga(this.binf.lat, this.binf.lng, this.binf.dob, this.binf.timezone, ofset, Number(ayn))
+				  .subscribe(akv => { this.akvChart(akv); }, err => { this.msg1 = JSON.stringify(err); });
+			  this.msg2 = 'Calculating Shadbala..';
+			  this.horoService.getShadbala(this.binf.lat, this.binf.lng, this.binf.dob, this.binf.timezone, ofset, Number(ayn))
+				  .subscribe(shd => { this.sdbChart(shd); }, err => { this.msg2 = JSON.stringify(err); });
+		  }, err => { this.msg4 = JSON.stringify(err); });
+  }
+
   ngAfterViewInit() {
 	this.moon_sign = '';
 	this.moon_deg = '';
@@ -197,6 +246,12 @@ export class HoroscopeComponent implements OnInit {
 		this.shareService.plan
 			.subscribe(r => {
 			});
+		this.shareService.activeProfile$.subscribe(profile => {
+			if (profile && (profile.dob !== this.binf?.dob || profile.lat !== this.binf?.lat)) {
+				this.binf = profile;
+				this.reloadBirthData();
+			}
+		});
 		console.log('ngOnInit-Horoscope');
 		forkJoin(
 			this.horoService.getJson('assets/data/signs.json'),

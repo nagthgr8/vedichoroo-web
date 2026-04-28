@@ -1,0 +1,122 @@
+<div class="vy-page">
+
+  <!-- HERO -->
+  <div class="vy-hero">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <p class="vy-hero__eyebrow">Classical Vedic Astrology</p>
+          <h1 class="vy-hero__title">Yoga Analysis Engine</h1>
+          <p class="vy-hero__sub">
+            VedicHoroo detects <strong>60 classical yoga conditions</strong> directly from your birth chart —
+            computed live, no manual lookup, no approximations.
+          </p>
+          <p class="vy-hero__source">
+            <i class="fa fa-book me-2"></i>
+            Sourced from <em>Yogas in Astrology</em> by K.S. Charak
+          </p>
+        </div>
+        <div class="col-lg-4 text-center mt-4 mt-lg-0">
+          <div class="vy-count-badge">
+            <span class="vy-count-badge__num">60</span>
+            <span class="vy-count-badge__label">Yoga Conditions<br/>Analyzed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- YOGA GRID -->
+  <div class="container vy-body">
+
+    <div class="vy-intro">
+      <p>
+        A <strong>yoga</strong> in Vedic astrology is a specific planetary combination in the birth chart that
+        produces a defined result — wealth, intelligence, leadership, spiritual growth, or challenges.
+        Most charts carry several yogas simultaneously; their strength depends on the exact positions
+        of the planets involved. VedicHoroo calculates each of the following from your exact birth data in real time.
+      </p>
+    </div>
+
+    <!-- CATEGORY BLOCKS -->
+    <div class="vy-category" *ngFor="let cat of categories">
+      <div class="vy-category__header">
+        <span class="vy-category__icon">{{ cat.icon }}</span>
+        <span class="vy-category__name">{{ cat.name }}</span>
+        <span class="vy-category__count">{{ cat.yogas.length }}</span>
+      </div>
+      <div class="vy-grid">
+        <div class="vy-card" *ngFor="let yoga of cat.yogas">
+          <span class="vy-card__num">{{ yoga.num }}</span>
+          <div class="vy-card__body">
+            <div class="vy-card__name">{{ yoga.name }}</div>
+            <div class="vy-card__desc">{{ yoga.desc }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA SECTION -->
+    <div class="vy-cta">
+      <div class="row align-items-center">
+        <div class="col-lg-7">
+          <h2 class="vy-cta__title">Find your yogas instantly</h2>
+          <p class="vy-cta__body">
+            Get a complete yoga analysis for your birth chart — free, live, and computed to the exact degree.
+            Available on the web and on Android.
+          </p>
+          <div class="vy-cta__actions">
+            <a [routerLink]="['/personal-details']" [queryParams]="{title:'Birth Chart'}" class="btn vy-btn-primary me-3">
+              <i class="fa fa-chart-pie me-2"></i>Analyze My Chart
+            </a>
+            <a [href]="playStoreUrl" target="_blank" rel="noopener" class="vy-playstore-btn">
+              <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+                   alt="Get VedicHoroo on Google Play"
+                   height="54" />
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-5 text-center mt-4 mt-lg-0">
+          <div class="vy-feature-list">
+            <div class="vy-feature-item"><i class="fa fa-check-circle me-2"></i>60 yoga conditions checked</div>
+            <div class="vy-feature-item"><i class="fa fa-check-circle me-2"></i>Computed from exact birth data</div>
+            <div class="vy-feature-item"><i class="fa fa-check-circle me-2"></i>Based on K.S. Charak's classical rules</div>
+            <div class="vy-feature-item"><i class="fa fa-check-circle me-2"></i>Free — no signup required</div>
+            <div class="vy-feature-item"><i class="fa fa-check-circle me-2"></i>Available in English, Telugu & Hindi</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO TEXT BLOCK -->
+    <div class="vy-seo-text">
+      <h2>What are Vedic Yogas?</h2>
+      <p>
+        In Vedic astrology, a <em>yoga</em> (Sanskrit: योग) is a specific combination of planetary positions
+        that creates a pronounced effect in the native's life. Unlike Western astrology's aspect system,
+        yogas are holistic patterns — they consider house lordship, sign placement, mutual aspects,
+        and the overall strength of the planets involved.
+      </p>
+      <h2>Categories of Yogas We Detect</h2>
+      <p>
+        VedicHoroo groups its yoga analysis into eight classical categories:
+        <strong>Sun-based</strong> yogas (Veshi, Voshi, Ubhayachari),
+        the celebrated <strong>Pancha Mahapurusha</strong> yogas (Ruchaka, Bhadra, Hamsa, Malavya, Shasha),
+        <strong>Moon-based</strong> yogas including the famous Gajkesari and Kemadruma,
+        <strong>Sankhya</strong> yogas based on sign occupation,
+        <strong>Aashraya</strong> and <strong>Dala</strong> yogas based on sign gender and house type,
+        <strong>Akriti</strong> shape yogas, powerful <strong>Raja and Dhana</strong> yogas including
+        seven Maha Yoga Parivartana combinations, and <strong>Combination</strong> yogas
+        like Vajra, Kaahala, Shankha and Bheri.
+      </p>
+      <h2>Source: Yogas in Astrology by K.S. Charak</h2>
+      <p>
+        All yoga rules implemented in VedicHoroo are drawn from
+        <em>Yogas in Astrology</em> by Dr. K.S. Charak — one of the most authoritative modern references
+        on classical yoga interpretation. Each condition is verified against the original Sanskrit definitions
+        to ensure accuracy.
+      </p>
+    </div>
+
+  </div><!-- /container -->
+</div>

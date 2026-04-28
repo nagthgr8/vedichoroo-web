@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { VimDasha } from './vim-das';
 import { User } from './user';
 import { Astrologer } from './astrologer';
+import { BirthInfo } from './birth-info';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,8 @@ export class ShareService {
 	gevt = this.dsGevts.asObservable();
 	private dsCinf = new BehaviorSubject(null);
 	cinf = this.dsCinf.asObservable();
+	private dsActiveProfile = new BehaviorSubject<BirthInfo | null>(null);
+	activeProfile$ = this.dsActiveProfile.asObservable();
     place: string;
 	dob: string;
 	timezone: string;
@@ -394,6 +397,12 @@ export class ShareService {
 	}
 	getREWARD() {
 		return this.rew;
+	}
+	setActiveProfile(profile: BirthInfo) {
+		this.dsActiveProfile.next(profile);
+	}
+	getActiveProfile(): BirthInfo {
+		return this.dsActiveProfile.value;
 	}
 
 	getCHTYP() {

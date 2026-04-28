@@ -8,9 +8,13 @@ const admin = require("firebase-admin");
 const {XMLParser} = require("fast-xml-parser");
 const cors = require("cors")({origin: true});
 const OpenAI = require("openai").default;
+const Anthropic = require("@anthropic-ai/sdk").default;
+const {GoogleGenerativeAI} = require("@google/generative-ai");
 const {defineSecret} = require("firebase-functions/params");
 
 const OPENAI_KEY = defineSecret("OPENAI_KEY");
+const ANTHROPIC_KEY = defineSecret("ANTHROPIC_KEY");
+const GEMINI_KEY = defineSecret("GEMINI_KEY");
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -320,7 +324,7 @@ async function handleSubscription(n) {
 }
 
 exports.askAstrologer = functions.https.onRequest(
-    {secrets: [OPENAI_KEY]},
+    {secrets: [OPENAI_KEY, ANTHROPIC_KEY, GEMINI_KEY]},
     async (req, res) => {
       cors(req, res, async () => {
         try {
@@ -328,20 +332,63 @@ exports.askAstrologer = functions.https.onRequest(
             return res.status(405).send("Method Not Allowed");
           }
 
-          const {prompt} = req.body;
+          const body = req.body;
+          res.set("Cache-Control", "no-store");
 
-          if (!prompt) {
-            return res.status(400).json({error: "Prompt is required"});
+          // ── Agent mode: { provider, payload } ──────────────────────────────
+          // The client adapter already built the full provider wire-format
+          // payload. We forward it verbatim and return the raw response so the
+          // client adapter can parse it (OpenAiAdapter / ClaudeAdapter).
+          if (body.provider && body.payload) {
+            const {provider, payload} = body;
+
+            if (provider === "openai") {
+              const client = new OpenAI({apiKey: OPENAI_KEY.value()});
+              const raw = await client.chat.completions.create(payload);
+              logUsage("openai", raw.usage);
+              return res.json(raw);
+            }
+
+            if (provider === "claude") {
+              const client = new Anthropic({apiKey: ANTHROPIC_KEY.value()});
+              const raw = await client.messages.create(payload);
+              logUsage("claude", raw.usage);
+              return res.json(raw);
+            }
+
+            if (provider === "gemini") {
+              const genAI = new GoogleGenerativeAI(GEMINI_KEY.value());
+              const model = genAI.getGenerativeModel({
+                model: payload.model || "gemini-2.0-flash",
+                systemInstruction: payload.systemInstruction,
+                tools: payload.tools,
+              });
+              const result = await model.generateContent({
+                contents: payload.contents,
+              });
+              const raw = result.response;
+              logUsage("gemini", raw.usageMetadata);
+              return res.json(raw);
+            }
+
+            return res.status(400).json({
+              error: `Unsupported provider: ${provider}`,
+            });
           }
 
+          // ── Legacy mode: { prompt } ─────────────────────────────────────
+          // Fixed-prompt flow — unchanged so current pages keep working.
+          const {prompt} = body;
+          if (!prompt) {
+            return res.status(400).json({
+              error: "prompt or provider+payload required",
+            });
+          }
           if (prompt.length > 100000) {
             return res.status(400).json({error: "Prompt too long"});
           }
 
-          const client = new OpenAI({
-            apiKey: OPENAI_KEY.value(),
-          });
-
+          const client = new OpenAI({apiKey: OPENAI_KEY.value()});
           const completion = await client.chat.completions.create({
             model: "gpt-4o-mini",
             messages: [
@@ -351,22 +398,9 @@ exports.askAstrologer = functions.https.onRequest(
             temperature: 0.7,
             max_tokens: 800,
           });
-          // usage info
-          const usage = completion.usage;
-          console.log("Prompt tokens:", usage.prompt_tokens);
-          console.log("Completion tokens:", usage.completion_tokens);
-          console.log("Total tokens:", usage.total_tokens);
 
-          // approximate cost
-          const inputCost = (usage.prompt_tokens / 1000) * 0.001;
-          const outputCost = (usage.completion_tokens / 1000) * 0.002;
-          const totalCost = inputCost + outputCost;
-          console.log("Estimated cost ($):", totalCost);
-          res.set("Cache-Control", "no-store");
-
-          res.json({
-            answer: completion.choices[0].message.content,
-          });
+          logUsage("openai-legacy", completion.usage);
+          return res.json({answer: completion.choices[0].message.content});
         } catch (err) {
           console.error("LLM error:", err);
           res.status(500).json({error: "LLM processing failed"});
@@ -374,6 +408,16 @@ exports.askAstrologer = functions.https.onRequest(
       });
     },
 );
+
+function logUsage(provider, usage) {
+  if (!usage) return;
+  // OpenAI: prompt_tokens / completion_tokens
+  // Claude: input_tokens / output_tokens
+  const input = usage.input_tokens ?? usage.prompt_tokens ?? 0;
+  const output = usage.output_tokens ?? usage.completion_tokens ?? 0;
+  const total = input + output;
+  console.log(`[${provider}] in:${input} out:${output} total:${total}`);
+}
 
 exports.sendTestNotification = functions.https.onRequest(
     async (_req, res) => {

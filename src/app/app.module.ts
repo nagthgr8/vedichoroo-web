@@ -45,6 +45,8 @@ import { FirebaseAppModule } from '@angular/fire/app';
 import { SubscribeComponent } from './subscribe/subscribe.component';
 import { SubscriptionService } from './services/subscription.service';
 import { VerifyComponent } from './verify/verify.component';
+import { VedicYogasComponent } from './vedic-yogas/vedic-yogas.component';
+import { AboutUsComponent } from './about-us/about-us.component';
 fontLibrary.add(
   faCalendar,
   faClock
@@ -76,7 +78,9 @@ fontLibrary.add(
   LoginComponent,
   DateTimePickerComponent,
   SubscribeComponent,
-  VerifyComponent
+  VerifyComponent,
+  VedicYogasComponent,
+  AboutUsComponent
   ],
   imports: [
     AppRoutingModule,

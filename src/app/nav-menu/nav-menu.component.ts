@@ -5,6 +5,7 @@ import { HoroscopeService } from '../horoscope.service';
 import { ShareService } from '../share.service';
 import { Location } from '../location';
 import { User } from '../user';
+import { BirthInfo } from '../birth-info';
 import * as moment from 'moment';
 import { Subscriber } from 'rxjs';
 @Component({
@@ -26,7 +27,7 @@ export class NavMenuComponent implements OnInit {
 	 showLB: boolean = false;
   showUP: boolean = false;
   showMNU: boolean = true;
-  showPanch: boolean = true;
+  showPanch: boolean = false;
 	isExpanded = false;
 	today: any = '';
 	sunrise: string = '';
@@ -53,7 +54,10 @@ export class NavMenuComponent implements OnInit {
     csym: string = '₹'; 
   user: User = null;
   cdt: any;
-  subscr: boolean = false
+  subscr: boolean = false;
+  profiles: BirthInfo[] = [];
+  activeProfile: BirthInfo = null;
+  profileSwitching: boolean = false;
 	constructor(private horoService: HoroscopeService, private shareService: ShareService, private modalService: NgbModal) {
 		this.showAS = false;
 		this.showLB = true;
@@ -198,6 +202,8 @@ export class NavMenuComponent implements OnInit {
 				   });
 				} else if (res == 'logout') {
 					this.user = null;
+					this.profiles = [];
+					this.activeProfile = null;
 				}else if (res == 'activate') {
 					this.showAS = true;
 				} else if (res == 'subscriber') {
@@ -207,6 +213,68 @@ export class NavMenuComponent implements OnInit {
 				}
 			});
 
+		this.shareService.plan.subscribe(pln => {
+			if (pln && pln.dobs && pln.dobs.trim() !== '') {
+				this.profiles = this.parseDobs(pln.dobs);
+				if (this.profiles.length > 0 && !this.activeProfile) {
+					this.activeProfile = this.profiles[0];
+				}
+			}
+		});
+	}
+
+	parseDobs(dobs: string): BirthInfo[] {
+		const profiles: BirthInfo[] = [];
+		const entries = dobs.split('|').filter(e => e.trim() !== '' && e.indexOf('L') > -1);
+		for (const entry of entries) {
+			const lIdx = entry.indexOf('L');
+			const dobTime = entry.substring(0, lIdx);
+			const rest = entry.substring(lIdx + 1);
+			const atIdx = rest.indexOf('@');
+			if (atIdx === -1) continue;
+			const latLng = rest.substring(0, atIdx);
+			const lat = latLng.split(',')[0];
+			const lng = latLng.split(',')[1];
+			const afterAt = rest.substring(atIdx + 1);
+			let tz = afterAt, name = '', gender = '';
+			if (afterAt.indexOf('#') > -1) {
+				tz = afterAt.split('#')[0];
+				const ng = afterAt.split('#')[1];
+				name = ng.split('&')[0];
+				gender = ng.split('&')[1] || '';
+			}
+			profiles.push({
+				dob: dobTime, dob_short: dobTime.split('T')[0],
+				lat, lng, timezone: tz,
+				lagna: '', lagna_lord: '', moon_sign: '', sun_sign: '',
+				tithi: '', birth_star: '', star_lord: '', moon_phase: '',
+				name, gender, ref: '1', fetch: false, show: true, genrep: false
+			});
+		}
+		return profiles;
+	}
+
+	switchProfile(profile: BirthInfo) {
+		if (this.profileSwitching) return;
+		this.activeProfile = profile;
+		this.profileSwitching = true;
+		var dt = new Date();
+		var n = dt.getTimezoneOffset() / 60;
+		let ofset: number = Number(n.toFixed(1));
+		var ayn = this.shareService.getAYNM();
+		let ayanid: number = ayn ? Number(ayn) : 4;
+		this.horoService.getBirthchartEx2(profile.lat, profile.lng, profile.dob, profile.timezone, ofset, ayanid)
+			.subscribe(res => {
+				this.shareService.setPLPOS(res['planetPos']);
+				this.shareService.setRETRO(res['retroPls']);
+				this.shareService.setPLSTR(res['plStren']);
+				this.shareService.setBINF(profile);
+				this.shareService.setActiveProfile(profile);
+				this.profileSwitching = false;
+			}, err => {
+				console.log('switchProfile error', err);
+				this.profileSwitching = false;
+			});
 	}
   
 
@@ -367,7 +435,7 @@ export class NavMenuComponent implements OnInit {
 	vhoevt(evt, name) {
 		evt.stopPropagation();
     console.log('evt', name);
-    if (name == 'home') this.showPanch = true;
+    // if (name == 'home') this.showPanch = true;
 		this.shareService.setGEVT(name);
 	}
   hidePanch() {
