@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { Panchang } from './panchang';
 
 @Injectable({
   providedIn: 'root'
@@ -97,6 +98,11 @@ export class HoroscopeService {
   private apiUrl94 = 'https://charts.vedichoroo.com/v1/Orders';
   private apiUrl95 = 'https://charts.vedichoroo.com/v1/IsAstrologer';
   private apiUrl96 = 'https://charts.vedichoroo.com/v1/IsSubscriber';
+  // New, low-cost Azure Function (single-day panchang only)
+  private vedichorooFuncBaseUrl = 'https://vedichoroo-func-dddae3a7fqc3g0f4.southindia-01.azurewebsites.net/api';
+  private apiUrl97 = this.vedichorooFuncBaseUrl + '/GetPanchang';
+  // Astrology section articles published via smartlens-cms-react into pubId=1's "Astrology" section
+  private apiUrl98 = 'https://theboldlens.com/epaper/edition-slugs';
 
   private monthList = [
 	{name: "January",   numdays: 31, abbr: "Jan"},
@@ -1253,6 +1259,32 @@ getTransPredsEx(lat: any, lng: any, dob: string, tz: string, ofset: number, ayan
     map(this.extractData),
     catchError(this.handleError)
    );
+  }
+  getPanchang(latlng: string, tz: string, ayanid: number): Observable<Panchang> {
+    let url = this.apiUrl97;
+    let oDat = {
+      LatLng: latlng,
+      Timezone: tz,
+      AyanId: ayanid
+    };
+    let headers = this.getHeaders(url, {'Content-Type': 'application/json; charset=utf-8'});
+    return this.http.post(url, JSON.stringify(oDat), {headers: headers}).pipe(
+      map(this.extractData),
+      catchError(this.handleError)
+     ) as Observable<Panchang>;
+  }
+  // date defaults to 'all' (every published Astrology story so far) since volume is
+  // low for now; pass today's date once external RSS feeds make this section busier.
+  getVedicStories(date: string = 'all'): Observable<{}> {
+    let url = this.apiUrl98;
+    let headers = this.getHeaders(url);
+    let httpParams = new HttpParams()
+                  .set('section', 'Astrology')
+                  .set('date', date);
+    return this.http.get(url, {headers: headers, params: httpParams}).pipe(
+      map(this.extractData),
+      catchError(this.handleError)
+     );
   }
   calForMon(mon: number, yer: number, latlng: string, tz: string, ayanid: number): Observable<{}> {
 	//var oDat = 'star=' + star + '&sign=' + sign + '&moondeg=' + moondeg;

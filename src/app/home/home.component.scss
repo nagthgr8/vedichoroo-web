@@ -114,3 +114,106 @@
 .rating > input:checked ~ label:before{
   opacity:1;
 }
+
+// ---------------------------------------------------------------------
+// "Spiritual" theme — warm saffron/gold palette for Panchang + Vedic
+// Stories sections (vedichoroo-web's analogue of theboldlens' "tribune"
+// theme).
+// ---------------------------------------------------------------------
+.panchang-section {
+  padding: 24px 0 8px;
+}
+.panchang-card {
+  background: linear-gradient(135deg, #ff9933 0%, #ffb454 45%, #ffd194 100%);
+  border-radius: 14px;
+  padding: 18px 22px;
+  color: #4a2c00;
+  box-shadow: 0 4px 16px rgba(255, 153, 51, 0.35);
+}
+.panchang-title {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.panchang-date {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin-bottom: 12px;
+}
+.panchang-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+}
+.panchang-item {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.panchang-item .label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.75;
+}
+.panchang-item .value {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+.panchang-item .sub {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.vedic-stories-section {
+  padding: 24px 0 8px;
+}
+.section-heading {
+  font-weight: 700;
+  color: #c1581b;
+  border-left: 4px solid #ff9933;
+  padding-left: 10px;
+  margin-bottom: 16px;
+}
+.vedic-stories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+}
+.vedic-story-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.vedic-story-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(255, 153, 51, 0.3);
+  color: inherit;
+}
+.vedic-story-img img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+.vedic-story-body {
+  padding: 10px 12px;
+}
+.vedic-story-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #4a2c00;
+}
+.vedic-story-byline {
+  font-size: 0.75rem;
+  color: #807f7f;
+  margin-top: 4px;
+}

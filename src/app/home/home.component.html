@@ -1,47 +1,50 @@
     <div *ngIf="showLD" class="loader"></div>
     <div>
-		<section id="main-area" style="transform: none;">
-			<div class="container" style="transform: none;">
-			  <div class="row" style="transform: none;">
-			  <h4 class="pt-2 pb-2">Talk To Our Online Astrologer(s)</h4>
-				<div class="col-lg-4 col-md-12 mb-4 mb-lg-0" *ngFor="let ast of getAstros()">
-				 <div class="thumb-box thumb-pad">
-				 <div class="thumb-info">
-				 <div class="astro-thumb">
-				 <div class="img-astro img-border">
-				  <img
-					[src]="ast.avatar"
-					width="75"
-					height="75"
-					alt="vedichoroo astrologer"
-				  />
-				 </div>
-				 <div class="astro-star">
-					  <i [class]="ast.str1" aria-hidden="true"></i>
-				   <i [class]="ast.str2" aria-hidden="true"></i>
-				   <i [class]="ast.str3" aria-hidden="true"></i>
-				   <i [class]="ast.str4" aria-hidden="true"></i>
-				   <i [class]="ast.str5" aria-hidden="true"></i><span><strong>({{ast.tot_ratings}})</strong></span>
-				 </div>
-				 </div>
-					 <div class="astro-info">
-					  <div class="astro-name">{{ast.name}}</div>
-					  <span class="astro-tag">{{ast.tagline}} </span>
-					  <span class="astro-lang">{{ast.lng}}</span>
-					  <span class="astro-fee">{{ast.ccy}} {{ast.cfee}}</span>
-				 </div>
-				 
-				 </div>
-				  <div class="astro-conn">
-				 <div *ngIf="ast.status"><button type="button" class="btn btn-outline-success" (click)="callreq($event, ast)">Call Now</button></div>
-				 <span *ngIf="!ast.status" class="text-danger">{{ast.smsg}}</span>
-				 </div>
-				 </div>
-	  
+			<section class="panchang-section" *ngIf="panchang">
+				<div class="container">
+					<div class="panchang-card">
+						<h4 class="panchang-title">Today's Panchang</h4>
+						<div class="panchang-date">{{panchang.date}}</div>
+						<div class="panchang-grid">
+							<div class="panchang-item">
+								<span class="label">Nakshatra</span>
+								<span class="value">{{panchang.star}}</span>
+								<span class="sub" *ngIf="panchang.starStrength">{{panchang.starStrength}}</span>
+							</div>
+							<div class="panchang-item">
+								<span class="label">Tithi</span>
+								<span class="value">{{panchang.tithi}}</span>
+								<span class="sub" *ngIf="panchang.moonPhase || panchang.tithiRem">{{panchang.moonPhase}} {{panchang.tithiRem}}</span>
+							</div>
+							<div class="panchang-item">
+								<span class="label">Yoga</span>
+								<span class="value">{{panchang.yoga}}</span>
+							</div>
+							<div class="panchang-item">
+								<span class="label">Karana</span>
+								<span class="value">{{panchang.karana}}</span>
+							</div>
+						</div>
+					</div>
 				</div>
-			  </div>
-			</div>
-		  </section>
+			</section>
+			<section class="vedic-stories-section" *ngIf="vedicStories?.length">
+				<div class="container">
+					<h4 class="section-heading">Vedic Stories</h4>
+					<div class="vedic-stories-grid">
+						<a class="vedic-story-card" *ngFor="let story of vedicStories"
+						   [href]="'https://theboldlens.com/Article/' + story.slug" target="_blank" rel="noopener">
+							<div class="vedic-story-img" *ngIf="story.image">
+								<img [src]="story.image" [alt]="story.title" loading="lazy"/>
+							</div>
+							<div class="vedic-story-body">
+								<div class="vedic-story-title">{{story.title}}</div>
+								<div class="vedic-story-byline" *ngIf="story.byline">{{story.byline}}</div>
+							</div>
+						</a>
+					</div>
+				</div>
+			</section>
 			<section>
 				<div class="container">
 					<h4>Astrology <span class="text-muted">predictions for life</span></h4>
