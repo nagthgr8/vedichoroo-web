@@ -33,7 +33,7 @@
 					<h4 class="section-heading">Vedic Stories</h4>
 					<div class="vedic-stories-grid">
 						<a class="vedic-story-card" *ngFor="let story of vedicStories"
-						   [href]="'https://theboldlens.com/Article/' + story.slug" target="_blank" rel="noopener">
+						   [routerLink]="['/vedic-story', story.slug]" [state]="{ title: story.title, byline: story.byline }">
 							<div class="vedic-story-img" *ngIf="story.image">
 								<img [src]="story.image" [alt]="story.title" loading="lazy"/>
 							</div>

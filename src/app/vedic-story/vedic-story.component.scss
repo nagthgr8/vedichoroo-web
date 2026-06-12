@@ -1,0 +1,42 @@
+.vedic-story-page {
+  padding: 24px 0 40px;
+}
+
+.vedic-story-back {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: #c1581b;
+  font-weight: 600;
+  text-decoration: none;
+}
+.vedic-story-back:hover {
+  text-decoration: underline;
+}
+
+.vedic-story-heading {
+  font-weight: 700;
+  color: #4a2c00;
+  margin-bottom: 6px;
+}
+
+.vedic-story-byline {
+  font-size: 0.85rem;
+  color: #807f7f;
+  margin-bottom: 16px;
+}
+
+.vedic-story-body {
+  ::ng-deep picture {
+    display: block;
+    margin-bottom: 16px;
+  }
+  ::ng-deep img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+  ::ng-deep article p {
+    line-height: 1.7;
+    margin-bottom: 1em;
+  }
+}

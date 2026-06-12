@@ -47,6 +47,7 @@ import { SubscriptionService } from './services/subscription.service';
 import { VerifyComponent } from './verify/verify.component';
 import { VedicYogasComponent } from './vedic-yogas/vedic-yogas.component';
 import { AboutUsComponent } from './about-us/about-us.component';
+import { VedicStoryComponent } from './vedic-story/vedic-story.component';
 fontLibrary.add(
   faCalendar,
   faClock
@@ -80,7 +81,8 @@ fontLibrary.add(
   SubscribeComponent,
   VerifyComponent,
   VedicYogasComponent,
-  AboutUsComponent
+  AboutUsComponent,
+  VedicStoryComponent
   ],
   imports: [
     AppRoutingModule,

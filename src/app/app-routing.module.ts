@@ -19,6 +19,7 @@ import { VerifyComponent } from './verify/verify.component';
 import { ModelValidationComponent } from './model-validation/model-validation.component';
 import { VedicYogasComponent } from './vedic-yogas/vedic-yogas.component';
 import { AboutUsComponent } from './about-us/about-us.component';
+import { VedicStoryComponent } from './vedic-story/vedic-story.component';
 const routes: Routes = [
 	{ path: 'home',  component: HomeComponent },
 	{ path: 'privacy-policy',  component: PrivacyPolicyComponent },
@@ -39,7 +40,8 @@ const routes: Routes = [
 	{ path: 'verify', component: VerifyComponent },
 	{ path: 'model-validation', component: ModelValidationComponent },
 	{ path: 'vedic-yogas', component: VedicYogasComponent },
-	{ path: 'about-us', component: AboutUsComponent }
+	{ path: 'about-us', component: AboutUsComponent },
+	{ path: 'vedic-story/:slug', component: VedicStoryComponent }
 ];
 
 @NgModule({

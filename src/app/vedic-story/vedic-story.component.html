@@ -1,0 +1,13 @@
+<div *ngIf="showLD" class="loader"></div>
+
+<div class="container vedic-story-page" *ngIf="!showLD && !notFound">
+	<a class="vedic-story-back" routerLink="/home">&larr; Back to Vedic Stories</a>
+	<h1 class="vedic-story-heading" *ngIf="storyTitle">{{storyTitle}}</h1>
+	<div class="vedic-story-byline" *ngIf="byline">By {{byline}}</div>
+	<div class="vedic-story-body" [innerHTML]="content"></div>
+</div>
+
+<div class="container vedic-story-page" *ngIf="!showLD && notFound">
+	<a class="vedic-story-back" routerLink="/home">&larr; Back to Vedic Stories</a>
+	<p>Sorry, this story couldn't be loaded.</p>
+</div>
